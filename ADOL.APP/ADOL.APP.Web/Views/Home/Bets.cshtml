@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Acerca de";
+}
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<div id="talon" >
+    <h5>Tus apuestas</h5>
+    <div class="{{bets.length == 0 ? 'hidden' :'' }}">
+    <div class="tipodeapuesta">
+        <span>Apuesta:</span>
+        <div class="tab">
+            <a href="#simple" class="btn-tab selected">Simple</a>
+            <a href="#combinada" class="btn-tab">Combinada</a>
+        </div>
+    </div>
+    
+    
+        <div>
+        <!-- tipo de apuesta SIMPLE -->
+        <div id="simple" class="tab-content simple show" >
+            <ul class="apuesta" ng-repeat="bet in bets | filter:filterSimpleBets">
+                <li ng-click="removeSimpleBet(bet.betId)" class="delete-btn">X</li>
+                <li class="title">{{ matchs[bet.match].options[0].team }} vs {{ matchs[bet.match].options[2].team }}</li>
+                <li class="desc">Apuesta: Ganador del partido</li>
+                <li class="yourbet">{{ matchs[bet.match].options[bet.option].team }}<span class="value">{{ matchs[bet.match].options[bet.option].value }}</span></li>
+                <li class="cantidad">Importe <span class="number"><input type="text" placeholder="$">ars</span></li>
+            </ul>            
+        </div>
+                    <!-- tipo de apuesta COMBINADA -->
+                    <div id="combinada" class="tab-content combinada">
+                        <ul class="apuesta"  ng-repeat="bet in bets | filter:filterComposedBets">
+                            <span class="delete-btn" ng-click="removeComposedBet(bet.betId)">X</span>
+                            <li class="title">{{ matchs[bet.match].options[0].team }} vs {{ matchs[bet.match].options[2].team }}</li>
+                <li class="desc">Apuesta: Ganador del partido</li>
+                <li class="yourbet">{{ matchs[bet.match].options[bet.option].team }}<span class="value">{{ matchs[bet.match].options[bet.option].value }}</span></li>
+                        </ul>                        
+                        <ul class="apuesta importe">
+                            <li class="cantidad">Importe <span class="number">
+                                <input type="text" placeholder="$">
+                                ars</span></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <ul class="resumen">
+                    <li>Cuota total:<span class="value">3.4</span></li>
+                    <li>Importe total:<span class="value">20 ars</span></li>
+                    <li>Ganancia posible:<span class="value">34 ars</span></li>
+                </ul>
+                <div class="confirmar">
+                    <p class="error-msj">No tienes suficiente crédito para realizar esta apuesta</p>
+                    <a href="#" class="btn btn-main">Confirmar apuesta </a>
+                    <p class="yourcredit">Tu crédito disponible es <span>72.20 ars</span></p>
+                    <a href="#" class="cancel">borrar apuestas</a>
+                </div>
+        </div>
+            </div>
