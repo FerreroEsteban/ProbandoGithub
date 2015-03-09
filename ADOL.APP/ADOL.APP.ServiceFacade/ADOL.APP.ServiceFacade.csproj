@@ -7,8 +7,8 @@
     <ProjectGuid>{78E35048-86B8-4DDE-990C-A6870FD78244}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Toqueyva.Framework.CurrentAccountService.ServiceFacade</RootNamespace>
-    <AssemblyName>Toqueyva.Framework.CurrentAccountService.ServiceFacade</AssemblyName>
+    <RootNamespace>ADOL.APP.CurrentAccountService.ServiceFacade</RootNamespace>
+    <AssemblyName>ADOL.APP.CurrentAccountService.ServiceFacade</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

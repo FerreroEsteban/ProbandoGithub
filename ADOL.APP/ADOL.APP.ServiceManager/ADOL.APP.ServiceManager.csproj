@@ -7,8 +7,8 @@
     <ProjectGuid>{E65A52C4-3135-4CCB-8681-6980E4B28C67}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Toqueyva.Framework.CurrentAccountService.ServiceManager</RootNamespace>
-    <AssemblyName>Toqueyva.Framework.CurrentAccountService.ServiceManager</AssemblyName>
+    <RootNamespace>ADOL.APP.CurrentAccountService.ServiceManager</RootNamespace>
+    <AssemblyName>ADOL.APP.CurrentAccountService.ServiceManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Toqueyva.Framework.CurrentAccountService.ServiceFacade")]
+[assembly: AssemblyTitle("ADOL.APP.CurrentAccountService.ServiceFacade")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Toqueyva.Framework.CurrentAccountService.ServiceFacade")]
+[assembly: AssemblyProduct("ADOL.APP.CurrentAccountService.ServiceFacade")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
