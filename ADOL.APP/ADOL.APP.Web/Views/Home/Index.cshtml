@@ -28,9 +28,9 @@
                     <span class="event-lines">+33</span>
                 </div>
                 <div class="select-bet tres">
-                    <div class="{{ match.options[0].selected }}" ng-click="selectMatchOption($index, 0)"><span>{{ match.options[0].team }}</span><span class="value">{{ match.options[0].value }}</span></div>
-                    <div class="{{ match.options[1].selected }}" ng-click="selectMatchOption($index, 1)"><span>{{ match.options[1].team }}</span><span class="value">{{ match.options[1].value }}</span></div>
-                    <div class="{{ match.options[2].selected }}" ng-click="selectMatchOption($index, 2)"><span>{{ match.options[2].team }}</span><span class="value">{{ match.options[2].value }}</span></div>
+                    <div ng-class="match.options[0].selected" ng-click="selectMatchOption($index, 0)"><span>{{ match.options[0].team }}</span><span class="value">{{ match.options[0].value }}</span></div>
+                    <div ng-class="match.options[1].selected" ng-click="selectMatchOption($index, 1)"><span>{{ match.options[1].team }}</span><span class="value">{{ match.options[1].value }}</span></div>
+                    <div ng-class="match.options[2].selected" ng-click="selectMatchOption($index, 2)"><span>{{ match.options[2].team }}</span><span class="value">{{ match.options[2].value }}</span></div>
                 </div>
             </div>
         </div>
