@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Toqueyva.Framework.CurrentAccountService.DataAccess
+namespace ADOL.APP.CurrentAccountService.DataAccess
 {
     using System;
     using System.Collections.Generic;
@@ -23,14 +23,15 @@ namespace Toqueyva.Framework.CurrentAccountService.DataAccess
         public string Codigo { get; set; }
         public string Nombre { get; set; }
         public bool Activo { get; set; }
-        public int ValorProveedor1 { get; set; }
-        public int ValorProveedor2 { get; set; }
-        public int ValorProveedor3 { get; set; }
-        public int ValorProveedor4 { get; set; }
         public System.DateTime Acualizado { get; set; }
-        public int DeporteID { get; set; }
+        public int EventoID { get; set; }
+        public double Odd1 { get; set; }
+        public Nullable<double> Odd2 { get; set; }
+        public Nullable<double> Odd3 { get; set; }
+        public Nullable<double> Odd4 { get; set; }
+        public string TipoApuesta { get; set; }
     
-        public virtual Deporte Deporte { get; set; }
         public virtual ICollection<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }
+        public virtual EventosDeportivo EventosDeportivo { get; set; }
     }
 }

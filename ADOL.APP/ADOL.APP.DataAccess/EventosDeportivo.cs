@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Toqueyva.Framework.CurrentAccountService.DataAccess
+namespace ADOL.APP.CurrentAccountService.DataAccess
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Toqueyva.Framework.CurrentAccountService.DataAccess
     {
         public EventosDeportivo()
         {
-            this.ApuestasDeUsuarios = new HashSet<ApuestasDeUsuario>();
+            this.ApuestasDeportivas = new HashSet<ApuestasDeportiva>();
         }
     
         public int ID { get; set; }
@@ -26,8 +26,10 @@ namespace Toqueyva.Framework.CurrentAccountService.DataAccess
         public System.DateTime Inicio { get; set; }
         public System.DateTime Fin { get; set; }
         public int DeporteID { get; set; }
+        public string CodigoPais { get; set; }
+        public string CodigoLiga { get; set; }
     
-        public virtual ICollection<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }
         public virtual Deporte Deporte { get; set; }
+        public virtual ICollection<ApuestasDeportiva> ApuestasDeportivas { get; set; }
     }
 }

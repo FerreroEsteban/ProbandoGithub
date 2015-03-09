@@ -7,8 +7,8 @@
     <ProjectGuid>{30579086-475E-4019-8846-9BE95787B0AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Toqueyva.Framework.CurrentAccountService.Helpers</RootNamespace>
-    <AssemblyName>Toqueyva.Framework.CurrentAccountService.Helpers</AssemblyName>
+    <RootNamespace>ADOL.APP.CurrentAccountService.Helpers</RootNamespace>
+    <AssemblyName>ADOL.APP.CurrentAccountService.Helpers</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

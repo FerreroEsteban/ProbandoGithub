@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Toqueyva.Framework.CurrentAccountService.DataAccess
+namespace ADOL.APP.CurrentAccountService.DataAccess
 {
     using System;
     using System.Collections.Generic;
@@ -22,6 +22,5 @@ namespace Toqueyva.Framework.CurrentAccountService.DataAccess
         public bool Acierto { get; set; }
     
         public virtual ApuestasDeportiva ApuestasDeportiva { get; set; }
-        public virtual EventosDeportivo EventosDeportivo { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8b67406a09c049c29a1ed146d9ff58af" Name="Diagrama1" ZoomLevel="74">
+        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeportiva" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeUsuario" Width="1.5" PointX="5.25" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.Deporte" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.EventosDeportivo" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <AssociationConnector Association="ADOLDBModel.ApuestasDeUsuarios_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="ADOLDBModel.EventosDeportivos_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="ADOLDBModel.ApuestasDeportivas_FK2" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

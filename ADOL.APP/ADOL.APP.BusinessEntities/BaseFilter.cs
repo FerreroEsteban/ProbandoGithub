@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Toqueyva.Framework.CurrentAccountService
+namespace ADOL.APP.CurrentAccountService
 {
     public class BaseFilter
     {

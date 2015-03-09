@@ -15,6 +15,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ADOL.APP.DataBase", "ADOL.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADOL.APP.Web", "ADOL.APP.Web\ADOL.APP.Web.csproj", "{AF4E6202-C643-4831-9675-53015F32EFA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADOL.APP.BusinessLayer.Test", "ADOL.APP.BusinessLayer.Test\ADOL.APP.BusinessLayer.Test.csproj", "{66F6CF36-B3E6-4F6D-859A-BFFA7F14AE38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{AF4E6202-C643-4831-9675-53015F32EFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF4E6202-C643-4831-9675-53015F32EFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF4E6202-C643-4831-9675-53015F32EFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F6CF36-B3E6-4F6D-859A-BFFA7F14AE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F6CF36-B3E6-4F6D-859A-BFFA7F14AE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F6CF36-B3E6-4F6D-859A-BFFA7F14AE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F6CF36-B3E6-4F6D-859A-BFFA7F14AE38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
