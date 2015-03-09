@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
+using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
+
 using System.Linq.Expressions;
 using System.Data.Entity;
 
@@ -12,12 +14,16 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class EventsManager
     {
-        public void UpdateEvents(string eventTypeCodes)
+        public void UpdateEvents()
         { 
             BookmakerAccess bmax = new BookmakerAccess();
-            List<EventosDeportivo> eventosNuevos = bmax.PullEvents(eventTypeCodes.Split(','));
+            SportEventsAccess seax = new SportEventsAccess();
 
-            List<EventosDeportivo> eventosGuardados = bmax.GetCurrentEvents();
+            List<Deporte> dep = seax.GetActiveSports();
+
+            List<EventosDeportivo> eventosNuevos = bmax.PullEvents(dep.Select(p => p.Codigo).ToArray());
+
+            List<EventosDeportivo> eventosGuardados = seax.GetCurrentEvents();
 
             foreach (var newEvent in eventosNuevos)
             {
@@ -33,7 +39,13 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 }
             }
 
-            bmax.StoreEvents(eventosGuardados);
+            seax.StoreEvents(eventosGuardados);
+        }
+
+        public List<EventosDeportivo> GetSportEvent(string sportCode)
+        { 
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetSportEvent(sportCode);
         }
     }
 }
