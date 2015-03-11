@@ -30,7 +30,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                             var storedEvent = dbcontext.EventosDeportivos.Where(p => p.Codigo.Equals(evento.Codigo)).First();
                             foreach (var apuesta in evento.ApuestasDeportivas)
                             {
-                                var storedOdd = storedEvent.ApuestasDeportivas.Where(p => p.TipoApuesta.Equals(apuesta.TipoApuesta)).FirstOrDefault();
+                                var storedOdd = storedEvent.ApuestasDeportivas.Where(p => p.Nombre.Equals(apuesta.Nombre)).FirstOrDefault();
                                 if (storedOdd != null)
                                 {
                                     storedOdd.Odd1 = apuesta.Odd1;
