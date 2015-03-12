@@ -1,0 +1,1 @@
+﻿INSERT INTO Deportes SELECT 'Futbol', 1, 1

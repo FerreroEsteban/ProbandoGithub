@@ -22,7 +22,7 @@ public partial class ApuestasDeUsuario
 
     public string Token { get; set; }
 
-    public decimal Amount { get; set; }
+    public double Amount { get; set; }
 
     public int ApuestaDeportivaID { get; set; }
 
