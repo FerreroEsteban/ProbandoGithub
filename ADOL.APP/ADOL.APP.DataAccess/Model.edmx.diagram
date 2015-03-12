@@ -5,13 +5,13 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8b67406a09c049c29a1ed146d9ff58af" Name="Diagrama1" ZoomLevel="74">
-        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeportiva" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeUsuario" Width="1.5" PointX="5.25" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.Deporte" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.EventosDeportivo" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
-        <AssociationConnector Association="ADOLDBModel.ApuestasDeUsuarios_FK1" ManuallyRouted="false" />
-        <AssociationConnector Association="ADOLDBModel.EventosDeportivos_FK1" ManuallyRouted="false" />
-        <AssociationConnector Association="ADOLDBModel.ApuestasDeportivas_FK2" />
+        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeportiva" Width="1.5" PointX="6.125" PointY="17.875" />
+        <EntityTypeShape EntityType="ADOLDBModel.ApuestasDeUsuario" Width="1.5" PointX="8.5" PointY="18.25" />
+        <EntityTypeShape EntityType="ADOLDBModel.Deporte" Width="1.5" PointX="0.5" PointY="18" />
+        <EntityTypeShape EntityType="ADOLDBModel.EventosDeportivo" Width="1.5" PointX="3.75" PointY="18" />
+        <AssociationConnector Association="ADOLDBModel.ApuestasDeportivas_FK1" />
+        <AssociationConnector Association="ADOLDBModel.ApuestasDeUsuarios_FK1" />
+        <AssociationConnector Association="ADOLDBModel.EventosDeportivos_FK1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

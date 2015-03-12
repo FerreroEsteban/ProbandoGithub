@@ -87,7 +87,6 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 userBet.Odd2 = float.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberStyles.AllowDecimalPoint);
                 userBet.Odd3 = float.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberStyles.AllowDecimalPoint);
                 userBet.Codigo = offer[offer.Count - 1].Attributes["otname"].Value;
-                userBet.TipoApuesta = offer[offer.Count - 1].Attributes["otname"].Value;
                 sportEvent.ApuestasDeportivas.Add(userBet);
                 sports.Add(sportEvent);
             }
