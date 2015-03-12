@@ -59,17 +59,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             {
                 XmlNodeList offer = match.SelectNodes("bookmaker/offer");
 
-                //Console.WriteLine("liga: " + match.SelectSingleNode("group").Attributes["cname"].Value);
-                //Console.WriteLine(string.Format("local: {0} ({1}).", match.SelectSingleNode("hteam").InnerText, node.SelectSingleNode("o1").InnerText));
-                //Console.WriteLine(string.Format("visitante: {0} ({1}).", match.SelectSingleNode("ateam").InnerText, node.SelectSingleNode("o3").InnerText));
-                //Console.WriteLine(string.Format("empate: {0}", node.SelectSingleNode("o2").InnerText));
-                //Console.WriteLine("hora: " + DateTime.Parse(match.SelectSingleNode("time").InnerText).ToShortDateString());
-
                 EventosDeportivo sportEvent = new EventosDeportivo();
                 sportEvent.Codigo = match.Attributes["id"].Value;
                 sportEvent.CodigoLiga = match.SelectSingleNode("group").Attributes["mgid"].Value;
                 sportEvent.CodigoPais = match.SelectSingleNode("group").Attributes["cnid"].Value;
-                //sportEvent.Activo = true;
+                
                 sportEvent.Nombre = string.Format("{0} - {1}",
                                                  match.SelectSingleNode("hteam").InnerText,
                                                   match.SelectSingleNode("ateam").InnerText);
@@ -83,9 +77,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 XmlNodeList odds = offer[offer.Count - 1].SelectNodes("odds");
                 XmlNode odd = odds[odds.Count - 1];
 
-                userBet.Odd1 = float.Parse(odd.SelectSingleNode("o1").InnerText, System.Globalization.NumberStyles.AllowDecimalPoint);
-                userBet.Odd2 = float.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberStyles.AllowDecimalPoint);
-                userBet.Odd3 = float.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberStyles.AllowDecimalPoint);
+                userBet.Odd1 = float.Parse(odd.SelectSingleNode("o1").InnerText);
+                userBet.Odd2 = float.Parse(odd.SelectSingleNode("o2").InnerText);
+                userBet.Odd3 = float.Parse(odd.SelectSingleNode("o3").InnerText);
                 userBet.Codigo = offer[offer.Count - 1].Attributes["otname"].Value;
                 sportEvent.ApuestasDeportivas.Add(userBet);
                 sports.Add(sportEvent);

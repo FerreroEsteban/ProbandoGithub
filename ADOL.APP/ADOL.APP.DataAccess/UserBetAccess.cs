@@ -17,7 +17,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                 ApuestasDeUsuario au = new ApuestasDeUsuario();
                 au.ApuestaDeportivaID = sportBetID;
                 au.Token = userToken;
-                au.Amount = decimal.Parse(amount.ToString(), CultureInfo.InvariantCulture.NumberFormat);
+                au.Amount = amount;
                     
                 db.ApuestasDeUsuarios.Add(au);
                 db.SaveChanges();

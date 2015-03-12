@@ -34,10 +34,11 @@ namespace ADOL.APP.BusinessLayer.Test
             BetManager bmng = new BetManager();
             var usr = Guid.NewGuid();
             var rndm = new Random();
-            var amount = ((float)(rndm.Next(10,20) / 3));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 10)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 10)].ID, amount));
+            //var amount = float.Parse(((float)rndm.Next(10, 20) / (float)3).ToString("#.##"));
+            float amount = 0.25f;
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,3)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 3)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 3)].ID, amount));
         }
     }
 }
