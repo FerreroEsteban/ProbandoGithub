@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
-
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Linq.Expressions;
 using System.Data.Entity;
 
@@ -19,11 +19,11 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             BookmakerAccess bmax = new BookmakerAccess();
             SportEventsAccess seax = new SportEventsAccess();
 
-            List<Deporte> dep = seax.GetActiveSports();
+            List<BE.Deporte> dep = seax.GetActiveSports();
 
-            List<EventosDeportivo> eventosNuevos = bmax.PullEvents(dep.Select(p => p.Codigo).ToArray());
+            List<BE.EventosDeportivo> eventosNuevos = bmax.PullEvents(dep);
 
-            List<EventosDeportivo> eventosGuardados = seax.GetCurrentEvents();
+            List<BE.EventosDeportivo> eventosGuardados = seax.GetCurrentEvents();
 
             foreach (var newEvent in eventosNuevos)
             {
@@ -42,8 +42,8 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             seax.StoreEvents(eventosGuardados);
         }
 
-        public List<EventosDeportivo> GetSportEvent(string sportCode)
-        { 
+        public List<BE.EventosDeportivo> GetSportEvent(string sportCode)
+        {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetSportEvent(sportCode);
         }

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ADOL.APP.CurrentAccountService.ServiceManager;
 using ADOL.APP.CurrentAccountService.DataAccess;
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Collections.Generic;
 
 namespace ADOL.APP.BusinessLayer.Test
@@ -37,16 +38,16 @@ namespace ADOL.APP.BusinessLayer.Test
             var rndm = new Random();
             //var amount = float.Parse(((float)rndm.Next(10, 20) / (float)3).ToString("#.##"));
             float amount = 0.25f;
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,3)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 3)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 3)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
         }
 
         [TestMethod]
         public void CheckUserBets()
         {
             BetManager mng = new BetManager();
-            List<ApuestasDeUsuario> bets = mng.GetUserBets("26f6b972-a262-4ecf-b0de-6f4fa81a57d7");
+            List<BE.ApuestasDeUsuario> bets = mng.GetUserBets("26f6b972-a262-4ecf-b0de-6f4fa81a57d7");
             Assert.IsTrue(bets.Count > 0);
         }
     }   

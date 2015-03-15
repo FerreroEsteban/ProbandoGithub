@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
@@ -29,7 +30,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
         }
 
-        public List<ApuestasDeUsuario> GetUserBets(string userToken)
+        public List<BE.ApuestasDeUsuario> GetUserBets(string userToken)
         {
             UserBetAccess uba = new UserBetAccess();
             return uba.GetUserBets(userToken);

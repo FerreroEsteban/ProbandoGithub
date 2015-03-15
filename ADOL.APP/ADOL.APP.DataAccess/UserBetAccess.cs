@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Globalization;
 
 namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
@@ -11,10 +12,10 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
     public class UserBetAccess
     {
         public void AddUserBet(string userToken, int sportBetID, float amount)
-        { 
-            using(var db = new ADOLDBEntities())
+        {
+            using (var db = new BE.ADOLAPPDBEntities())
             {
-                ApuestasDeUsuario au = new ApuestasDeUsuario();
+                BE.ApuestasDeUsuario au = new BE.ApuestasDeUsuario();
                 au.ApuestaDeportivaID = sportBetID;
                 au.Token = userToken;
                 au.Amount = amount;
@@ -24,9 +25,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             }
         }
 
-        public List<ApuestasDeUsuario> GetUserBets(string userToken)
+        public List<BE.ApuestasDeUsuario> GetUserBets(string userToken)
         {
-            using (var db = new ADOLDBEntities())
+            using (var db = new BE.ADOLAPPDBEntities())
             {
                 return db.ApuestasDeUsuarios.Where(p => p.Token.Equals(userToken)).ToList();
             }
