@@ -21,6 +21,7 @@ namespace ADOL.APP.WebApi.Controllers
             {
                 dynamic thisEvent = new ExpandoObject();
                 thisEvent.ID = singleEvent.ID;
+                thisEvent.Code = singleEvent.Codigo;
                 thisEvent.Nombre = singleEvent.Nombre;
                 thisEvent.Local = singleEvent.Local;
                 thisEvent.Visitante = singleEvent.Visitante;
@@ -31,6 +32,13 @@ namespace ADOL.APP.WebApi.Controllers
             return view;
         }
 
+        public dynamic GetEventOdds(string id)
+        {
+            EventsManager mgr = new EventsManager();
+            var odds = mgr.GetEventOdds(id);
+            return GetEventOdds(odds);
+        }
+
         private dynamic GetEventOdds(ICollection<ApuestasDeportiva> collection)
         {
             dynamic view = new List<ExpandoObject>();
@@ -38,10 +46,19 @@ namespace ADOL.APP.WebApi.Controllers
             {
                 dynamic apuestaDisponible = new ExpandoObject();
                 apuestaDisponible.ID = apuesta.ID;
-                apuestaDisponible.Codigo = apuesta.Codigo;
-                apuestaDisponible.Local = apuesta.Odd1;
-                apuestaDisponible.Empate = apuesta.Odd2;
-                apuestaDisponible.Visitante = apuesta.Odd3;
+
+                dynamic oddCollection = new List<ExpandoObject>();
+                foreach (var oddtype in apuesta.OddProvider.GetAvailables())
+                {
+                    dynamic singleOdd = new ExpandoObject();
+                    singleOdd.Code = oddtype.Key;
+                    singleOdd.Name = oddtype.Value;
+                    singleOdd.Price = apuesta.GetOddPrice(oddtype.Key);
+                    oddCollection.Add(singleOdd);
+                }
+
+                apuestaDisponible.OddCollection = oddCollection;
+
                 view.Add(apuestaDisponible);
             }
             return view;

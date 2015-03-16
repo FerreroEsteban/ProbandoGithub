@@ -12,7 +12,13 @@ namespace ADOL.APP.WebApi
         {
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{sportCode}",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "GetEventsApi",
+                routeTemplate: "api/{controller}/GetAllEvent/{sportCode}",
                 defaults: new { sportCode = RouteParameter.Optional }
             );
 

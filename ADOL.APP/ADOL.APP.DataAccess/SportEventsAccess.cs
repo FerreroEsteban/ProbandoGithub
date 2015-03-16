@@ -31,7 +31,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                             var storedEvent = dbcontext.EventosDeportivos.Where(p => p.Codigo.Equals(evento.Codigo)).First();
                             foreach (var apuesta in evento.ApuestasDeportivas)
                             {
-                                var storedOdd = storedEvent.ApuestasDeportivas.Where(p => p.Nombre.Equals(apuesta.Nombre)).FirstOrDefault();
+                                var storedOdd = storedEvent.ApuestasDeportivas.Where(p => p.Codigo.Equals(apuesta.Codigo)).FirstOrDefault();
                                 if (storedOdd != null)
                                 {
                                     storedOdd.Odd1 = apuesta.Odd1;
@@ -43,7 +43,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                                     storedEvent.ApuestasDeportivas.Add(apuesta);
                                 }
                             }
-
+                            
                             storedEvent = evento;
                             //storedEvent.Deporte = dbcontext.Deportes.Where(p => p.Codigo.Equals("1")).First();
                         }
@@ -55,6 +55,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                             }
 
                             //evento.Deporte = dbcontext.Deportes.Where(p => p.Codigo.Equals("1")).First();
+                            evento.Activo = true;
                             dbcontext.EventosDeportivos.Add(evento);
                         }
                     }
@@ -103,6 +104,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                 }
             }
             return returnValue;
+        }
+
+        public List<BE.ApuestasDeportiva> GetEventOdd(string matchID)
+        {
+            using (var db = new BE.ADOLAPPDBEntities())
+            {
+                return db.ApuestasDeportivas.Where(p => p.EventosDeportivo.Codigo.Equals(matchID)).ToList();
+            }
         }
 
         private Exception AddInnerException(Exception ex, StringBuilder sb)

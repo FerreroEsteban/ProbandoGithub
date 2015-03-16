@@ -38,16 +38,32 @@ namespace ADOL.APP.BusinessLayer.Test
             var rndm = new Random();
             //var amount = float.Parse(((float)rndm.Next(10, 20) / (float)3).ToString("#.##"));
             float amount = 0.25f;
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
-            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,10)].ID, amount));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,8)].ID, amount, "tw_home"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,8)].ID, amount,"tw_draw"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1,8)].ID, amount,"tw_away"));
+            amount = 0.5f;
+            usr = Guid.NewGuid();
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_home"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_draw"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_away"));
+            amount = 0.75f;
+            usr = Guid.NewGuid();
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_home"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_draw"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_away"));
+            amount = 1.75f;
+            usr = Guid.NewGuid();
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_home"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_draw"));
+            Assert.IsTrue(bmng.AddUserBet(usr.ToString(), emgr.GetSportEvent("1")[rndm.Next(1, 8)].ID, amount, "tw_away"));
+
         }
 
         [TestMethod]
         public void CheckUserBets()
         {
             BetManager mng = new BetManager();
-            List<BE.ApuestasDeUsuario> bets = mng.GetUserBets("26f6b972-a262-4ecf-b0de-6f4fa81a57d7");
+            List<BE.ApuestasDeUsuario> bets = mng.GetUserBets("d09ff82d-4afa-44ae-b8b0-8ba94bc6eaca");
             Assert.IsTrue(bets.Count > 0);
         }
     }   

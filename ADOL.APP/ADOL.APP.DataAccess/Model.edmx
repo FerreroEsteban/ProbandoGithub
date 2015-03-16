@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ADOLAPPDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ADOLAPPDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityContainer Name="ADOLAPPDBModelStoreContainer">
           <EntitySet Name="ApuestasDeportivas" EntityType="ADOLAPPDBModel.Store.ApuestasDeportivas" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLAPPDBModel.Store.ApuestasDeUsuarios" store:Type="Tables" Schema="dbo" />
@@ -47,6 +47,8 @@
           <Property Name="Amount" Type="float" Nullable="false" />
           <Property Name="ApuestaDeportivaID" Type="int" Nullable="false" />
           <Property Name="Acierto" Type="bit" />
+          <Property Name="BetType" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="BetPrice" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Deportes">
           <Key>
@@ -111,8 +113,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ADOLAPPDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -161,6 +162,8 @@
           <Property Name="ApuestaDeportivaID" Type="Int32" Nullable="false" />
           <Property Name="Acierto" Type="Boolean" />
           <NavigationProperty Name="ApuestasDeportiva" Relationship="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuarios" ToRole="ApuestasDeportivas" />
+          <Property Type="String" Name="BetType" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Double" Name="BetPrice" Nullable="false" />
         </EntityType>
         <EntityType Name="Deporte">
           <Key>
@@ -253,6 +256,8 @@
           <EntitySetMapping Name="ApuestasDeUsuarios">
             <EntityTypeMapping TypeName="ADOLAPPDBModel.ApuestasDeUsuario">
               <MappingFragment StoreEntitySet="ApuestasDeUsuarios">
+                <ScalarProperty Name="BetPrice" ColumnName="BetPrice" />
+                <ScalarProperty Name="BetType" ColumnName="BetType" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="Amount" ColumnName="Amount" />

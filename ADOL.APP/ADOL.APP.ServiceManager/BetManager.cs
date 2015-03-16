@@ -12,7 +12,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class BetManager
     {
-        public bool AddUserBet(string userToken, int sportBetID, float amount)
+        public bool AddUserBet(string userToken, int sportBetID, float amount, string betType)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     UserBetAccess uba = new UserBetAccess();
 
-                    uba.AddUserBet(userToken, sportBetID, amount);
+                    uba.AddUserBet(userToken, sportBetID, amount, betType);
                 }
                 return true;
             }
