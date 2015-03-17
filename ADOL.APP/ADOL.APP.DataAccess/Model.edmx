@@ -4,21 +4,21 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ADOLDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityContainer Name="ADOLDBModelStoreContainer">
-          <EntitySet Name="ApuestasDeportivas" EntityType="ADOLDBModel.Store.ApuestasDeportivas" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLDBModel.Store.ApuestasDeUsuarios" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Deportes" EntityType="ADOLDBModel.Store.Deportes" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EventosDeportivos" EntityType="ADOLDBModel.Store.EventosDeportivos" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="ApuestasDeportivas_FK1" Association="ADOLDBModel.Store.ApuestasDeportivas_FK1">
+    <Schema Namespace="ADOLAPPDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="ADOLAPPDBModelStoreContainer">
+          <EntitySet Name="ApuestasDeportivas" EntityType="ADOLAPPDBModel.Store.ApuestasDeportivas" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLAPPDBModel.Store.ApuestasDeUsuarios" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Deportes" EntityType="ADOLAPPDBModel.Store.Deportes" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="EventosDeportivos" EntityType="ADOLAPPDBModel.Store.EventosDeportivos" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="ApuestasDeportivas_FK1" Association="ADOLAPPDBModel.Store.ApuestasDeportivas_FK1">
             <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
             <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
           </AssociationSet>
-          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="ADOLDBModel.Store.ApuestasDeUsuarios_FK1">
+          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="ADOLAPPDBModel.Store.ApuestasDeUsuarios_FK1">
             <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
             <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
           </AssociationSet>
-          <AssociationSet Name="EventosDeportivos_FK1" Association="ADOLDBModel.Store.EventosDeportivos_FK1">
+          <AssociationSet Name="EventosDeportivos_FK1" Association="ADOLAPPDBModel.Store.EventosDeportivos_FK1">
             <End Role="Deportes" EntitySet="Deportes" />
             <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
           </AssociationSet>
@@ -47,6 +47,8 @@
           <Property Name="Amount" Type="float" Nullable="false" />
           <Property Name="ApuestaDeportivaID" Type="int" Nullable="false" />
           <Property Name="Acierto" Type="bit" />
+          <Property Name="BetType" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="BetPrice" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Deportes">
           <Key>
@@ -54,6 +56,8 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+          <Property Name="Liga" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Pais" Type="varchar" Nullable="false" MaxLength="10" />
           <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="Activo" Type="bit" Nullable="false" />
         </EntityType>
@@ -67,13 +71,15 @@
           <Property Name="Activo" Type="bit" Nullable="false" />
           <Property Name="Inicio" Type="datetime" Nullable="false" />
           <Property Name="Fin" Type="datetime" Nullable="false" />
+          <Property Name="Local" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Visitante" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="DeporteID" Type="int" Nullable="false" />
           <Property Name="CodigoLiga" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="CodigoPais" Type="varchar" Nullable="false" MaxLength="50" />
         </EntityType>
         <Association Name="ApuestasDeportivas_FK1">
-          <End Role="EventosDeportivos" Type="ADOLDBModel.Store.EventosDeportivos" Multiplicity="1" />
-          <End Role="ApuestasDeportivas" Type="ADOLDBModel.Store.ApuestasDeportivas" Multiplicity="*" />
+          <End Role="EventosDeportivos" Type="ADOLAPPDBModel.Store.EventosDeportivos" Multiplicity="1" />
+          <End Role="ApuestasDeportivas" Type="ADOLAPPDBModel.Store.ApuestasDeportivas" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EventosDeportivos">
               <PropertyRef Name="ID" />
@@ -84,8 +90,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="ApuestasDeUsuarios_FK1">
-          <End Role="ApuestasDeportivas" Type="ADOLDBModel.Store.ApuestasDeportivas" Multiplicity="1" />
-          <End Role="ApuestasDeUsuarios" Type="ADOLDBModel.Store.ApuestasDeUsuarios" Multiplicity="*" />
+          <End Role="ApuestasDeportivas" Type="ADOLAPPDBModel.Store.ApuestasDeportivas" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="ADOLAPPDBModel.Store.ApuestasDeUsuarios" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApuestasDeportivas">
               <PropertyRef Name="ID" />
@@ -96,8 +102,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="EventosDeportivos_FK1">
-          <End Role="Deportes" Type="ADOLDBModel.Store.Deportes" Multiplicity="1" />
-          <End Role="EventosDeportivos" Type="ADOLDBModel.Store.EventosDeportivos" Multiplicity="*" />
+          <End Role="Deportes" Type="ADOLAPPDBModel.Store.Deportes" Multiplicity="1" />
+          <End Role="EventosDeportivos" Type="ADOLAPPDBModel.Store.EventosDeportivos" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Deportes">
               <PropertyRef Name="ID" />
@@ -110,170 +116,182 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="ADOLDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="ADOLDBEntities" p1:LazyLoadingEnabled="true">
-          <EntitySet Name="ApuestasDeportivas" EntityType="ADOLDBModel.ApuestasDeportiva" />
-          <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLDBModel.ApuestasDeUsuario" />
-          <EntitySet Name="Deportes" EntityType="ADOLDBModel.Deporte" />
-          <EntitySet Name="EventosDeportivos" EntityType="ADOLDBModel.EventosDeportivo" />
-          <AssociationSet Name="ApuestasDeportivas_FK1" Association="ADOLDBModel.ApuestasDeportivas_FK1">
-            <End Role="EventosDeportivo" EntitySet="EventosDeportivos" />
-            <End Role="ApuestasDeportiva" EntitySet="ApuestasDeportivas" />
+      <Schema Namespace="ADOLAPPDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ADOLAPPDBEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="ApuestasDeportivas" EntityType="ADOLAPPDBModel.ApuestasDeportiva" />
+          <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLAPPDBModel.ApuestasDeUsuario" />
+          <EntitySet Name="Deportes" EntityType="ADOLAPPDBModel.Deporte" />
+          <EntitySet Name="EventosDeportivos" EntityType="ADOLAPPDBModel.EventosDeportivo" />
+          <AssociationSet Name="ApuestasDeportivas_FK1" Association="ADOLAPPDBModel.ApuestasDeportivas_FK1">
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
           </AssociationSet>
-          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="ADOLDBModel.ApuestasDeUsuarios_FK1">
-            <End Role="ApuestasDeportiva" EntitySet="ApuestasDeportivas" />
-            <End Role="ApuestasDeUsuario" EntitySet="ApuestasDeUsuarios" />
+          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="ADOLAPPDBModel.ApuestasDeUsuarios_FK1">
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
+            <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
           </AssociationSet>
-          <AssociationSet Name="EventosDeportivos_FK1" Association="ADOLDBModel.EventosDeportivos_FK1">
-            <End Role="Deporte" EntitySet="Deportes" />
-            <End Role="EventosDeportivo" EntitySet="EventosDeportivos" />
+          <AssociationSet Name="EventosDeportivos_FK1" Association="ADOLAPPDBModel.EventosDeportivos_FK1">
+            <End Role="Deportes" EntitySet="Deportes" />
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="ApuestasDeportiva">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Codigo" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Nombre" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Type="Boolean" Name="Activo" Nullable="false" />
-          <Property Type="Double" Name="Odd1" Nullable="false" />
-          <Property Type="Double" Name="Odd2" />
-          <Property Type="Double" Name="Odd3" />
-          <Property Type="Double" Name="Odd4" />
-          <Property Type="DateTime" Name="Acualizado" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="EventoDeportivoID" Nullable="false" />
-          <NavigationProperty Name="EventosDeportivo" Relationship="ADOLDBModel.ApuestasDeportivas_FK1" FromRole="ApuestasDeportiva" ToRole="EventosDeportivo" />
-          <NavigationProperty Name="ApuestasDeUsuarios" Relationship="ADOLDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeportiva" ToRole="ApuestasDeUsuario" />
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="true" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="Odd1" Type="Double" Nullable="false" />
+          <Property Name="Odd2" Type="Double" />
+          <Property Name="Odd3" Type="Double" />
+          <Property Name="Odd4" Type="Double" />
+          <Property Name="Acualizado" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EventoDeportivoID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EventosDeportivo" Relationship="ADOLAPPDBModel.ApuestasDeportivas_FK1" FromRole="ApuestasDeportivas" ToRole="EventosDeportivos" />
+          <NavigationProperty Name="ApuestasDeUsuarios" Relationship="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeportivas" ToRole="ApuestasDeUsuarios" />
         </EntityType>
         <EntityType Name="ApuestasDeUsuario">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Token" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
-          <Property Type="Double" Name="Amount" Nullable="false" />
-          <Property Type="Int32" Name="ApuestaDeportivaID" Nullable="false" />
-          <Property Type="Boolean" Name="Acierto" />
-          <NavigationProperty Name="ApuestasDeportiva" Relationship="ADOLDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuario" ToRole="ApuestasDeportiva" />
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="36" Unicode="false" FixedLength="false" />
+          <Property Name="Amount" Type="Double" Nullable="false" />
+          <Property Name="ApuestaDeportivaID" Type="Int32" Nullable="false" />
+          <Property Name="Acierto" Type="Boolean" />
+          <NavigationProperty Name="ApuestasDeportiva" Relationship="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuarios" ToRole="ApuestasDeportivas" />
+          <Property Type="String" Name="BetType" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Double" Name="BetPrice" Nullable="false" />
         </EntityType>
         <EntityType Name="Deporte">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Nombre" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Codigo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="Boolean" Name="Activo" Nullable="false" />
-          <NavigationProperty Name="EventosDeportivos" Relationship="ADOLDBModel.EventosDeportivos_FK1" FromRole="Deporte" ToRole="EventosDeportivo" />
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="Liga" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="Pais" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EventosDeportivos" Relationship="ADOLAPPDBModel.EventosDeportivos_FK1" FromRole="Deportes" ToRole="EventosDeportivos" />
         </EntityType>
         <EntityType Name="EventosDeportivo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Nombre" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Codigo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="Boolean" Name="Activo" Nullable="false" />
-          <Property Type="DateTime" Name="Inicio" Nullable="false" Precision="3" />
-          <Property Type="DateTime" Name="Fin" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="DeporteID" Nullable="false" />
-          <NavigationProperty Name="ApuestasDeportivas" Relationship="ADOLDBModel.ApuestasDeportivas_FK1" FromRole="EventosDeportivo" ToRole="ApuestasDeportiva" />
-          <NavigationProperty Name="Deporte" Relationship="ADOLDBModel.EventosDeportivos_FK1" FromRole="EventosDeportivo" ToRole="Deporte" />
-          <Property Type="String" Name="CodigoLiga" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="CodigoPais" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="Inicio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Fin" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Local" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Visitante" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="DeporteID" Type="Int32" Nullable="false" />
+          <Property Name="CodigoLiga" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="CodigoPais" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="ApuestasDeportivas" Relationship="ADOLAPPDBModel.ApuestasDeportivas_FK1" FromRole="EventosDeportivos" ToRole="ApuestasDeportivas" />
+          <NavigationProperty Name="Deporte" Relationship="ADOLAPPDBModel.EventosDeportivos_FK1" FromRole="EventosDeportivos" ToRole="Deportes" />
         </EntityType>
         <Association Name="ApuestasDeportivas_FK1">
-          <End Type="ADOLDBModel.EventosDeportivo" Role="EventosDeportivo" Multiplicity="1" />
-          <End Type="ADOLDBModel.ApuestasDeportiva" Role="ApuestasDeportiva" Multiplicity="*" />
+          <End Role="EventosDeportivos" Type="ADOLAPPDBModel.EventosDeportivo" Multiplicity="1" />
+          <End Role="ApuestasDeportivas" Type="ADOLAPPDBModel.ApuestasDeportiva" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="EventosDeportivo">
+            <Principal Role="EventosDeportivos">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ApuestasDeportiva">
+            <Dependent Role="ApuestasDeportivas">
               <PropertyRef Name="EventoDeportivoID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="ApuestasDeUsuarios_FK1">
-          <End Type="ADOLDBModel.ApuestasDeportiva" Role="ApuestasDeportiva" Multiplicity="1" />
-          <End Type="ADOLDBModel.ApuestasDeUsuario" Role="ApuestasDeUsuario" Multiplicity="*" />
+          <End Role="ApuestasDeportivas" Type="ADOLAPPDBModel.ApuestasDeportiva" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="ADOLAPPDBModel.ApuestasDeUsuario" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ApuestasDeportiva">
+            <Principal Role="ApuestasDeportivas">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ApuestasDeUsuario">
+            <Dependent Role="ApuestasDeUsuarios">
               <PropertyRef Name="ApuestaDeportivaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="EventosDeportivos_FK1">
-          <End Type="ADOLDBModel.Deporte" Role="Deporte" Multiplicity="1" />
-          <End Type="ADOLDBModel.EventosDeportivo" Role="EventosDeportivo" Multiplicity="*" />
+          <End Role="Deportes" Type="ADOLAPPDBModel.Deporte" Multiplicity="1" />
+          <End Role="EventosDeportivos" Type="ADOLAPPDBModel.EventosDeportivo" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Deporte">
+            <Principal Role="Deportes">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EventosDeportivo">
+            <Dependent Role="EventosDeportivos">
               <PropertyRef Name="DeporteID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        </Schema>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ADOLDBModelStoreContainer" CdmEntityContainer="ADOLDBEntities">
+        <EntityContainerMapping StorageEntityContainer="ADOLAPPDBModelStoreContainer" CdmEntityContainer="ADOLAPPDBEntities">
           <EntitySetMapping Name="ApuestasDeportivas">
-            <EntityTypeMapping TypeName="ADOLDBModel.ApuestasDeportiva">
+            <EntityTypeMapping TypeName="ADOLAPPDBModel.ApuestasDeportiva">
               <MappingFragment StoreEntitySet="ApuestasDeportivas">
-                <ScalarProperty Name="EventoDeportivoID" ColumnName="EventoDeportivoID" />
-                <ScalarProperty Name="Acualizado" ColumnName="Acualizado" />
-                <ScalarProperty Name="Odd4" ColumnName="Odd4" />
-                <ScalarProperty Name="Odd3" ColumnName="Odd3" />
-                <ScalarProperty Name="Odd2" ColumnName="Odd2" />
-                <ScalarProperty Name="Odd1" ColumnName="Odd1" />
-                <ScalarProperty Name="Activo" ColumnName="Activo" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
-                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Odd1" ColumnName="Odd1" />
+                <ScalarProperty Name="Odd2" ColumnName="Odd2" />
+                <ScalarProperty Name="Odd3" ColumnName="Odd3" />
+                <ScalarProperty Name="Odd4" ColumnName="Odd4" />
+                <ScalarProperty Name="Acualizado" ColumnName="Acualizado" />
+                <ScalarProperty Name="EventoDeportivoID" ColumnName="EventoDeportivoID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ApuestasDeUsuarios">
-            <EntityTypeMapping TypeName="ADOLDBModel.ApuestasDeUsuario">
+            <EntityTypeMapping TypeName="ADOLAPPDBModel.ApuestasDeUsuario">
               <MappingFragment StoreEntitySet="ApuestasDeUsuarios">
-                <ScalarProperty Name="Acierto" ColumnName="Acierto" />
-                <ScalarProperty Name="ApuestaDeportivaID" ColumnName="ApuestaDeportivaID" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="BetPrice" ColumnName="BetPrice" />
+                <ScalarProperty Name="BetType" ColumnName="BetType" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ApuestaDeportivaID" ColumnName="ApuestaDeportivaID" />
+                <ScalarProperty Name="Acierto" ColumnName="Acierto" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Deportes">
-            <EntityTypeMapping TypeName="ADOLDBModel.Deporte">
+            <EntityTypeMapping TypeName="ADOLAPPDBModel.Deporte">
               <MappingFragment StoreEntitySet="Deportes">
-                <ScalarProperty Name="Activo" ColumnName="Activo" />
-                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Liga" ColumnName="Liga" />
+                <ScalarProperty Name="Pais" ColumnName="Pais" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EventosDeportivos">
-            <EntityTypeMapping TypeName="ADOLDBModel.EventosDeportivo">
+            <EntityTypeMapping TypeName="ADOLAPPDBModel.EventosDeportivo">
               <MappingFragment StoreEntitySet="EventosDeportivos">
-                <ScalarProperty Name="CodigoPais" ColumnName="CodigoPais" />
-                <ScalarProperty Name="CodigoLiga" ColumnName="CodigoLiga" />
-                <ScalarProperty Name="DeporteID" ColumnName="DeporteID" />
-                <ScalarProperty Name="Fin" ColumnName="Fin" />
-                <ScalarProperty Name="Inicio" ColumnName="Inicio" />
-                <ScalarProperty Name="Activo" ColumnName="Activo" />
-                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Inicio" ColumnName="Inicio" />
+                <ScalarProperty Name="Fin" ColumnName="Fin" />
+                <ScalarProperty Name="Local" ColumnName="Local" />
+                <ScalarProperty Name="Visitante" ColumnName="Visitante" />
+                <ScalarProperty Name="DeporteID" ColumnName="DeporteID" />
+                <ScalarProperty Name="CodigoLiga" ColumnName="CodigoLiga" />
+                <ScalarProperty Name="CodigoPais" ColumnName="CodigoPais" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

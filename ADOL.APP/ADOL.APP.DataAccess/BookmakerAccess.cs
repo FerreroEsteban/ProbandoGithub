@@ -9,19 +9,20 @@ using System.Net;
 using System.Xml;
 using System.Dynamic;
 using ADOL.APP.CurrentAccountService.DataAccess;
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Data.Entity.Validation;
 
 namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
     public class BookmakerAccess
     {
-        public List<EventosDeportivo> PullEvents(string[] deporteID)
+        public List<BE.EventosDeportivo> PullEvents(List<BE.Deporte> activeSports)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             String Xml;
             XmlDocument doc = null;
-            List<EventosDeportivo> sports = new List<EventosDeportivo>();
+            List<BE.EventosDeportivo> sports = new List<BE.EventosDeportivo>();
 
             string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&cnid={0}&mgid={1}&psid={2}";
             //string[] allowedSports = new string[] { "1" };
@@ -31,7 +32,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             string requestUri = string.Format(uriTemplate,
                                                 string.Join(",", allowedGroups),
                                                 string.Join(",", allowedLeags),
-                                                string.Join(",", deporteID));
+                                                string.Join(",", activeSports.Select(p => p.Codigo).Distinct().ToArray()));
 
             // Create the web request  
             request = WebRequest.Create(requestUri) as HttpWebRequest;
@@ -59,7 +60,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             {
                 XmlNodeList offer = match.SelectNodes("bookmaker/offer");
 
-                EventosDeportivo sportEvent = new EventosDeportivo();
+                BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
                 sportEvent.Codigo = match.Attributes["id"].Value;
                 sportEvent.CodigoLiga = match.SelectSingleNode("group").Attributes["mgid"].Value;
                 sportEvent.CodigoPais = match.SelectSingleNode("group").Attributes["cnid"].Value;
@@ -69,8 +70,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                                                   match.SelectSingleNode("ateam").InnerText);
                 sportEvent.Inicio = DateTime.Parse(match.SelectSingleNode("time").InnerText);
                 sportEvent.Fin = sportEvent.Inicio.AddMinutes((double)90);
+                sportEvent.Local = match.SelectSingleNode("hteam").InnerText;
+                sportEvent.Visitante = match.SelectSingleNode("ateam").InnerText;
+                sportEvent.DeporteID = activeSports.Where(p => p.Codigo.Equals(match.SelectSingleNode("group").Attributes["spid"].Value)).First().ID;
 
-                ApuestasDeportiva userBet = new ApuestasDeportiva();
+                BE.ApuestasDeportiva userBet = new BE.ApuestasDeportiva();
                 userBet.Acualizado = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);
                 userBet.Nombre = offer[offer.Count - 1].Attributes["otname"].Value;
 

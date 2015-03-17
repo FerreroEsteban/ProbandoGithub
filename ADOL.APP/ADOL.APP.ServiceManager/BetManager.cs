@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
+using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class BetManager
     {
-        public bool AddUserBet(string userToken, int sportBetID, float amount)
+        public bool AddUserBet(string userToken, int sportBetID, float amount, string betType)
         {
             try
             {
@@ -19,7 +20,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     UserBetAccess uba = new UserBetAccess();
 
-                    uba.AddUserBet(userToken, sportBetID, amount);
+                    uba.AddUserBet(userToken, sportBetID, amount, betType);
                 }
                 return true;
             }
@@ -29,7 +30,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
         }
 
-        public List<ApuestasDeUsuario> GetUserBets(string userToken)
+        public List<BE.ApuestasDeUsuario> GetUserBets(string userToken)
         {
             UserBetAccess uba = new UserBetAccess();
             return uba.GetUserBets(userToken);
