@@ -7,6 +7,9 @@ using System.Web.Http;
 using ADOL.APP.CurrentAccountService.ServiceManager;
 using ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Dynamic;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+using Newtonsoft.Json;
 
 namespace ADOL.APP.WebApi.Controllers
 {
@@ -28,6 +31,13 @@ namespace ADOL.APP.WebApi.Controllers
                 view.Add(viewBet);
             }
             return view;
+        }
+
+        [WebInvoke(Method = "POST", UriTemplate = "AddUserBet")]
+        public bool AddUserBet(dynamic betData)
+        {
+            BetManager mgr = new BetManager();
+            return mgr.AddUserBet((string)betData.token.Value, (int)betData.ID.Value, (float)betData.Amount.Value, (string)betData.BetType.Value);
         }
     }
 }
