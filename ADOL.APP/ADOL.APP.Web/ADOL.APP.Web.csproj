@@ -291,6 +291,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Home\SportsTree.cshtml" />
+    <Content Include="Views\Home\MatchBet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -302,6 +303,10 @@
     <ProjectReference Include="..\ADOL.APP.BusinessEntities\ADOL.APP.BusinessEntities.csproj">
       <Project>{46093298-4a4d-4f14-9962-aa399301ff22}</Project>
       <Name>ADOL.APP.BusinessEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ADOL.APP.DataAccess\ADOL.APP.DataAccess.csproj">
+      <Project>{fa42f6fc-4434-45c9-b078-3b58ea2f72b3}</Project>
+      <Name>ADOL.APP.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\ADOL.APP.Helpers\ADOL.APP.Helpers.csproj">
       <Project>{30579086-475e-4019-8846-9be95787b0ac}</Project>
