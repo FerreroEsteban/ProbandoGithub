@@ -20,10 +20,10 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         {
         }
     
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    throw new UnintentionalCodeFirstException();
+        //}
     
         public DbSet<ApuestasDeportiva> ApuestasDeportivas { get; set; }
         public DbSet<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }

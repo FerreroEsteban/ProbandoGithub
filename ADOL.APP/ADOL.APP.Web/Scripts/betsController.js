@@ -1,18 +1,26 @@
 ﻿var app = angular.module('betsApp', []);
 
 
-app.controller('matchsController', function ($scope) {
+app.controller('matchsController', function ($scope, $http) {
 
-    $scope.matchs = [
-       { betPerformed: false, date: "25 feb", time: "18:00hs", options: [{ team: "Independiente", value: 1.30, selected: "" }, { team: "Empate", value: 2.00, selected: "" }, { team: "Racing", value: 4.30, selected: "" }] },
-       { betPerformed: false, date: "25 feb", time: "19:00hs", options: [{ team: "River", value: 1.20, selected: "" }, { team: "Empate", value: 3.00, selected: "" }, { team: "Boca", value: 3.30, selected: "" }] },
-{ betPerformed: false, date: "25 feb", time: "20:00hs", options: [{ team: "Velez", value: 1.40, selected: "" }, { team: "Empate", value: 1.00, selected: "" }, { team: "San Lorenzo", value: 2.30, selected: "" }] }];
+    $scope.matchs = null;
 
     $scope.lastBetId = 1;
     $scope.bets = [];
     $scope.showBets = "simple";
     $scope.composedBetAmmount = 0;
-       
+    $scope.SelectedSportID;
+    $scope.SelectedSportName;
+
+    $scope.getItems = function () {
+        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/1', headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+            .success(function (data, status) {
+                $scope.matchs = data;
+            })
+            .error(function (data, status) {
+            });
+    };
+
     $scope.selectMatchOption = function (matchIndex, optionIndex) {
         if ($scope.matchs[matchIndex].options[optionIndex].selected != "selected") {
             RemoveOtherSelectedOptions(matchIndex);
@@ -172,6 +180,11 @@ app.controller('matchsController', function ($scope) {
             });
             return ($scope.composedBetAmmount * quota).toFixed(2);
         }
+    }
+
+    $scope.SelectSport = function (sportId, spName) {
+        $scope.SelectedSportID = sportId;
+        $scope.SelectedSportName = spName;
     }
 
 });

@@ -95,6 +95,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             using (var db = new BE.ADOLAPPDBEntities())
             {
                 BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
+                var deportes = db.Deportes.ToList();
                 var eventos = db.Deportes.Where(p => p.Codigo.Equals(sportCode)).First().EventosDeportivos.ToList();
                 foreach (var evento in eventos)
                 {
