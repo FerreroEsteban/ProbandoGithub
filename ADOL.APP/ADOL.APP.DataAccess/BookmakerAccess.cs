@@ -26,12 +26,12 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 
             string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&cnid={0}&mgid={1}&psid={2}";
             //string[] allowedSports = new string[] { "1" };
-            string[] allowedGroups = new string[] { "465", "467" };
-            string[] allowedLeags = new string[] { "1002", "1111" };
+            //string[] allowedGroups = new string[] { "465", "467" };
+            //string[] allowedLeags = new string[] { "1002", "1111" };
 
             string requestUri = string.Format(uriTemplate,
-                                                string.Join(",", allowedGroups),
-                                                string.Join(",", allowedLeags),
+                                                string.Join(",", activeSports.Select(p => p.Pais).Distinct().ToArray()),// allowedGroups),
+                                                string.Join(",", activeSports.Select(p => p.Liga).Distinct().ToArray()),//allowedLeags),
                                                 string.Join(",", activeSports.Select(p => p.Codigo).Distinct().ToArray()));
 
             // Create the web request  
@@ -72,7 +72,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 sportEvent.Fin = sportEvent.Inicio.AddMinutes((double)90);
                 sportEvent.Local = match.SelectSingleNode("hteam").InnerText;
                 sportEvent.Visitante = match.SelectSingleNode("ateam").InnerText;
-                sportEvent.DeporteID = activeSports.Where(p => p.Codigo.Equals(match.SelectSingleNode("group").Attributes["spid"].Value)).First().ID;
+                sportEvent.DeporteID = activeSports.Where(p => p.Liga.Equals(match.SelectSingleNode("group").Attributes["mgid"].Value)).First().ID;
 
                 BE.ApuestasDeportiva userBet = new BE.ApuestasDeportiva();
                 userBet.Acualizado = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);

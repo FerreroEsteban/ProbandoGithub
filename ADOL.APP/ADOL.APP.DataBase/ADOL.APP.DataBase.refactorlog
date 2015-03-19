@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="ad70c3d3-f6fe-4ec4-8c5a-ab68a8b931fc" ChangeDateTime="03/11/2015 14:49:03">
+    <Property Name="ElementName" Value="[dbo].[ApuestasDeportivas].[ValorProveedor1]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ApuestasDeportivas]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Odd1" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="84a23dbd-cfc2-4f48-a383-1bd617852680" ChangeDateTime="03/11/2015 14:49:15">
+    <Property Name="ElementName" Value="[dbo].[ApuestasDeportivas].[ValorProveedor2]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ApuestasDeportivas]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Odd2" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f7a16338-60da-4748-874a-011b58c8fed5" ChangeDateTime="03/11/2015 14:49:24">
+    <Property Name="ElementName" Value="[dbo].[ApuestasDeportivas].[ValorProveedor3]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ApuestasDeportivas]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Odd3" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bcb29bd1-ee20-48ad-8a16-685b19e0f541" ChangeDateTime="03/11/2015 14:49:32">
+    <Property Name="ElementName" Value="[dbo].[ApuestasDeportivas].[ValorProveedor4]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ApuestasDeportivas]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Odd4" />
+  </Operation>
+</Operations>
