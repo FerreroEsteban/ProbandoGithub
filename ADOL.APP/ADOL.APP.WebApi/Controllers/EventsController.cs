@@ -12,10 +12,10 @@ namespace ADOL.APP.WebApi.Controllers
 {
     public class EventsController : ApiController
     {
-        public dynamic GetActiveEvents(string sportCode)
+        public dynamic GetActiveEvents(string id)
         {
             EventsManager mgr = new EventsManager();
-            var eventos = mgr.GetSportEvent(sportCode);
+            var eventos = mgr.GetSportEvent(id);
             dynamic view = new List<ExpandoObject>();
             foreach (var singleEvent in eventos)
             {
@@ -25,7 +25,8 @@ namespace ADOL.APP.WebApi.Controllers
                 thisEvent.Nombre = singleEvent.Nombre;
                 thisEvent.Local = singleEvent.Local;
                 thisEvent.Visitante = singleEvent.Visitante;
-                thisEvent.Starting = singleEvent.Inicio;
+                thisEvent.Date = singleEvent.Inicio.ToString("dd MMM");
+                thisEvent.Time = singleEvent.Inicio.ToString("hh:mm");
                 thisEvent.ApuestasDisponibles = GetEventOdds(singleEvent.ApuestasDeportivas);
                 view.Add(thisEvent);
             }

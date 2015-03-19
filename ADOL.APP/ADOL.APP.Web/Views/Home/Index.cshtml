@@ -3,39 +3,43 @@
     ViewBag.Title = "Página principal";
 }
 <script src="~/Scripts/betsController.js"></script>
-<div id="categories" class="col-a">
-    @Html.Partial("SportsTree")
-</div>
 <div ng-app="betsApp" ng-controller="matchsController">
-    <div id="events" class="col-b">
-        <div class="breadcrum">
-            <a href="#">Fútbol</a><a href="#">America</a><a href="#">Argentina</a><a href="#">Torneo Julio Humberto Grondona 2015</a>
-        </div>
-
-        <a class="banner" href="#">
-            <img width="482px" height="67px" src="Images/banner-2.jpg">
-        </a>
-        <!-- eventos -->
-        <div ng-repeat="match in matchs track by $index">
-            <!-- evento -->
-            <a href="~/Home/MatchBet/1"><div class="event">
-                <div class="heading" >
-                    <span class="event-date">{{ match.date }}</span>
-                    <span class="event-time">{{ match.time }}</span>
-                    <span class="event-title"><span class="team1">{{ match.options[0].team }}</span><span> - </span><span class="team2">{{ match.options[2].team }}</span></span>
-                    <span class="event-stats">
-                        <img src="images/stats-icon.png"></span>
-                    <span class="event-lines">+33</span>
-                </div>
-                <div class="select-bet tres">
-                    <div ng-class="match.options[0].selected" ng-click="selectMatchOption($index, 0)"><span>{{ match.options[0].team }}</span><span class="value">{{ match.options[0].value }}</span></div>
-                    <div ng-class="match.options[1].selected" ng-click="selectMatchOption($index, 1)"><span>{{ match.options[1].team }}</span><span class="value">{{ match.options[1].value }}</span></div>
-                    <div ng-class="match.options[2].selected" ng-click="selectMatchOption($index, 2)"><span>{{ match.options[2].team }}</span><span class="value">{{ match.options[2].value }}</span></div>
-                </div>
-            </div></a>
-        </div>
+    <div id="categories" class="col-a">
+        @Html.Partial("SportsTree")
     </div>
-    <div class="col-c">
-        @Html.Partial("Bets")
+    <div>
+        <div id="events" class="col-b">
+            <div class="breadcrum">
+                <a href="#">{{SelectedSportName}}</a><a href="#">America</a><a href="#">Argentina</a><a href="#">Torneo Julio Humberto Grondona 2015</a>
+            </div>
+
+            <a class="banner" href="#">
+                <img width="482px" height="67px" src="Images/banner-2.jpg">
+            </a>
+            <!-- eventos -->
+            <div ng-repeat="match in matchs track by $index">
+                <!-- evento -->
+                <a href="~/Home/MatchBet/1">
+                    <div class="event">
+                        <div class="heading">
+                            <span class="event-date">{{ match.Date }}</span>
+                            <span class="event-time">{{ match.Time }}</span>
+                            <span class="event-title"><span class="team1">{{ match.Nombre }}</span></span>
+                            <span class="event-stats">
+                                <img src="images/stats-icon.png"></span>
+                            <span class="event-lines">+33</span>
+                        </div>
+                        <div class="select-bet tres">
+                            <div ng-class="match.options[0].selected" ng-click="selectMatchOption($index, 0)"><span>{{ match.Local }}</span><span class="value">{{ match.ApuestasDisponibles[0].OddCollection[0].Price }}</span></div>
+                            <div ng-class="match.options[1].selected" ng-click="selectMatchOption($index, 1)"><span>Empate</span><span class="value">{{ match.ApuestasDisponibles[0].OddCollection[1].Price }}</span></div>
+                            <div ng-class="match.options[2].selected" ng-click="selectMatchOption($index, 2)"><span>{{ match.Visitante }}</span><span class="value">{{ match.ApuestasDisponibles[0].OddCollection[2].Price }}</span></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-c">
+            @Html.Partial("Bets")
+        </div>
     </div>
 </div>
