@@ -4,27 +4,31 @@
 app.controller('matchsController', function ($scope, $http) {
 
     $scope.matchs = null;
+    $scope.matchsBets = null;
 
     $scope.lastBetId = 1;
     $scope.bets = [];
+    $scope.showRegion = "matchs";
     $scope.showBets = "simple";
     $scope.composedBetAmmount = 0;
     $scope.SelectedSportID;
     $scope.SelectedSportName;
 
-    $scope.getItems = function () {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/1', headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+    $scope.getItems = function (leagueId) {
+        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/'+leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
             .success(function (data, status) {
+                $scope.showRegion = "matchs";
                 $scope.matchs = data;
             })
             .error(function (data, status) {
+                alert('error al obtener datos');
             });
     };
 
-    $scope.selectMatchOption = function (matchIndex, optionIndex) {
-        if ($scope.matchs[matchIndex].options[optionIndex].selected != "selected") {
+    $scope.selectMatchOption = function (matchIndex, optionIndex, kindOfBet, optionLabel) {
+        if ($scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected != "selected") {
             RemoveOtherSelectedOptions(matchIndex);
-            addBet(matchIndex, optionIndex);
+            addBet(matchIndex, optionIndex, kindOfBet, optionLabel);
             selectOption(matchIndex, optionIndex);
         }
         else {
@@ -60,16 +64,16 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     function RemoveOtherSelectedOptions(matchIndex) {
-        $.each($scope.matchs[matchIndex].options, function (index, option) {
-            if (option.selected = "selected") {
+        $.each($scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection, function (index, option) {
+            if (option.selected == "selected") {
                 unselectOption(matchIndex, index);
                 removeBet(matchIndex, index);
             }            
         });
     }
 
-    function addBet(matchIndex, optionIndex) {
-        var bet = { betId: $scope.lastBetId++, match: matchIndex, option: optionIndex, simple: true, composed: true, ammount: 1 };
+    function addBet(matchIndex, optionIndex, kindOfBet, optionLabel) {
+        var bet = { betId: $scope.lastBetId++, match: matchIndex, option: optionIndex, kind: kindOfBet, label: optionLabel, simple: true, composed: true, ammount: 0 };
         $scope.bets.push(bet);
     }
 
@@ -82,11 +86,11 @@ app.controller('matchsController', function ($scope, $http) {
 
 
     function selectOption(matchIndex, optionIndex) {
-        $scope.matchs[matchIndex].options[optionIndex].selected = "selected";
+        $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected = "selected";
     }
 
     function unselectOption(matchIndex, optionIndex) {
-        $scope.matchs[matchIndex].options[optionIndex].selected = "";
+        $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected = "";
     }
 
 
@@ -144,17 +148,17 @@ app.controller('matchsController', function ($scope, $http) {
             var winnings = 0, ammount = 0;
             $.each($scope.bets, function (index, bet) {
                 if (bet.simple) {
-                    winnings = winnings + $scope.matchs[bet.match].options[bet.option].value * bet.ammount;
+                    winnings = winnings + $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price * bet.ammount;
                     ammount += bet.ammount;
                 }
             });
-            return (winnings / ammount).toFixed(2);
+            return ammount != 0 ? (winnings / ammount).toFixed(2) : 0;
         }
         else if ($scope.showBets == "composed") {
             var quota = 1;
             $.each($scope.bets, function (index, bet) {
                 if (bet.composed) {
-                    quota = quota * $scope.matchs[bet.match].options[bet.option].value;
+                    quota = quota * $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price;
                 }
             });
             return quota.toFixed(2);
@@ -166,7 +170,7 @@ app.controller('matchsController', function ($scope, $http) {
             var winnings = 0;
             $.each($scope.bets, function (index, bet) {
                 if (bet.simple) {
-                    winnings = winnings + $scope.matchs[bet.match].options[bet.option].value * bet.ammount;
+                    winnings = winnings + $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price * bet.ammount;
                 }
             });
             return winnings.toFixed(2);
@@ -175,7 +179,7 @@ app.controller('matchsController', function ($scope, $http) {
             var quota = 1;
             $.each($scope.bets, function (index, bet) {
                 if (bet.composed) {
-                    quota = quota * $scope.matchs[bet.match].options[bet.option].value;
+                    quota = quota * $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price;
                 }
             });
             return ($scope.composedBetAmmount * quota).toFixed(2);
@@ -187,6 +191,17 @@ app.controller('matchsController', function ($scope, $http) {
         $scope.SelectedSportName = spName;
     }
 
+    $scope.ViewMathcBets = function (matchCode) {
+        alert(matchCode);
+        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+             .success(function (data, status) {
+                 $scope.showRegion = "odds";
+                 $scope.matchsBets = data;
+             })
+             .error(function (data, status) {
+                 $scope.showRegion = "matchs";
+             });
+    }
 });
 
 app.directive('numericsaving', function () {
