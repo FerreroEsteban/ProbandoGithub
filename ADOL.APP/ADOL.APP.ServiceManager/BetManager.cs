@@ -12,7 +12,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class BetManager
     {
-        public bool AddUserBet(string userToken, int sportBetID, float amount, string betType)
+        public bool AddUserBet(string userToken, int sportBetID, decimal amount, string betType)
         {
             try
             {

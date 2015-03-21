@@ -8,7 +8,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
     public static class UserWalletFacade
     {
-        public static bool ValidateFundsAvailable(string userToken, float amount)
+        public static bool ValidateFundsAvailable(string userToken, decimal amount)
         {
             return true;
         }

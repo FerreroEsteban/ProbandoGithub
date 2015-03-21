@@ -23,16 +23,16 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             return this.oddTypes[oddType];
         }
 
-        public float GetOddValue(string oddType, ApuestasDeportiva odd)
+        public decimal GetOddValue(string oddType, ApuestasDeportiva odd)
         {
             switch (oddType)
             { 
                 case "tw_home":
-                    return (float)odd.Odd1;
+                    return (decimal)odd.Odd1;
                 case "tw_draw":
-                    return (float)odd.Odd2;
+                    return (decimal)odd.Odd2;
                 case "tw_away":
-                    return (float)odd.Odd3;
+                    return (decimal)odd.Odd3;
                 default:
                     throw new ArgumentOutOfRangeException("oddType", string.Format("Requested odd type '{0}' is not allowed",oddType));
             }

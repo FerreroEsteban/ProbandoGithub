@@ -16,11 +16,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
     {
         public int ID { get; set; }
         public string Token { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
         public int ApuestaDeportivaID { get; set; }
         public Nullable<bool> Acierto { get; set; }
         public string BetType { get; set; }
-        public double BetPrice { get; set; }
+        public decimal BetPrice { get; set; }
     
         public virtual ApuestasDeportiva ApuestasDeportiva { get; set; }
     }

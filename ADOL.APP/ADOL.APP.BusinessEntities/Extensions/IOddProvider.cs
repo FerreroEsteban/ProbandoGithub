@@ -12,6 +12,6 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
 
         string GetOddName(string oddType);
 
-        float GetOddValue(string oddType, ApuestasDeportiva odd);
+        decimal GetOddValue(string oddType, ApuestasDeportiva odd);
     }
 }

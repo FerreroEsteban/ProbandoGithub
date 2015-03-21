@@ -23,10 +23,10 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
         public string Codigo { get; set; }
         public string Nombre { get; set; }
         public bool Activo { get; set; }
-        public double Odd1 { get; set; }
-        public Nullable<double> Odd2 { get; set; }
-        public Nullable<double> Odd3 { get; set; }
-        public Nullable<double> Odd4 { get; set; }
+        public decimal Odd1 { get; set; }
+        public Nullable<decimal> Odd2 { get; set; }
+        public Nullable<decimal> Odd3 { get; set; }
+        public Nullable<decimal> Odd4 { get; set; }
         public System.DateTime Acualizado { get; set; }
         public int EventoDeportivoID { get; set; }
     

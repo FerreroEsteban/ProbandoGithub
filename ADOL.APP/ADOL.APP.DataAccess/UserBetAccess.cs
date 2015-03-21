@@ -11,7 +11,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 {
     public class UserBetAccess
     {
-        public void AddUserBet(string userToken, int sportBetID, float amount, string betType)
+        public void AddUserBet(string userToken, int sportBetID, decimal amount, string betType)
         {
             using (var db = new BE.ADOLAPPDBEntities())
             {

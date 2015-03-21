@@ -21,7 +21,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             }
         }
 
-        public float GetOddPrice(string oddType)
+        public decimal GetOddPrice(string oddType)
         {
             return this.OddProvider.GetOddValue(oddType, this);
         }
