@@ -106,6 +106,24 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             return returnValue;
         }
 
+        public List<BE.EventosDeportivo> GetEvents(string leagueId)
+        {
+            List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();
+            using (var db = new BE.ADOLAPPDBEntities())
+            {
+                BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
+                var deportes = db.Deportes.ToList();
+                var eventos = db.Deportes.Where(p => p.Liga.Equals(leagueId)).First().EventosDeportivos.ToList();
+                foreach (var evento in eventos)
+                {
+                    sportEvent = evento;
+                    sportEvent.ApuestasDeportivas = evento.ApuestasDeportivas;
+                    returnValue.Add(sportEvent);
+                }
+            }
+            return returnValue;
+        }
+
         public List<BE.ApuestasDeportiva> GetEventOdd(string matchID)
         {
             using (var db = new BE.ADOLAPPDBEntities())

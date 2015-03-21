@@ -1,11 +1,6 @@
 ﻿@{
     ViewBag.Title = "Acerca de";
 }
-<style>
-    .hidden {
-        display: none;
-    }
-</style>
 <div id="talon" >
     <h5>Tus apuestas</h5>
     <div class="{{bets.length == 0 ? 'hidden' :'' }}">
@@ -21,9 +16,9 @@
             <div id="simple" class="tab-content simple show"  >
                 <ul class="apuesta" ng-repeat="bet in bets | filter:filterSimpleBets | orderBy: 'match'">
                     <li ng-click="removeSimpleBet(bet.betId)" class="delete-btn">X</li>
-                    <li class="title">{{ matchs[bet.match].options[0].team }} vs {{ matchs[bet.match].options[2].team }}</li>
-                    <li class="desc">Apuesta: Ganador del partido</li>
-                    <li class="yourbet">{{ matchs[bet.match].options[bet.option].team }}<span class="value">{{ matchs[bet.match].options[bet.option].value }}</span></li>
+                    <li class="title">{{  matchs[bet.match].Nombre }}</li>
+                    <li class="desc">Apuesta: {{ bet.kind }}</li>
+                    <li class="yourbet">{{ bet.label }}<span class="value">{{ matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price }}</span></li>
                     <li class="cantidad">Importe <span class="number"><input id="simpleBetImport{{bet.betId}}" min="0" ng-model="bet.ammount" placeholder="$" numericsaving>ars</span></li>
                 </ul>
             </div>           
@@ -31,9 +26,9 @@
             <div id="combinada" class="tab-content combinada">
                 <ul class="apuesta"  ng-repeat="bet in bets | filter:filterComposedBets">
                     <span class="delete-btn" ng-click="removeComposedBet(bet.betId)">X</span>
-                    <li class="title">{{ matchs[bet.match].options[0].team }} vs {{ matchs[bet.match].options[2].team }}</li>
-                    <li class="desc">Apuesta: Ganador del partido</li>
-                    <li class="yourbet">{{ matchs[bet.match].options[bet.option].team }}<span class="value">{{ matchs[bet.match].options[bet.option].value }}</span></li>
+                    <li class="title">{{ matchs[bet.match].Nombre }}</li>
+                    <li class="desc">Apuesta:{{ bet.kind }}</li>
+                    <li class="yourbet">{{ bet.label }}<span class="value">{{ matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price }}</span></li>
                 </ul>
                 <ul class="apuesta importe">
                     <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmmount" placeholder="$" numericsaving>ars</span></li>

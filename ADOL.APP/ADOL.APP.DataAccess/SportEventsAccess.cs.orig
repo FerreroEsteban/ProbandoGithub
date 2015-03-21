@@ -94,14 +94,34 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();
             using (var db = new BE.ADOLAPPDBEntities())
             {
-<<<<<<< HEAD
                 BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
                 var eventos = db.Deportes.Where(p => p.Liga.Equals(sportCode)).First().EventosDeportivos.ToList();
+                foreach (var evento in eventos)
+                {
+                    sportEvent = evento;
+                    sportEvent.ApuestasDeportivas = evento.ApuestasDeportivas;
+                    returnValue.Add(sportEvent);
+                }
+            }
+            return returnValue;
+<<<<<<< HEAD
+        }
+
+        public List<BE.ApuestasDeportiva> GetEventOdd(string matchID)
+        {
+            using (var db = new BE.ADOLAPPDBEntities())
+            {
 =======
+        }
+
+        public List<BE.EventosDeportivo> GetEvents(string leagueId)
+        {
+            List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();
+            using (var db = new BE.ADOLAPPDBEntities())
+            {
                 BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
                 var deportes = db.Deportes.ToList();
-                var eventos = db.Deportes.Where(p => p.Codigo.Equals(sportCode)).First().EventosDeportivos.ToList();
->>>>>>> dfaf393f0d6a7a84768771e51630ba98098aa31c
+                var eventos = db.Deportes.Where(p => p.Liga.Equals(leagueId)).First().EventosDeportivos.ToList();
                 foreach (var evento in eventos)
                 {
                     sportEvent = evento;
@@ -116,6 +136,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
         {
             using (var db = new BE.ADOLAPPDBEntities())
             {
+>>>>>>> c94c9ee79974a450464484b27c304f7cafabed4b
                 return db.ApuestasDeportivas.Where(p => p.EventosDeportivo.Codigo.Equals(matchID)).ToList();
             }
         }
