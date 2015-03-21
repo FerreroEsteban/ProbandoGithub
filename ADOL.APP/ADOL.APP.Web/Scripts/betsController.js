@@ -12,8 +12,8 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.SelectedSportID;
     $scope.SelectedSportName;
 
-    $scope.getItems = function () {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/1', headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+    $scope.getItems = function (leagueID) {
+        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/' + leagueID, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
             .success(function (data, status) {
                 $scope.matchs = data;
             })

@@ -22,8 +22,8 @@ namespace ADOL.APP.Web.Controllers
 
         public ActionResult Index()
         {
-            var events = new EventsManager();
-            events.UpdateEvents();
+            //var events = new EventsManager();
+            //events.UpdateEvents();
             //using (var client = new HttpClient())
             //{
             //    EventsManager man = new EventsManager();
