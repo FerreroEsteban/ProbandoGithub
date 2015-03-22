@@ -47,7 +47,7 @@ namespace ADOL.APP.WebApi.Controllers
             {
                 dynamic apuestaDisponible = new ExpandoObject();
                 apuestaDisponible.ID = apuesta.ID;
-
+                apuestaDisponible.oddtype = apuesta.Codigo;
                 dynamic oddCollection = new List<ExpandoObject>();
                 foreach (var oddtype in apuesta.OddProvider.GetAvailables())
                 {
