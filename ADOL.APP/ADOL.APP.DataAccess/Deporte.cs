@@ -25,6 +25,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
         public string Pais { get; set; }
         public string Codigo { get; set; }
         public bool Activo { get; set; }
+        public string IDdeProveedor { get; set; }
+        public string NombreInterno { get; set; }
+        public string NombePais { get; set; }
     
         public virtual ICollection<EventosDeportivo> EventosDeportivos { get; set; }
     }

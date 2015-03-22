@@ -53,6 +53,7 @@
     <Compile Include="BaseFilter.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseResponse.cs" />
+    <Compile Include="BetType.cs" />
     <Compile Include="Deporte.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

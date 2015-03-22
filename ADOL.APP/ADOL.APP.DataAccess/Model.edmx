@@ -57,9 +57,12 @@
           <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
           <Property Name="Liga" Type="varchar" Nullable="false" MaxLength="10" />
-          <Property Name="Pais" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Pais" Type="varchar" Nullable="false" MaxLength="20" />
           <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="IDdeProveedor" Type="varchar" MaxLength="10" />
+          <Property Name="NombreInterno" Type="varchar" MaxLength="100" />
+          <Property Name="NombePais" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EventosDeportivos">
           <Key>
@@ -120,7 +123,6 @@
         <EntityContainer Name="ADOLAPPDBEntities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="ApuestasDeportivas" EntityType="ADOLAPPDBModel.ApuestasDeportiva" />
           <EntitySet Name="ApuestasDeUsuarios" EntityType="ADOLAPPDBModel.ApuestasDeUsuario" />
-          <EntitySet Name="Deportes" EntityType="ADOLAPPDBModel.Deporte" />
           <EntitySet Name="EventosDeportivos" EntityType="ADOLAPPDBModel.EventosDeportivo" />
           <AssociationSet Name="ApuestasDeportivas_FK1" Association="ADOLAPPDBModel.ApuestasDeportivas_FK1">
             <End Role="EventosDeportivo" EntitySet="EventosDeportivos" />
@@ -130,6 +132,7 @@
             <End Role="ApuestasDeportiva" EntitySet="ApuestasDeportivas" />
             <End Role="ApuestasDeUsuario" EntitySet="ApuestasDeUsuarios" />
           </AssociationSet>
+          <EntitySet Name="Deportes" EntityType="ADOLAPPDBModel.Deporte" />
           <AssociationSet Name="EventosDeportivos_FK1" Association="ADOLAPPDBModel.EventosDeportivos_FK1">
             <End Role="Deporte" EntitySet="Deportes" />
             <End Role="EventosDeportivo" EntitySet="EventosDeportivos" />
@@ -164,18 +167,6 @@
           <Property Type="String" Name="BetType" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Type="Decimal" Name="BetPrice" Nullable="false" Precision="8" Scale="2" />
           <NavigationProperty Name="ApuestasDeportiva" Relationship="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuario" ToRole="ApuestasDeportiva" />
-        </EntityType>
-        <EntityType Name="Deporte">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Nombre" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Liga" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Pais" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Codigo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="Boolean" Name="Activo" Nullable="false" />
-          <NavigationProperty Name="EventosDeportivos" Relationship="ADOLAPPDBModel.EventosDeportivos_FK1" FromRole="Deporte" ToRole="EventosDeportivo" />
         </EntityType>
         <EntityType Name="EventosDeportivo">
           <Key>
@@ -219,6 +210,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Deporte">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Nombre" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Liga" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Pais" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Codigo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="Activo" Nullable="false" />
+          <Property Type="String" Name="IDdeProveedor" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NombreInterno" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NombePais" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EventosDeportivos" Relationship="ADOLAPPDBModel.EventosDeportivos_FK1" FromRole="Deporte" ToRole="EventosDeportivo" />
+        </EntityType>
         <Association Name="EventosDeportivos_FK1">
           <End Type="ADOLAPPDBModel.Deporte" Role="Deporte" Multiplicity="1" />
           <End Type="ADOLAPPDBModel.EventosDeportivo" Role="EventosDeportivo" Multiplicity="*" />
@@ -266,18 +272,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Deportes">
-            <EntityTypeMapping TypeName="ADOLAPPDBModel.Deporte">
-              <MappingFragment StoreEntitySet="Deportes">
-                <ScalarProperty Name="Activo" ColumnName="Activo" />
-                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
-                <ScalarProperty Name="Pais" ColumnName="Pais" />
-                <ScalarProperty Name="Liga" ColumnName="Liga" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EventosDeportivos">
             <EntityTypeMapping TypeName="ADOLAPPDBModel.EventosDeportivo">
               <MappingFragment StoreEntitySet="EventosDeportivos">
@@ -290,6 +284,21 @@
                 <ScalarProperty Name="Inicio" ColumnName="Inicio" />
                 <ScalarProperty Name="Activo" ColumnName="Activo" />
                 <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Deportes">
+            <EntityTypeMapping TypeName="ADOLAPPDBModel.Deporte">
+              <MappingFragment StoreEntitySet="Deportes">
+                <ScalarProperty Name="NombePais" ColumnName="NombePais" />
+                <ScalarProperty Name="NombreInterno" ColumnName="NombreInterno" />
+                <ScalarProperty Name="IDdeProveedor" ColumnName="IDdeProveedor" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Pais" ColumnName="Pais" />
+                <ScalarProperty Name="Liga" ColumnName="Liga" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

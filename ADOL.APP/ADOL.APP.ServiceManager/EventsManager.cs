@@ -59,5 +59,17 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetEventOdd(matchID);
         }
+
+        public List<BE.Deporte> GetActiveSports()
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetActiveSports();
+        }
+
+        public List<BE.Deporte> GetActiveSportLeagues(string sportcode)
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetActiveSports(sportcode);
+        }
     }
 }

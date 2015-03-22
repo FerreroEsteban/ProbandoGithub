@@ -12,15 +12,16 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class BetManager
     {
-        public bool AddUserBet(string userToken, int sportBetID, decimal amount, string betType)
+        public bool AddUserBet(string userToken, int BetType, List<Tuple<int, decimal, string>> bets)
         {
+            decimal amountToValidte = 0;
+            bets.ForEach(p => amountToValidte += p.Item2);
             try
             {
-                if (UserWalletFacade.ValidateFundsAvailable(userToken, amount))
+                if (UserWalletFacade.ValidateFundsAvailable(userToken, amountToValidte))
                 {
                     UserBetAccess uba = new UserBetAccess();
-
-                    uba.AddUserBet(userToken, sportBetID, amount, betType);
+                    bets.ForEach(p => uba.AddUserBet(userToken, p.Item1, p.Item2, p.Item3));
                 }
                 return true;
             }

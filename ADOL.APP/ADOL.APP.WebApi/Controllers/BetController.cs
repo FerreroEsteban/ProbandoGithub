@@ -37,7 +37,15 @@ namespace ADOL.APP.WebApi.Controllers
         public bool AddUserBet(dynamic betData)
         {
             BetManager mgr = new BetManager();
-            return mgr.AddUserBet((string)betData.token.Value, (int)betData.ID.Value, (decimal)betData.Amount.Value, (string)betData.BetType.Value);
+
+            List<Tuple<int, decimal, string>> bets = new List<Tuple<int, decimal, string>>();
+            foreach (var uibet in betData.uibets)
+            {
+                Tuple<int, decimal, string> bet = new Tuple<int, decimal, string>((int)uibet.ID.Value, (decimal)uibet.Amount.Value, (string)uibet.BetType.Value);
+                bets.Add(bet);                 
+            }
+
+            return mgr.AddUserBet((string)betData.token.Value, (int)betData.ID.Value, bets);
         }
     }
 }

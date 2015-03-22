@@ -89,6 +89,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             }
         }
 
+        public List<BE.Deporte> GetActiveSports(string code)
+        {
+            return this.GetActiveSports().Where(p => p.Codigo.Equals(code)).ToList();
+        }
+
         public List<BE.EventosDeportivo> GetSportEvent(string sportCode)
         {
             List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();

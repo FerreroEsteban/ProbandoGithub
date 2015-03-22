@@ -27,7 +27,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
     
         public DbSet<ApuestasDeportiva> ApuestasDeportivas { get; set; }
         public DbSet<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }
-        public DbSet<Deporte> Deportes { get; set; }
         public DbSet<EventosDeportivo> EventosDeportivos { get; set; }
+        public DbSet<Deporte> Deportes { get; set; }
     }
 }
