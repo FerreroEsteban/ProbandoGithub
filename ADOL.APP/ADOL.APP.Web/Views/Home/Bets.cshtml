@@ -41,10 +41,10 @@
             <li><span>Ganancia posible:</span><span class="value"> ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
         </ul>
         <div class="confirmar">
-            <p class="error-msj">No tienes suficiente crédito para realizar esta apuesta</p>
+            <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}">No tienes suficiente crédito para realizar esta apuesta</p>
             <a href="#" class="btn btn-main">Confirmar apuesta </a>
-            <p class="yourcredit">Tu crédito disponible es <span>72.20 ars</span></p>
-            <a href="#" class="cancel">borrar apuestas</a>
+            <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }} ars</span></p>
+            <a ng-click="removeAllBets()" class="cancel">borrar apuestas</a>
         </div>
     </div>
 </div>
