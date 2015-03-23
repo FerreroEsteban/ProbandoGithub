@@ -49,6 +49,7 @@
           <Property Name="Acierto" Type="bit" />
           <Property Name="BetType" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="BetPrice" Type="decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="Linked" Type="varchar" MaxLength="36" />
         </EntityType>
         <EntityType Name="Deportes">
           <Key>
@@ -167,6 +168,7 @@
           <Property Type="String" Name="BetType" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Type="Decimal" Name="BetPrice" Nullable="false" Precision="8" Scale="2" />
           <NavigationProperty Name="ApuestasDeportiva" Relationship="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuario" ToRole="ApuestasDeportiva" />
+          <Property Type="String" Name="Linked" MaxLength="36" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="EventosDeportivo">
           <Key>
@@ -262,6 +264,7 @@
           <EntitySetMapping Name="ApuestasDeUsuarios">
             <EntityTypeMapping TypeName="ADOLAPPDBModel.ApuestasDeUsuario">
               <MappingFragment StoreEntitySet="ApuestasDeUsuarios">
+                <ScalarProperty Name="Linked" ColumnName="Linked" />
                 <ScalarProperty Name="BetPrice" ColumnName="BetPrice" />
                 <ScalarProperty Name="BetType" ColumnName="BetType" />
                 <ScalarProperty Name="Acierto" ColumnName="Acierto" />

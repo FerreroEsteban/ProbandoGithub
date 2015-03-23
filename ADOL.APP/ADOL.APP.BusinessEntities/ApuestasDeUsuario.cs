@@ -21,6 +21,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         public Nullable<bool> Acierto { get; set; }
         public string BetType { get; set; }
         public decimal BetPrice { get; set; }
+        public string Linked { get; set; }
     
         public virtual ApuestasDeportiva ApuestasDeportiva { get; set; }
     }

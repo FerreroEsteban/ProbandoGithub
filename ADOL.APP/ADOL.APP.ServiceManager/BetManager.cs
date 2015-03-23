@@ -21,7 +21,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 if (UserWalletFacade.ValidateFundsAvailable(userToken, amountToValidte))
                 {
                     UserBetAccess uba = new UserBetAccess();
-                    bets.ForEach(p => uba.AddUserBet(userToken, p.Item1, p.Item2, p.Item3));
+                    bets.ForEach(p => uba.AddUserBet(userToken, BetType > 0, bets));
                 }
                 return true;
             }
