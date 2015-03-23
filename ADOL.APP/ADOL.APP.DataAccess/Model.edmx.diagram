@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="2d449614e3b44589909f09effcc69a73" Name="Diagrama1">
         <EntityTypeShape EntityType="ADOLAPPDBModel.ApuestasDeportiva" Width="1.5" PointX="12.375" PointY="7.25" />
-        <EntityTypeShape EntityType="ADOLAPPDBModel.ApuestasDeUsuario" Width="1.5" PointX="10.387101781734778" PointY="30.968631699201012" />
+        <EntityTypeShape EntityType="ADOLAPPDBModel.ApuestasDeUsuario" Width="1.5" PointX="15.875" PointY="7.625" />
         <EntityTypeShape EntityType="ADOLAPPDBModel.EventosDeportivo" Width="1.5" PointX="9.875" PointY="7.25" />
         <AssociationConnector Association="ADOLAPPDBModel.ApuestasDeportivas_FK1" />
         <AssociationConnector Association="ADOLAPPDBModel.ApuestasDeUsuarios_FK1" />

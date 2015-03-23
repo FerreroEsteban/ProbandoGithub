@@ -6,27 +6,40 @@ using System.Threading.Tasks;
 using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Globalization;
+using System.Transactions;
+using System.Data.Entity;
+using System.Data.Objects;
 
 namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 {
     public class UserBetAccess
     {
-        public void AddUserBet(string userToken, int sportBetID, decimal amount, string betType)
+        public void AddUserBet(string userToken, bool isLinked,List<Tuple<int,decimal,string>> bets)
         {
             using (var db = new BE.ADOLAPPDBEntities())
             {
-                var apuestasDeportivas = db.ApuestasDeportivas.Where(p => p.ID.Equals(sportBetID)).First();
-                var betPrice = apuestasDeportivas.GetOddPrice(betType);
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var linkID = Guid.NewGuid();
+                    foreach (var bet in bets)
+                    {
+                        
+                        var apuestasDeportivas = db.ApuestasDeportivas.Where(p => p.ID.Equals(bet.Item1)).First();
+                        var betPrice = apuestasDeportivas.GetOddPrice(bet.Item3);
 
-                BE.ApuestasDeUsuario au = new BE.ApuestasDeUsuario();
-                au.ApuestaDeportivaID = sportBetID;
-                au.Token = userToken;
-                au.Amount = amount;
-                au.BetType = betType;
-                au.BetPrice = betPrice;
-                    
-                db.ApuestasDeUsuarios.Add(au);
-                db.SaveChanges();
+                        BE.ApuestasDeUsuario au = new BE.ApuestasDeUsuario();
+                        au.ApuestaDeportivaID = bet.Item1;
+                        au.Token = userToken;
+                        au.Amount = bet.Item2;
+                        au.BetType = bet.Item3;
+                        au.BetPrice = betPrice;
+                        au.Linked = isLinked ? linkID.ToString() : null;
+
+                        db.ApuestasDeUsuarios.Add(au);
+                        db.SaveChanges();
+                    }
+                    scope.Complete();
+                }
             }
         }
 
