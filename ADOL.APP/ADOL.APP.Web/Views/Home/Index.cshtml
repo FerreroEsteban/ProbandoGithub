@@ -10,6 +10,7 @@
 </style>
 
 <div ng-app="betsApp" ng-controller="matchsController">
+    <input id="userToken" type="hidden" value="{{token}}" />
     <div id="categories" class="col-a">
         @Html.Partial("SportsTree")
     </div>
@@ -58,64 +59,6 @@
                             <div ng-class="matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[0].selected" ng-click="selectMatchOption(matchDetailIdx, 0, 'Ganador del partido', matchs[matchDetailIdx].Local)"><span>{{ matchs[matchDetailIdx].Local }}</span><span class="value">{{ matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[0].Price }}</span></div>
                             <div ng-class="matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[1].selected" ng-click="selectMatchOption(matchDetailIdx, 1, 'Ganador del partido', matchs[matchDetailIdx].Local)"><span>Empate</span><span class="value">{{ matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[1].Price }}</span></div>
                             <div ng-class="matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[2].selected" ng-click="selectMatchOption(matchDetailIdx, 2, 'Ganador del partido', matchs[matchDetailIdx].Local)"><span>{{ matchs[matchDetailIdx].Visitante }}</span><span class="value">{{ matchs[matchDetailIdx].ApuestasDisponibles[0].OddCollection[2].Price }}</span></div>
-                        </div>
-                    </div>
-
-                    <!-- apuesta -->
-                    <div class="typeofbet">
-                        <h4>Resultado exacto</h4>
-                        <div class="select-bet dos">
-                            <div><span>0 - 0</span><span class="value">1.30</span></div>
-                            <div><span>0 - 1</span><span class="value">4.30</span></div>
-                            <div><span>0 - 2</span><span class="value">1.30</span></div>
-                            <div><span>0 - 3</span><span class="value">4.30</span></div>
-                            <div><span>0 - 4</span><span class="value">1.30</span></div>
-                            <div><span>0 - 5</span><span class="value">4.30</span></div>
-                            <div><span>0 - 6</span><span class="value">1.30</span></div>
-                            <div><span>0 - 7</span><span class="value">4.30</span></div>
-
-                        </div>
-                    </div>
-
-                    <!-- apuesta -->
-                    <div class="typeofbet">
-                        <h4>Desarrollo del partido</h4>
-
-                        <div class="sub-bet">
-                            <h5>¿En qué tiempo se marcará mayor número de goles?</h5>
-                            <div class="select-bet dos">
-                                <div><span>Primer tiempo</span><span class="value">1.30</span></div>
-                                <div><span>Segundo tiempo</span><span class="value">4.30</span></div>
-                            </div>
-                        </div>
-
-                        <div class="sub-bet">
-                            <h5>¿Qué equipo ganará ambos tiempos?</h5>
-                            <div class="select-bet tres">
-                                <div><span>Independiente</span><span class="value">1.30</span></div>
-                                <div><span>Ninguno</span><span class="value">4.30</span></div>
-                                <div><span>Racing</span><span class="value">4.30</span></div>
-                            </div>
-                        </div>
-
-                        <div class="sub-bet">
-                            <h5>Desarrollo del partido</h5>
-                            <div class="select-bet dos">
-                                <div><span>Se adelanta/Gana el partido</span><span class="value">1.30</span></div>
-                                <div><span>Se adelanta/Empata</span><span class="value">4.30</span></div>
-                                <div><span>Se adelanta/Pierde</span><span class="value">4.30</span></div>
-                                <div><span>Ningún gol</span><span class="value">4.30</span></div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- apuesta -->
-                    <div class="typeofbet">
-                        <h4>Ambos equipos van a anotar</h4>
-                        <div class="select-bet dos">
-                            <div><span>Si</span><span class="value">1.30</span></div>
-                            <div><span>No</span><span class="value">4.30</span></div>
                         </div>
                     </div>
                 </div>

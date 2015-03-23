@@ -7,6 +7,7 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.matchsBets = null;
 
     $scope.walletFounds = 45;
+    $scope.token = "lñkasdf";
     $scope.bets = [];
     $scope.showRegion = "matchs";
     $scope.showBets = "simple";
@@ -89,7 +90,17 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     function addBet(matchIndex, optionIndex, kindOfBet, optionLabel) {
-        var bet = { betId: $scope.matchs[matchIndex].ApuestasDisponibles[0].ID, match: matchIndex, option: optionIndex, kind: kindOfBet, label: optionLabel, simple: true, composed: true, ammount: 0 };
+        var bet = {
+            betId: $scope.matchs[matchIndex].ApuestasDisponibles[0].ID,
+            betTypeCode: $scope.matchs[matchIndex].ApuestasDisponibles[0].oddtype,
+            match: matchIndex,
+            option: optionIndex,
+            kind: kindOfBet,
+            label: optionLabel,
+            simple: true,
+            composed: true,
+            ammount: 0
+        };
         $scope.bets.push(bet);
     }
 
@@ -141,7 +152,7 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.composedBetsEnabled = function () {        
         $scope.showBets = "composed";
     }
-
+        
     $scope.SelectSport = function (sportId, spName) {
         $scope.SelectedSportID = sportId;
         $scope.SelectedSportName = spName;
@@ -178,7 +189,7 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     $scope.availablefounds = function () {
-        return $scope.walletFounds - betsAmmount();
+        return ($scope.walletFounds - betsAmmount()).toFixed(2);
     }
 
     $scope.betsAmmount = function () {
@@ -203,7 +214,7 @@ app.controller('matchsController', function ($scope, $http) {
                     quota = quota * $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price;
                 }
             });
-            return quota.toFixed(2);
+            return quota;
         }
     }
 
@@ -228,6 +239,34 @@ app.controller('matchsController', function ($scope, $http) {
         }
     }
 
+    $scope.ConfirmBets = function () {
+        alert($scope.token);
+        var betsData = [];
+        $.each($scope.bets, function (index, bet) {            
+            betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.betTypeCode });
+        });
+
+        var data = {
+            token: $scope.token,
+            betsType: $scope.showBets,
+            uibets: betsData
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:55737/api/bet/AddUserBet',
+            crossDomain: true,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (responseData, textStatus, jqXHR) {
+                alert('Apuestas realizadas.');
+            },
+            error: function (responseData, textStatus, errorThrown) {
+                alert(responseData);
+            }
+        });
+              
+    }
+    
     function betsAmmount(){
         if ($scope.showBets == "simple") {
             var total = 0;
@@ -236,7 +275,7 @@ app.controller('matchsController', function ($scope, $http) {
                     total += bet.ammount;
                 }
             });
-            return total;
+            return parseFloat(total);
         }
         else if ($scope.showBets == "composed") {
             return $scope.composedBetAmmount;
@@ -259,7 +298,7 @@ app.directive('numericsaving', function () {
                 if (!value || value === '' || isNaN(parseFloat(value)) || parseFloat(value) != value) {
                     value=0;
                 }
-                return parseFloat(value).toFixed(2);
+                return parseFloat(value);
             });
         }
     };
