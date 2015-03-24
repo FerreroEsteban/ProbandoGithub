@@ -31,20 +31,20 @@
                     <li class="yourbet">{{ bet.label }}<span class="value">{{ matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price }}</span></li>
                 </ul>
                 <ul class="apuesta importe">
-                    <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmmount" placeholder="$" numericsaving>ars</span></li>
+                    <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmmount" placeholder="$" numericsaving></li>
                 </ul>
             </div>           
         </div>
         <ul class="resumen">
             <li>Cuota total:<span class="value" ng-bind="betsQuota()" ></span></li>
-            <li>Importe total:<span class="value" ng-bind="betsAmmount()"></span></li>
-            <li><span>Ganancia posible:</span><span class="value"> ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
+            <li>Importe total:<span class="value">&nbsp;ars</span><span class="value" ng-bind="betsAmmount()"></span></li>
+            <li><span>Ganancia posible:</span><span class="value">&nbsp;ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
         </ul>
         <div class="confirmar">
-            <p class="error-msj">No tienes suficiente crédito para realizar esta apuesta</p>
-            <a href="#" class="btn btn-main">Confirmar apuesta </a>
-            <p class="yourcredit">Tu crédito disponible es <span>72.20 ars</span></p>
-            <a href="#" class="cancel">borrar apuestas</a>
+            <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}" >No tienes suficiente crédito para realizar esta apuesta</p>            
+            <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }}&nbsp;ars</span></p>
+            <a ng-click="ConfirmBets()" class="{{ hasFounds() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>
+            <a ng-click="removeAllBets()" style="cursor: pointer; cursor: hand;" class="cancel">borrar apuestas</a>
         </div>
     </div>
 </div>

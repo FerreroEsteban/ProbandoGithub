@@ -36,6 +36,8 @@ namespace ADOL.APP.WebApi.Controllers
         [WebInvoke(Method = "POST", UriTemplate = "AddUserBet")]
         public bool AddUserBet(dynamic betData)
         {
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(betData);
+
             BetManager mgr = new BetManager();
 
             List<Tuple<int, decimal, string>> bets = new List<Tuple<int, decimal, string>>();
