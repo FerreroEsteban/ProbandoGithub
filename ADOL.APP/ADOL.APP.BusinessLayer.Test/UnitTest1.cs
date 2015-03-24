@@ -18,6 +18,13 @@ namespace ADOL.APP.BusinessLayer.Test
         }
 
         [TestMethod]
+        public void CheckResults()
+        {
+            EventsManager mgr = new EventsManager();
+            mgr.CheckResults("1");
+        }
+
+        [TestMethod]
         public void GetSportsEvents()
         {
             EventsManager mgr = new EventsManager();

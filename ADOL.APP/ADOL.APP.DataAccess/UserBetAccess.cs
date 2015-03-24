@@ -61,5 +61,30 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             }
             return returnValue;
         }
+
+        public List<BE.ApuestasDeUsuario> GetPendings(string[] events)
+        {
+            List<BE.ApuestasDeUsuario> returnValue = new List<BE.ApuestasDeUsuario>();
+            using (var db = new BE.ADOLAPPDBEntities())
+            {
+                var bet = db.ApuestasDeUsuarios.Where(p => events.Contains(p.ApuestasDeportiva.Codigo) && !p.Acierto.HasValue).FirstOrDefault();
+                if (bet != null)
+                {
+                    returnValue.Add(bet);
+                }
+            }
+            return returnValue;
+        }
+
+        public void UpdateUserBetStatus(int id, bool status)
+        {
+            using (var db = new ADOLAPPDBEntities())
+            {
+                var userBet = db.ApuestasDeUsuarios.Where(p => p.ID == id).First();
+                userBet.Acierto = status;
+                db.ApuestasDeUsuarios.Attach(userBet);
+                db.SaveChanges();
+            }
+        }
     }
 }

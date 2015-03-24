@@ -49,5 +49,15 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             this.oddTypes.Add("tw_draw", "Empate");
             this.oddTypes.Add("tw_away", "Visitante");
         }
+
+        public bool ValidateUserBet(MatchResults results, ApuestasDeUsuario userBet)
+        {
+            string matchScore = results.Results["FT"];
+            int home = int.Parse(matchScore.Split('-')[0].Trim());
+            int away = int.Parse(matchScore.Split('-')[1].Trim());
+            return ((userBet.BetType.Equals("tw_home") && home > away)
+                || (userBet.BetType.Equals("tw_draw") && home == away)
+                || (userBet.BetType.Equals("tw_away") && home < away));
+        }
     }
 }

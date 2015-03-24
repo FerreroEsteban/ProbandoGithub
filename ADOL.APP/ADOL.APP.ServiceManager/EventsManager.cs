@@ -71,5 +71,28 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetActiveSports(sportcode);
         }
+
+        public void CheckResults(string sportCode)
+        {
+            BookmakerAccess bma = new BookmakerAccess();
+            List<BE.MatchResults> results = bma.PullResults(sportCode);
+            if (results.Count > 0)
+            {
+                UserBetAccess uba = new UserBetAccess();
+                var userbets = uba.GetPendings(results.Select(p => p.MatchID).ToArray());
+                if (userbets.Count > 0)
+                {
+                    foreach (var result in results)
+                    {
+                        foreach (var userbet in userbets.Where(p => p.ApuestasDeportiva.Codigo.Equals(result.MatchID)))
+                        {
+                            var oddProvider = userbet.GetOddProvider();
+                            var betStatus = oddProvider.ValidateUserBet(result, userbet);
+                            uba.UpdateUserBetStatus(userbet.ID, betStatus);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

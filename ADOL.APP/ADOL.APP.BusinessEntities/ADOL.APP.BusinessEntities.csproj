@@ -60,10 +60,12 @@
     <Compile Include="EventosDeportivo.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\ApuestaDeUsuario.cs" />
     <Compile Include="Extensions\ApuestasDeportiva.cs" />
     <Compile Include="Extensions\BaseOddProvider.cs" />
     <Compile Include="Extensions\IOddProvider.cs" />
     <Compile Include="Extensions\ThreeWayOddProvider.cs" />
+    <Compile Include="MatchResults.cs" />
     <Compile Include="Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
