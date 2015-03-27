@@ -34,20 +34,35 @@ namespace ADOL.APP.WebApi.Controllers
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "AddUserBet")]
-        public bool AddUserBet(dynamic betData)
+        public bool AddUserBet(RequestData data)
         {
-            var data = Newtonsoft.Json.JsonConvert.SerializeObject(betData);
+            var userToken = data.token;
+            var betType = (int)Enum.Parse(typeof(BetType), data.betsType);
 
             BetManager mgr = new BetManager();
 
             List<Tuple<int, decimal, string>> bets = new List<Tuple<int, decimal, string>>();
-            foreach (var uibet in betData.uibets)
+            foreach (var uibet in data.uibets)
             {
-                Tuple<int, decimal, string> bet = new Tuple<int, decimal, string>((int)uibet.ID.Value, (decimal)uibet.Amount.Value, (string)uibet.BetType.Value);
-                bets.Add(bet);                 
+                Tuple<int, decimal, string> bet = new Tuple<int, decimal, string>(uibet.ID, uibet.Amount, uibet.BetType);
+                bets.Add(bet);
             }
 
-            return mgr.AddUserBet((string)betData.token.Value, (int)betData.ID.Value, bets);
+            return mgr.AddUserBet(userToken, (int)betType, bets);
         }
+    }
+
+    public class RequestData
+    {
+        public string token { get; set; }
+        public string betsType { get; set; }
+        public List<UIBet> uibets { get; set; } 
+    }
+
+    public class UIBet
+    {
+        public int ID { get; set; }
+        public decimal Amount { get; set; }
+        public string BetType { get; set; }
     }
 }

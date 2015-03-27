@@ -8,7 +8,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
 {
     public enum BetType
     {
-        Single = 0,
-        Combined = 1
+        simple = 0,
+        composed = 1
     }
 }

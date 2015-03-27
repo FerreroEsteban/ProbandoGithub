@@ -7,7 +7,7 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.matchsBets = null;
 
     $scope.walletFounds = 45;
-    $scope.token = "lñkasdf";
+    $scope.token = "8c320d7d-dd58-4d4d-a908-f1806cc75c41";
     $scope.bets = [];
     $scope.showRegion = "matchs";
     $scope.showBets = "simple";
@@ -93,6 +93,7 @@ app.controller('matchsController', function ($scope, $http) {
         var bet = {
             betId: $scope.matchs[matchIndex].ApuestasDisponibles[0].ID,
             betTypeCode: $scope.matchs[matchIndex].ApuestasDisponibles[0].oddtype,
+            betType: $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].Code,
             match: matchIndex,
             option: optionIndex,
             kind: kindOfBet,
@@ -238,14 +239,13 @@ app.controller('matchsController', function ($scope, $http) {
             return ($scope.composedBetAmmount * quota).toFixed(2);
         }
     }
-
+    
     $scope.ConfirmBets = function () {
-        alert($scope.token);
+
         var betsData = [];
         $.each($scope.bets, function (index, bet) {            
-            betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.betTypeCode });
+            betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.betType });
         });
-
         var data = {
             token: $scope.token,
             betsType: $scope.showBets,
@@ -256,7 +256,7 @@ app.controller('matchsController', function ($scope, $http) {
             url: 'http://localhost:55737/api/bet/AddUserBet',
             crossDomain: true,
             data: JSON.stringify(data),
-            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
             success: function (responseData, textStatus, jqXHR) {
                 alert('Apuestas realizadas.');
             },

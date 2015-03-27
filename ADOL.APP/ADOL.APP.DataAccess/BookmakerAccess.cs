@@ -81,9 +81,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 XmlNodeList odds = offer[offer.Count - 1].SelectNodes("odds");
                 XmlNode odd = odds[odds.Count - 1];
 
-                userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText);
-                userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText);
-                userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText);
+                userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
+                userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
                 userBet.Codigo = offer[offer.Count - 1].Attributes["otname"].Value;
                 sportEvent.ApuestasDeportivas.Add(userBet);
                 sports.Add(sportEvent);
