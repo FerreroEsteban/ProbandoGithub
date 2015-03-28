@@ -21,13 +21,13 @@ namespace ADOL.APP.WebApi.Controllers
             {
                 dynamic thisEvent = new ExpandoObject();
                 thisEvent.ID = singleEvent.ID;
-                thisEvent.Code = singleEvent.Codigo;
-                thisEvent.Nombre = singleEvent.Nombre;
-                thisEvent.Local = singleEvent.Local;
-                thisEvent.Visitante = singleEvent.Visitante;
-                thisEvent.Date = singleEvent.Inicio.ToString("dd MMM");
-                thisEvent.Time = singleEvent.Inicio.ToString("hh:mm");
-                thisEvent.ApuestasDisponibles = GetEventOdds(singleEvent.ApuestasDeportivas);
+                thisEvent.code = singleEvent.Codigo;
+                thisEvent.nombre = singleEvent.Nombre;
+                thisEvent.local = singleEvent.Local;
+                thisEvent.visitante = singleEvent.Visitante;
+                thisEvent.date = singleEvent.Inicio.ToString("dd MMM");
+                thisEvent.time = singleEvent.Inicio.ToString("hh:mm");
+                thisEvent.apuestasDisponibles = GetEventOdds(singleEvent.ApuestasDeportivas);
                 view.Add(thisEvent);
             }
             return view;
@@ -52,13 +52,14 @@ namespace ADOL.APP.WebApi.Controllers
                 foreach (var oddtype in apuesta.OddProvider.GetAvailables())
                 {
                     dynamic singleOdd = new ExpandoObject();
-                    singleOdd.Code = oddtype.Key;
-                    singleOdd.Name = oddtype.Value;
-                    singleOdd.Price = apuesta.GetOddPrice(oddtype.Key);
+                    singleOdd.ID = string.Format("{0}_{1}", apuesta.ID, oddtype.Key);
+                    singleOdd.code = oddtype.Key;
+                    singleOdd.name = oddtype.Value;
+                    singleOdd.price = apuesta.GetOddPrice(oddtype.Key);
                     oddCollection.Add(singleOdd);
                 }
 
-                apuestaDisponible.OddCollection = oddCollection;
+                apuestaDisponible.oddCollection = oddCollection;
 
                 view.Add(apuestaDisponible);
             }

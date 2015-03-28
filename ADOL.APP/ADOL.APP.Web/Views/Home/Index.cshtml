@@ -27,17 +27,17 @@
             <div class="{{showRegion == 'matchs' ? '' :'hidden' }}" ng-repeat="match in matchs track by match.ID">
                 <!-- evento -->
                 <div class="event">
-                    <div ng-click="ViewMathcBets(match.Code, $index)" class="heading">
-                        <span class="event-date">{{ match.Date }}</span>
-                        <span class="event-time">{{ match.Time }}</span>
-                        <span class="event-title"><span class="team1">{{ match.Nombre }}</span></span>
+                    <div ng-click="ViewMathcBets(match.code, $index)" class="heading">
+                        <span class="event-date">{{ match.date }}</span>
+                        <span class="event-time">{{ match.time }}</span>
+                        <span class="event-title"><span class="team1">{{ match.nombre }}</span></span>
                         <span class="event-stats">
                             <img src="images/stats-icon.png"></span>
                         <span class="event-lines">+33</span>
                     </div>
-                    <div class="select-bet tres" ng-repeat="bet in match.ApuestasDisponibles track by bet.ID">
-                        <div ng-class="odd.selected" ng-click="selectMatchOption(match.ID, 0, 'Ganador del partido', match.Local)" ng-repeat="odd in bet.OddCollection track by odd.Code">
-                            <span>{{ OptionText(match, bet, odd) }}</span><span class="value">{{ odd.Price }}</span>
+                    <div class="select-bet tres" ng-repeat="bet in match.apuestasDisponibles track by bet.ID">
+                        <div ng-class="isOddSelected(match, bet, odd)?'selected':''" ng-click="betMatchResult(match.ID, bet.ID, odd.code)" ng-repeat="odd in bet.oddCollection track by odd.ID">
+                            <span>{{ OptionText(match, bet, odd) }}</span><span class="value">{{ odd.price }}</span>
                         </div>
                     </div>
                 </div>
