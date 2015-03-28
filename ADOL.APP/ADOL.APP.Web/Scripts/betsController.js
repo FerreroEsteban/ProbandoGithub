@@ -17,7 +17,7 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.SelectedSportName;
 
     $scope.getItems = function (leagueId) {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/'+leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+        $http({ method: 'GET', url: 'api/Events/GetActiveEvents/' + leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
             .success(function (data, status) {
                 
                 if ($scope.matchs != null) {
@@ -38,7 +38,10 @@ app.controller('matchsController', function ($scope, $http) {
             });
     };
 
-    $scope.selectMatchOption = function (matchIndex, optionIndex, kindOfBet, optionLabel) {
+    $scope.selectMatchOption = function (matchId, betId, oddCode) {
+
+        var matchIndex = GetMatchIndex(matchId);
+
         if ($scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected != "selected") {
             RemoveOtherSelectedOptions(matchIndex);
             addBet(matchIndex, optionIndex, kindOfBet, optionLabel);
@@ -160,7 +163,7 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     $scope.ViewMathcBets = function (matchCode, matchIndex) {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+        $http({ method: 'GET', url: 'ADOL.APP.Web/api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
              .success(function (data, status) {
                  $scope.showRegion = "odds";
                  $scope.matchDetailIdx = matchIndex;
@@ -267,7 +270,31 @@ app.controller('matchsController', function ($scope, $http) {
               
     }
     
-    function betsAmmount(){
+    $scope.OptionText = function (match, bet, odd) {
+        switch (bet.oddtype) {
+            case "three way":
+                {
+                    switch (odd.Code) {
+                        case "tw_home":
+                            return match.Local;
+                        case "tw_draw":
+                            return "Empate";
+                        case "tw_away":
+                            return match.Visitante;
+                    }
+                }
+            default:
+                return 'Default case';
+                break;
+        }        
+    }
+
+   
+
+
+
+    //Helper functions
+    function betsAmmount() {
         if ($scope.showBets == "simple") {
             var total = 0;
             $.each($scope.bets, function (index, bet) {
@@ -281,6 +308,13 @@ app.controller('matchsController', function ($scope, $http) {
             return $scope.composedBetAmmount;
         }
     }
+
+    function GetMatchIndex(matchId) {
+        return index = $scope.matchs.map(function (el) {
+            return el.ID;
+        }).indexOf(matchId);
+    }
+
 });
 
 app.directive('numericsaving', function () {
