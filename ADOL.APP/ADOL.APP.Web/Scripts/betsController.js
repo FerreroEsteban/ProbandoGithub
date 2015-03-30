@@ -4,7 +4,7 @@
 app.controller('matchsController', function ($scope, $http) {
 
     $scope.matchs = null;
-    $scope.matchsBets = null;
+    $scope.detailMatch = null;
 
     $scope.walletFounds = 45;
     $scope.token = "8c320d7d-dd58-4d4d-a908-f1806cc75c41";
@@ -139,11 +139,12 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     $scope.ViewMathcBets = function (matchCode, matchIndex) {
-        $http({ method: 'GET', url: 'ADOL.APP.Web/api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+        $http({ method: 'GET', url: 'api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
              .success(function (data, status) {
                  $scope.showRegion = "odds";
                  $scope.matchDetailIdx = matchIndex;
-                 $scope.matchsBets = data;
+                 $scope.detailMatch = $scope.matchs[matchIndex];
+                 $scope.detailMatch.apuestasDisponibles = data;
              })
              .error(function (data, status) {
                  $scope.showRegion = "matchs";
