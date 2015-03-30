@@ -233,7 +233,6 @@ app.controller('matchsController', function ($scope, $http) {
                 alert(responseData);
             }
         });
-              
     }
     
     $scope.OptionText = function (match, bet, odd) {
