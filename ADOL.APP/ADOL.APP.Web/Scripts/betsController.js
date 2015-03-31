@@ -213,9 +213,16 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.ConfirmBets = function () {
 
         var betsData = [];
-        $.each($scope.bets, function (index, bet) {            
-            betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.odd.code });
-        });
+        if ($scope.showBets == "simple") {
+            $.each($scope.bets, function (index, bet) {
+                betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.odd.code });
+            });
+        } else if ($scope.showBets == "composed") {
+            $.each($scope.bets, function (index, bet) {
+                betsData.push({ ID: bet.betId, Amount: $scope.composedBetAmmount, BetType: bet.odd.code });
+            });
+        }
+
         var data = {
             token: $scope.token,
             betsType: $scope.showBets,
