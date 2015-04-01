@@ -52,8 +52,8 @@ namespace ADOL.APP.WebApi.Controllers
                 foreach (var oddtype in bet.OddProvider.GetAvailables())
                 {
                     dynamic singleOdd = new ExpandoObject();
-                    singleOdd.Code = oddtype.Key;
-                    singleOdd.Name = oddtype.Value;
+                    singleOdd.ID = string.Format("{0}_{1}", apuesta.ID, oddtype.Key);
+                    singleOdd.code = oddtype.Key;
                     singleOdd.Price = bet.GetOddPrice(oddtype.Key);
                     oddCollection.Add(singleOdd);
                 }

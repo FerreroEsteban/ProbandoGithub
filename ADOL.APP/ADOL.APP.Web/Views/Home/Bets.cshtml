@@ -14,11 +14,11 @@
         <div>
             <!-- tipo de apuesta SIMPLE -->
             <div id="simple" class="tab-content simple show"  >
-                <ul class="apuesta" ng-repeat="bet in bets | filter:filterSimpleBets | orderBy: 'match'">
+                <ul class="apuesta" ng-repeat="bet in bets | filter:filterSimpleBets | orderBy: bet.betId">
                     <li ng-click="removeSimpleBet(bet.betId)" class="delete-btn">X</li>
-                    <li class="title">{{  matchs[bet.match].Nombre }}</li>
-                    <li class="desc">Apuesta: {{ bet.kind }}</li>
-                    <li class="yourbet">{{ bet.label }}<span class="value">{{ matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price }}</span></li>
+                    <li class="title">{{ bet.match.nombre }}</li>
+                    <li class="desc">{{ getBetKind(bet.betId)  }}</li>
+                    <li class="yourbet">{{ OptionText(bet.match, bet, bet.odd) }}<span class="value">{{ bet.odd.price }}</span></li>
                     <li class="cantidad">Importe <span class="number"><input id="simpleBetImport{{bet.betId}}" min="0" ng-model="bet.ammount" placeholder="$" numericsaving>ars</span></li>
                 </ul>
             </div>           
@@ -26,25 +26,25 @@
             <div id="combinada" class="tab-content combinada">
                 <ul class="apuesta"  ng-repeat="bet in bets | filter:filterComposedBets">
                     <span class="delete-btn" ng-click="removeComposedBet(bet.betId)">X</span>
-                    <li class="title">{{ matchs[bet.match].Nombre }}</li>
-                    <li class="desc">Apuesta:{{ bet.kind }}</li>
-                    <li class="yourbet">{{ bet.label }}<span class="value">{{ matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price }}</span></li>
+                    <li class="title">{{ bet.match.nombre }}</li>
+                    <li class="desc">{{ getBetKind(bet.betId)  }}</li>
+                    <li class="yourbet">{{ OptionText(bet.match, bet, bet.odd) }}<span class="value">{{ bet.odd.price }}</span></li>
                 </ul>
                 <ul class="apuesta importe">
                     <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmmount" placeholder="$" numericsaving></li>
                 </ul>
             </div>           
         </div>
-        <ul class="resumen">
-            <li>Cuota total:<span class="value" ng-bind="betsQuota()" ></span></li>
-            <li>Importe total:<span class="value">&nbsp;ars</span><span class="value" ng-bind="betsAmmount()"></span></li>
-            <li><span>Ganancia posible:</span><span class="value">&nbsp;ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
-        </ul>
-        <div class="confirmar">
-            <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}" >No tienes suficiente crédito para realizar esta apuesta</p>            
-            <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }}&nbsp;ars</span></p>
-            <a ng-click="ConfirmBets()" class="{{ hasFounds() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>
-            <a ng-click="removeAllBets()" style="cursor: pointer; cursor: hand;" class="cancel">borrar apuestas</a>
-        </div>
+            <ul class="resumen">
+                <li>Cuota total:<span class="value" ng-bind="betsQuota()" ></span></li>
+                <li>Importe total:<span class="value">&nbsp;ars</span><span class="value" ng-bind="betsAmmount()"></span></li>
+                <li><span>Ganancia posible:</span><span class="value">&nbsp;ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
+            </ul>
+            <div class="confirmar">
+                <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}" >No tienes suficiente crédito para realizar esta apuesta</p>            
+                <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }}&nbsp;ars</span></p>
+                <a ng-click="ConfirmBets()" class="{{ hasFounds() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>
+                <a ng-click="removeAllBets()" style="cursor: pointer; cursor: hand;" class="cancel">borrar apuestas</a>
+            </div>
     </div>
 </div>

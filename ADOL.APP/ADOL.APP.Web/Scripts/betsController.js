@@ -4,7 +4,7 @@
 app.controller('matchsController', function ($scope, $http) {
 
     $scope.matchs = null;
-    $scope.matchsBets = null;
+    $scope.detailMatch = null;
 
     $scope.walletFounds = 45;
     $scope.token = "8c320d7d-dd58-4d4d-a908-f1806cc75c41";
@@ -17,18 +17,8 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.SelectedSportName;
 
     $scope.getItems = function (leagueId) {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetActiveEvents/'+leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
-            .success(function (data, status) {
-                
-                if ($scope.matchs != null) {
-                    $.each($scope.matchs, function (mIndex, match) {
-                        $.each(match.ApuestasDisponibles[0].OddCollection, function (oIndex, option) {
-                            if (option.selected == "selected") {
-                                data[mIndex].ApuestasDisponibles[0].OddCollection[oIndex].selected = "selected";
-                            }
-                        });
-                    });
-                }
+        $http({ method: 'GET', url: 'api/Events/GetActiveEvents/' + leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+            .success(function (data, status) {              
                 $scope.matchs = data;
                 $scope.matchDetailIdx = null;
                 $scope.showRegion = "matchs";
@@ -38,86 +28,75 @@ app.controller('matchsController', function ($scope, $http) {
             });
     };
 
-    $scope.selectMatchOption = function (matchIndex, optionIndex, kindOfBet, optionLabel) {
-        if ($scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected != "selected") {
-            RemoveOtherSelectedOptions(matchIndex);
-            addBet(matchIndex, optionIndex, kindOfBet, optionLabel);
-            selectOption(matchIndex, optionIndex);
+    $scope.betMatchResult = function (matchId, betId, oddCode) {
+        
+        var oldBetIndex = GetBetIndexFromBets(betId);
+        var matchIndex = GetMatchIndex(matchId);
+        var betIndex = GetBetIndex(matchIndex, betId);
+        var oddIndex = GetOddIndex(matchIndex, betIndex, oddCode);
+
+        if (oldBetIndex >= 0) { //Habia apuestas para el partido.
+            var newOdd = $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection[oddIndex];
+            if (newOdd.code != $scope.bets[oldBetIndex].odd.code) {
+                $scope.bets[oldBetIndex].odd = $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection[oddIndex];
+            }
+            else {
+                removeBet(betId);
+            }
         }
         else {
-            removeBet(matchIndex, optionIndex);
-            unselectOption(matchIndex, optionIndex);
+            addBet(matchIndex, betIndex, oddIndex);
         }
     };
-
+        
     $scope.removeSimpleBet = function (betId) {
-        var betIndex = findBetIndexByID(betId);
+        var betIndex = GetBetIndexFromBets(betID);
         if (betIndex > -1) {
             if ($scope.bets[betIndex].composed == true) {
-                alert('quita');
                 $scope.bets[betIndex].simple = false;
             }
             else {
-                alert('no encuentra');
-                unselectOption($scope.bets[betIndex].match, $scope.bets[betIndex].option);
                 $scope.bets.splice(betIndex, 1);
             }
         }
     }
 
-    $scope.removeComposedBet = function (betId) {
-        var betIndex = findBetIndexByID(betId);
+    $scope.removeComposedBet = function (bet) {
+        var betIndex = GetBetIndexFromBets(bet.betId);
         if (betIndex > -1) {
             if ($scope.bets[betIndex].simple == true) {
-                alert('quita');
                 $scope.bets[betIndex].composed = false;
             }
             else {
-                alert('no encuentra');
-                unselectOption($scope.bets[betIndex].match, $scope.bets[betIndex].option);
                 $scope.bets.splice(betIndex, 1);
             }
         }
     }
+    
+    $scope.getBetKind = function (betId) {
+        var betIndex = GetBetIndexFromBets(betId);
 
-    function RemoveOtherSelectedOptions(matchIndex) {
-        $.each($scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection, function (index, option) {
+        switch ($scope.bets[betIndex].oddtype) {
+            case "three way": return "Ganador del partido";                
+        }
+        return "Unknown bet type";
+    }
+    
+    function RemoveOtherSelectedOptions(matchIndex, betIndex) {
+        $.each($scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection, function (index, option) {
             if (option.selected == "selected") {
-                unselectOption(matchIndex, index);
-                removeBet(matchIndex, index);
+                unselectOption(matchIndex, betIndex, index);
+                //removeBet(matchIndex, index);
             }            
         });
     }
 
-    function addBet(matchIndex, optionIndex, kindOfBet, optionLabel) {
-        var bet = {
-            betId: $scope.matchs[matchIndex].ApuestasDisponibles[0].ID,
-            betTypeCode: $scope.matchs[matchIndex].ApuestasDisponibles[0].oddtype,
-            betType: $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].Code,
-            match: matchIndex,
-            option: optionIndex,
-            kind: kindOfBet,
-            label: optionLabel,
-            simple: true,
-            composed: true,
-            ammount: 0
-        };
-        $scope.bets.push(bet);
+    function selectOption(matchIndex, betIndex, oddIndex) {
+        $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection[oddIndex].selected = "selected";
     }
 
-    function removeBet(matchIndex, optionIndex) {
-        var betIndex = findBetIndexByValues(matchIndex, optionIndex);
-        if (betIndex > -1) {
-            $scope.bets.splice(betIndex, 1);
-        }
-    }
-    
-    function selectOption(matchIndex, optionIndex) {
-        $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected = "selected";
-    }
-
-    function unselectOption(matchIndex, optionIndex) {
-        $scope.matchs[matchIndex].ApuestasDisponibles[0].OddCollection[optionIndex].selected = "";
+    function unselectOption(matchIndex, betIndex, oddIndex) {
+        $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection[oddIndex].selected = "";
     }
     
     function findBetIndexByValues(matchIndex, optionIndex) {
@@ -160,28 +139,19 @@ app.controller('matchsController', function ($scope, $http) {
     }
 
     $scope.ViewMathcBets = function (matchCode, matchIndex) {
-        $http({ method: 'GET', url: 'http://localhost:55737/api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+        $http({ method: 'GET', url: 'api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
              .success(function (data, status) {
                  $scope.showRegion = "odds";
                  $scope.matchDetailIdx = matchIndex;
-                 $scope.matchsBets = data;
+                 $scope.detailMatch = $scope.matchs[matchIndex];
+                 $scope.detailMatch.apuestasDisponibles = data;
              })
              .error(function (data, status) {
                  $scope.showRegion = "matchs";
              });
     }
 
-    $scope.removeAllBets = function () {
-
-        if ($scope.matchs != null) {
-            $.each($scope.matchs, function (mIndex, match) {
-                $.each(match.ApuestasDisponibles[0].OddCollection, function (oIndex, option) {
-                    if (option.selected == "selected") {
-                        $scope.matchs[mIndex].ApuestasDisponibles[0].OddCollection[oIndex].selected = "";
-                    }
-                });
-            });
-        }
+    $scope.removeAllBets = function () {                
         $scope.bets = [];
     }
 
@@ -202,7 +172,7 @@ app.controller('matchsController', function ($scope, $http) {
             var winnings = 0, ammount = 0;
             $.each($scope.bets, function (index, bet) {
                 if (bet.simple) {
-                    winnings = winnings + $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price * bet.ammount;
+                    winnings = winnings + bet.odd.price * bet.ammount;
                     ammount += bet.ammount;
                 }
             });
@@ -212,10 +182,10 @@ app.controller('matchsController', function ($scope, $http) {
             var quota = 1;
             $.each($scope.bets, function (index, bet) {
                 if (bet.composed) {
-                    quota = quota * $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price;
+                    quota = quota * bet.odd.price;
                 }
             });
-            return quota;
+            return quota.toFixed(2);
         }
     }
 
@@ -224,7 +194,7 @@ app.controller('matchsController', function ($scope, $http) {
             var winnings = 0;
             $.each($scope.bets, function (index, bet) {
                 if (bet.simple) {
-                    winnings = winnings + $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price * bet.ammount;
+                    winnings = winnings + bet.odd.price * bet.ammount;
                 }
             });
             return winnings.toFixed(2);
@@ -233,7 +203,7 @@ app.controller('matchsController', function ($scope, $http) {
             var quota = 1;
             $.each($scope.bets, function (index, bet) {
                 if (bet.composed) {
-                    quota = quota * $scope.matchs[bet.match].ApuestasDisponibles[0].OddCollection[bet.option].Price;
+                    quota = quota * bet.odd.price;
                 }
             });
             return ($scope.composedBetAmmount * quota).toFixed(2);
@@ -243,9 +213,16 @@ app.controller('matchsController', function ($scope, $http) {
     $scope.ConfirmBets = function () {
 
         var betsData = [];
-        $.each($scope.bets, function (index, bet) {            
-            betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.betType });
-        });
+        if ($scope.showBets == "simple") {
+            $.each($scope.bets, function (index, bet) {
+                betsData.push({ ID: bet.betId, Amount: bet.ammount, BetType: bet.odd.code });
+            });
+        } else if ($scope.showBets == "composed") {
+            $.each($scope.bets, function (index, bet) {
+                betsData.push({ ID: bet.betId, Amount: $scope.composedBetAmmount, BetType: bet.odd.code });
+            });
+        }
+
         var data = {
             token: $scope.token,
             betsType: $scope.showBets,
@@ -253,7 +230,7 @@ app.controller('matchsController', function ($scope, $http) {
         };
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:55737/api/bet/AddUserBet',
+            url: 'api/bet/AddUserBet',
             crossDomain: true,
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
@@ -264,10 +241,39 @@ app.controller('matchsController', function ($scope, $http) {
                 alert(responseData);
             }
         });
-              
     }
     
-    function betsAmmount(){
+    $scope.OptionText = function (match, bet, odd) {
+        switch (bet.oddtype) {
+            case "three way":
+                {
+                    switch (odd.code) {
+                        case "tw_home":
+                            return match.local;
+                        case "tw_draw":
+                            return "Empate";
+                        case "tw_away":
+                            return match.visitante;
+                    }
+                }
+            default:
+                return 'Default case';
+                break;
+        }        
+    }
+
+    $scope.isOddSelected = function (match, bet, odd) {
+        var betIndex = GetBetIndexFromBets(bet.ID);
+        if (betIndex >= 0) {
+            return $scope.bets[betIndex].odd.code == odd.code;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    //Helper functions
+    function betsAmmount() {
         if ($scope.showBets == "simple") {
             var total = 0;
             $.each($scope.bets, function (index, bet) {
@@ -280,6 +286,56 @@ app.controller('matchsController', function ($scope, $http) {
         else if ($scope.showBets == "composed") {
             return $scope.composedBetAmmount;
         }
+    }
+
+    function GetMatchIndex(matchId) {
+        return index = $scope.matchs.map(function (el) {
+            return el.ID;
+        }).indexOf(matchId);
+    }
+    
+    function GetBetIndex(matchIndex, betId) {
+        return index = $scope.matchs[matchIndex].apuestasDisponibles.map(function (el) {
+            return el.ID;
+        }).indexOf(betId);
+    }
+
+    function GetOddIndex(matchIndex, betIndex, oddCode) {
+        return index = $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection.map(function (el) {
+            return el.code;
+        }).indexOf(oddCode);
+    }
+
+    function GetBetIndexFromBets(betID) {
+        return betIndex = $scope.bets.map(function (el) {
+            return el.betId;
+        }).indexOf(betID);
+    }
+
+    function addBet(matchIndex, betIndex, oddIndex) {
+        var bet = {
+            betId: $scope.matchs[matchIndex].apuestasDisponibles[betIndex].ID,
+            oddtype: $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddtype,
+            match: {
+                ID: $scope.matchs[matchIndex].ID,
+                code: $scope.matchs[matchIndex].code,
+                nombre: $scope.matchs[matchIndex].nombre,
+                local: $scope.matchs[matchIndex].local,
+                visitante: $scope.matchs[matchIndex].visitante,
+                date: $scope.matchs[matchIndex].date,
+                time: $scope.matchs[matchIndex].time
+            },
+            odd: $scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection[oddIndex],
+            simple: true,
+            composed: true,
+            ammount: 0
+        };
+        $scope.bets.push(bet);
+    }
+
+    function removeBet(betID) {
+        var betIndex = GetBetIndexFromBets(betID);
+        $scope.bets.splice(betIndex, 1);
     }
 });
 
