@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ADOL.APP.CurrentAccountService.BusinessEntities
 {
-    public partial class ApuestasDeUsuario
+    public partial class UserBet
     {
         public IOddProvider GetOddProvider()
         {
-            return OddProviderFactory.GetOddProvider(this.ApuestasDeportiva.Codigo);
+            return OddProviderFactory.GetOddProvider(this.SportBet.Code);
         }
     }
 }

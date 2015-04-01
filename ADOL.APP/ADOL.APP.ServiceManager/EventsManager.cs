@@ -19,19 +19,19 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             BookmakerAccess bmax = new BookmakerAccess();
             SportEventsAccess seax = new SportEventsAccess();
 
-            List<BE.Deporte> dep = seax.GetActiveSports();
+            List<BE.Sport> dep = seax.GetActiveSports();
 
-            List<BE.EventosDeportivo> eventosNuevos = bmax.PullEvents(dep);
+            List<BE.SportEvent> eventosNuevos = bmax.PullEvents(dep);
 
-            List<BE.EventosDeportivo> eventosGuardados = seax.GetCurrentEvents();
+            List<BE.SportEvent> eventosGuardados = seax.GetCurrentEvents();
 
             foreach (var newEvent in eventosNuevos)
             {
-                if (eventosGuardados.Any(p => p.Codigo.Equals(newEvent.Codigo)))
+                if (eventosGuardados.Any(p => p.Code.Equals(newEvent.Code)))
                 {
-                    var evento = eventosGuardados.Where(p => p.Codigo.Equals(newEvent.Codigo)).First();
-                    evento.Inicio = newEvent.Inicio;
-                    evento.ApuestasDeportivas = newEvent.ApuestasDeportivas;
+                    var evento = eventosGuardados.Where(p => p.Code.Equals(newEvent.Code)).First();
+                    evento.Init = newEvent.Init;
+                    evento.SportBets = newEvent.SportBets;
                 }
                 else
                 {
@@ -42,31 +42,31 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             seax.StoreEvents(eventosGuardados);
         }
 
-        public List<BE.EventosDeportivo> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvent(string sportCode)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetSportEvent(sportCode);
         }
 
-        public List<BE.EventosDeportivo> GetLeagueEvents(string leagueId)
+        public List<BE.SportEvent> GetLeagueEvents(string leagueId)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetEvents(leagueId);
         }
 
-        public List<BE.ApuestasDeportiva> GetEventOdds(string matchID)
+        public List<BE.SportBet> GetEventOdds(string matchID)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetEventOdd(matchID);
         }
 
-        public List<BE.Deporte> GetActiveSports()
+        public List<BE.Sport> GetActiveSports()
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetActiveSports();
         }
 
-        public List<BE.Deporte> GetActiveSportLeagues(string sportcode)
+        public List<BE.Sport> GetActiveSportLeagues(string sportcode)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetActiveSports(sportcode);
@@ -84,11 +84,11 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     foreach (var result in results)
                     {
-                        foreach (var userbet in userbets.Where(p => p.ApuestasDeportiva.Codigo.Equals(result.MatchID)))
+                        foreach (var userbet in userbets.Where(p => p.Item1.Equals(result.MatchID)))
                         {
-                            var oddProvider = userbet.GetOddProvider();
-                            var betStatus = oddProvider.ValidateUserBet(result, userbet);
-                            uba.UpdateUserBetStatus(userbet.ID, betStatus);
+                            var oddProvider = userbet.Item2.GetOddProvider();
+                            var betStatus = oddProvider.ValidateUserBet(result, userbet.Item2);
+                            uba.UpdateUserBetStatus(userbet.Item2.ID, betStatus);
                         }
                     }
                 }

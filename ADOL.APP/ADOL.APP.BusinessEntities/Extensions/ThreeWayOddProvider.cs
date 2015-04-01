@@ -23,7 +23,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             return this.oddTypes[oddType];
         }
 
-        public decimal GetOddValue(string oddType, ApuestasDeportiva odd)
+        public decimal GetOddValue(string oddType, SportBet odd)
         {
             switch (oddType)
             { 
@@ -50,7 +50,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             this.oddTypes.Add("tw_away", "Visitante");
         }
 
-        public bool ValidateUserBet(MatchResults results, ApuestasDeUsuario userBet)
+        public bool ValidateUserBet(MatchResults results, UserBet userBet)
         {
             string matchScore = results.Results["FT"];
             int home = int.Parse(matchScore.Split('-')[0].Trim());

@@ -16,7 +16,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
     {
         public void AddUserBet(string userToken, bool isLinked,List<Tuple<int,decimal,string>> bets)
         {
-            using (var db = new BE.ADOLAPPDBEntities())
+            using (var db = new BE.ADOLDBEntities())
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
@@ -24,18 +24,19 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                     foreach (var bet in bets)
                     {
                         
-                        var apuestasDeportivas = db.ApuestasDeportivas.Where(p => p.ID.Equals(bet.Item1)).First();
-                        var betPrice = apuestasDeportivas.GetOddPrice(bet.Item3);
+                        var sportBet = db.SportBets.Where(p => p.ID.Equals(bet.Item1)).First();
+                        var betPrice = sportBet.GetOddPrice(bet.Item3);
 
-                        BE.ApuestasDeUsuario au = new BE.ApuestasDeUsuario();
-                        au.ApuestaDeportivaID = bet.Item1;
+                        BE.UserBet au = new BE.UserBet();
+                        au.SportBetID = bet.Item1;
                         au.Token = userToken;
                         au.Amount = bet.Item2;
                         au.BetType = bet.Item3;
                         au.BetPrice = betPrice;
-                        au.Linked = isLinked ? linkID.ToString() : null;
+                        au.LinkedCode = isLinked ? linkID.ToString() : null;
+                        au.MatchCode = sportBet.SportEvent.Code;
 
-                        db.ApuestasDeUsuarios.Add(au);
+                        db.UserBets.Add(au);
                         db.SaveChanges();
                     }
                     scope.Complete();
@@ -43,34 +44,34 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             }
         }
 
-        public List<BE.ApuestasDeUsuario> GetUserBets(string userToken)
+        public List<BE.UserBet> GetUserBets(string userToken)
         {
-            List<BE.ApuestasDeUsuario> returnValue = new List<BE.ApuestasDeUsuario>();
-            using (var db = new BE.ADOLAPPDBEntities())
+            List<BE.UserBet> returnValue = new List<BE.UserBet>();
+            using (var db = new BE.ADOLDBEntities())
             {
-                var apuestas = db.ApuestasDeUsuarios.Where(p => p.Token.Equals(userToken)).ToList();
-                foreach (var apuesta in apuestas)
+                var userBets = db.UserBets.Where(p => p.Token.Equals(userToken)).ToList();
+                foreach (var userBet in userBets)
                 {
-                    BE.ApuestasDeUsuario item = new BE.ApuestasDeUsuario();
-                    var sportOdd = apuesta.ApuestasDeportiva;
+                    BE.UserBet item = new BE.UserBet();
+                    var sportOdd = userBet.SportBet;
 
-                    item = apuesta;
-                    item.ApuestasDeportiva = sportOdd;
+                    item = userBet;
+                    item.SportBet = sportOdd;
                     returnValue.Add(item);
                 }
             }
             return returnValue;
         }
 
-        public List<BE.ApuestasDeUsuario> GetPendings(string[] events)
+        public List<Tuple<string,BE.UserBet>> GetPendings(string[] events)
         {
-            List<BE.ApuestasDeUsuario> returnValue = new List<BE.ApuestasDeUsuario>();
-            using (var db = new BE.ADOLAPPDBEntities())
+            List<Tuple<string, BE.UserBet>> returnValue = new List<Tuple<string, BE.UserBet>>();
+            using (var db = new BE.ADOLDBEntities())
             {
-                var bet = db.ApuestasDeUsuarios.Where(p => events.Contains(p.ApuestasDeportiva.Codigo) && !p.Acierto.HasValue).FirstOrDefault();
+                var bet = db.UserBets.Where(p => events.Contains(p.SportBet.SportEvent.Code) && p.Hit == null).ToList();
                 if (bet != null)
                 {
-                    returnValue.Add(bet);
+                    bet.ForEach(p => returnValue.Add(new Tuple<string, BE.UserBet>(p.SportBet.SportEvent.Code, p)));
                 }
             }
             return returnValue;
@@ -78,11 +79,10 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 
         public void UpdateUserBetStatus(int id, bool status)
         {
-            using (var db = new ADOLAPPDBEntities())
+            using (var db = new ADOLDBEntities())
             {
-                var userBet = db.ApuestasDeUsuarios.Where(p => p.ID == id).First();
-                userBet.Acierto = status;
-                db.ApuestasDeUsuarios.Attach(userBet);
+                var userBet = db.UserBets.Where(p => p.ID == id).First();
+                userBet.Hit = status;
                 db.SaveChanges();
             }
         }

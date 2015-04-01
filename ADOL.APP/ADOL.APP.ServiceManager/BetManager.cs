@@ -31,7 +31,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
         }
 
-        public List<BE.ApuestasDeUsuario> GetUserBets(string userToken)
+        public List<BE.UserBet> GetUserBets(string userToken)
         {
             UserBetAccess uba = new UserBetAccess();
             return uba.GetUserBets(userToken);

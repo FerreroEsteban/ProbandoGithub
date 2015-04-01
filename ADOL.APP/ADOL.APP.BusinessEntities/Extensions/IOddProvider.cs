@@ -12,8 +12,8 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
 
         string GetOddName(string oddType);
 
-        decimal GetOddValue(string oddType, ApuestasDeportiva odd);
+        decimal GetOddValue(string oddType, SportBet odd);
 
-        bool ValidateUserBet(MatchResults results, ApuestasDeUsuario userBet);
+        bool ValidateUserBet(MatchResults results, UserBet userBet);
     }
 }

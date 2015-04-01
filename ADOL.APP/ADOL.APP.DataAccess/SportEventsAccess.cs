@@ -10,53 +10,53 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 {
     public class SportEventsAccess
     {
-        public List<BE.EventosDeportivo> GetCurrentEvents()
+        public List<BE.SportEvent> GetCurrentEvents()
         {
-            using (var dbcontext = new BE.ADOLAPPDBEntities())
+            using (var dbcontext = new BE.ADOLDBEntities())
             {
-                return dbcontext.EventosDeportivos.Where(p => p.Activo && p.Inicio > DateTime.UtcNow).ToList();
+                return dbcontext.SportEvents.Where(p => p.Active && p.Init > DateTime.UtcNow).ToList();
             }
         }
 
-        public void StoreEvents(List<BE.EventosDeportivo> eventosActualizados)
+        public void StoreEvents(List<BE.SportEvent> updatedEvents)
         {
-            using (var dbcontext = new BE.ADOLAPPDBEntities())
+            using (var dbcontext = new BE.ADOLDBEntities())
             {
                 try
                 {
-                    foreach (var evento in eventosActualizados)
+                    foreach (var updatedEvent in updatedEvents)
                     {
-                        if (dbcontext.EventosDeportivos.Any(p => p.Codigo.Equals(evento.Codigo)))
+                        if (dbcontext.SportEvents.Any(p => p.Code.Equals(updatedEvent.Code)))
                         {
-                            var storedEvent = dbcontext.EventosDeportivos.Where(p => p.Codigo.Equals(evento.Codigo)).First();
-                            foreach (var apuesta in evento.ApuestasDeportivas)
+                            var storedEvent = dbcontext.SportEvents.Where(p => p.Code.Equals(updatedEvent.Code)).First();
+                            foreach (var bet in updatedEvent.SportBets)
                             {
-                                var storedOdd = storedEvent.ApuestasDeportivas.Where(p => p.Codigo.Equals(apuesta.Codigo)).FirstOrDefault();
+                                var storedOdd = storedEvent.SportBets.Where(p => p.Code.Equals(bet.Code)).FirstOrDefault();
                                 if (storedOdd != null)
                                 {
-                                    storedOdd.Odd1 = apuesta.Odd1;
-                                    storedOdd.Odd2 = apuesta.Odd2;
-                                    storedOdd.Odd3 = apuesta.Odd3;
+                                    storedOdd.Odd1 = bet.Odd1;
+                                    storedOdd.Odd2 = bet.Odd2;
+                                    storedOdd.Odd3 = bet.Odd3;
                                 }
                                 else
                                 {
-                                    storedEvent.ApuestasDeportivas.Add(apuesta);
+                                    storedEvent.SportBets.Add(bet);
                                 }
                             }
-                            
-                            storedEvent = evento;
+
+                            storedEvent = updatedEvent;
                             //storedEvent.Deporte = dbcontext.Deportes.Where(p => p.Codigo.Equals("1")).First();
                         }
                         else
                         {
-                            foreach (var apuesta in evento.ApuestasDeportivas)
+                            foreach (var singleBet in updatedEvent.SportBets)
                             {
-                                dbcontext.ApuestasDeportivas.Add(apuesta);
+                                dbcontext.SportBets.Add(singleBet);
                             }
 
                             //evento.Deporte = dbcontext.Deportes.Where(p => p.Codigo.Equals("1")).First();
-                            evento.Activo = true;
-                            dbcontext.EventosDeportivos.Add(evento);
+                            updatedEvent.Active = true;
+                            dbcontext.SportEvents.Add(updatedEvent);
                         }
                     }
 
@@ -71,69 +71,70 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                 catch (Exception exn)
                 {
                     StringBuilder sb = new StringBuilder();
-                    var pepe = AddInnerException(exn, sb);
-                    while (pepe != null)
+                    var innerException = AddInnerException(exn, sb);
+                    while (innerException != null)
                     {
-                        pepe = AddInnerException(pepe, sb);
+                        innerException = AddInnerException(innerException, sb);
                     }
-                    var errroes = sb.ToString();
+                    //var errors = sb.ToString();
+                    throw new Exception(sb.ToString());
                 }
             }
         }
 
-        public List<BE.Deporte> GetActiveSports()
+        public List<BE.Sport> GetActiveSports()
         {
-            using (var db = new BE.ADOLAPPDBEntities())
+            using (var db = new BE.ADOLDBEntities())
             {
-                return db.Deportes.Where(p => p.Activo).ToList();
+                return db.Sports.Where(p => p.Active).ToList();
             }
         }
 
-        public List<BE.Deporte> GetActiveSports(string code)
+        public List<BE.Sport> GetActiveSports(string code)
         {
-            return this.GetActiveSports().Where(p => p.Codigo.Equals(code)).ToList();
+            return this.GetActiveSports().Where(p => p.Code.Equals(code)).ToList();
         }
 
-        public List<BE.EventosDeportivo> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvent(string sportCode)
         {
-            List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();
-            using (var db = new BE.ADOLAPPDBEntities())
+            List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
+            using (var db = new BE.ADOLDBEntities())
             {
-                BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
-                var eventos = db.Deportes.Where(p => p.Liga.Equals(sportCode)).First().EventosDeportivos.ToList();
-                foreach (var evento in eventos)
+                BE.SportEvent sportEvent = new BE.SportEvent();
+                var events = db.Sports.Where(p => p.League.Equals(sportCode)).First().SportEvents.ToList();
+                foreach (var singleEvent in events)
                 {
-                    sportEvent = evento;
-                    sportEvent.ApuestasDeportivas = evento.ApuestasDeportivas;
+                    sportEvent = singleEvent;
+                    sportEvent.SportBets = singleEvent.SportBets;
                     returnValue.Add(sportEvent);
                 }
             }
             return returnValue;
         }
 
-        public List<BE.EventosDeportivo> GetEvents(string leagueId)
+        public List<BE.SportEvent> GetEvents(string leagueId)
         {
-            List<BE.EventosDeportivo> returnValue = new List<BE.EventosDeportivo>();
-            using (var db = new BE.ADOLAPPDBEntities())
+            List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
+            using (var db = new BE.ADOLDBEntities())
             {
-                BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
-                var deportes = db.Deportes.ToList();
-                var eventos = db.Deportes.Where(p => p.Liga.Equals(leagueId)).First().EventosDeportivos.ToList();
-                foreach (var evento in eventos)
+                BE.SportEvent sportEvent = new BE.SportEvent();
+                var sports = db.Sports.ToList();
+                var events = db.Sports.Where(p => p.League.Equals(leagueId)).First().SportEvents.ToList();
+                foreach (var singleEvent in events)
                 {
-                    sportEvent = evento;
-                    sportEvent.ApuestasDeportivas = evento.ApuestasDeportivas;
+                    sportEvent = singleEvent;
+                    sportEvent.SportBets = singleEvent.SportBets;
                     returnValue.Add(sportEvent);
                 }
             }
             return returnValue;
         }
 
-        public List<BE.ApuestasDeportiva> GetEventOdd(string matchID)
+        public List<BE.SportBet> GetEventOdd(string matchID)
         {
-            using (var db = new BE.ADOLAPPDBEntities())
+            using (var db = new BE.ADOLDBEntities())
             {
-                return db.ApuestasDeportivas.Where(p => p.EventosDeportivo.Codigo.Equals(matchID)).ToList();
+                return db.SportBets.Where(p => p.SportEvent.Code.Equals(matchID)).ToList();
             }
         }
 

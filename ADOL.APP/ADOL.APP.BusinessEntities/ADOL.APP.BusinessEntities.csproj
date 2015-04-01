@@ -44,24 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApuestasDeportiva.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ApuestasDeUsuario.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="BaseFilter.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseResponse.cs" />
     <Compile Include="BetType.cs" />
-    <Compile Include="Deporte.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EventosDeportivo.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Extensions\ApuestaDeUsuario.cs" />
-    <Compile Include="Extensions\ApuestasDeportiva.cs" />
+    <Compile Include="Extensions\UserBet.cs" />
+    <Compile Include="Extensions\SportBet.cs" />
     <Compile Include="Extensions\BaseOddProvider.cs" />
     <Compile Include="Extensions\IOddProvider.cs" />
     <Compile Include="Extensions\ThreeWayOddProvider.cs" />
@@ -79,6 +67,18 @@
     <Compile Include="OddProviderFactory.cs" />
     <Compile Include="OperationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sport.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SportBet.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SportEvent.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserBet.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

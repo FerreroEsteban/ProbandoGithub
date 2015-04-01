@@ -13,10 +13,10 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class ADOLAPPDBEntities : DbContext
+    public partial class ADOLDBEntities : DbContext
     {
-        public ADOLAPPDBEntities()
-            : base("name=ADOLAPPDBEntities")
+        public ADOLDBEntities()
+            : base("name=ADOLDBEntities")
         {
         }
     
@@ -25,9 +25,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<ApuestasDeportiva> ApuestasDeportivas { get; set; }
-        public DbSet<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }
-        public DbSet<EventosDeportivo> EventosDeportivos { get; set; }
-        public DbSet<Deporte> Deportes { get; set; }
+        public DbSet<SportBet> SportBets { get; set; }
+        public DbSet<SportEvent> SportEvents { get; set; }
+        public DbSet<Sport> Sports { get; set; }
+        public DbSet<UserBet> UserBets { get; set; }
     }
 }

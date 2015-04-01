@@ -12,25 +12,25 @@ namespace ADOL.APP.CurrentAccountService.DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class ApuestasDeportiva
+    public partial class SportBet
     {
-        public ApuestasDeportiva()
+        public SportBet()
         {
-            this.ApuestasDeUsuarios = new HashSet<ApuestasDeUsuario>();
+            this.UserBets = new HashSet<UserBet>();
         }
     
         public int ID { get; set; }
-        public string Codigo { get; set; }
-        public string Nombre { get; set; }
-        public bool Activo { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public bool Active { get; set; }
         public decimal Odd1 { get; set; }
         public Nullable<decimal> Odd2 { get; set; }
         public Nullable<decimal> Odd3 { get; set; }
         public Nullable<decimal> Odd4 { get; set; }
-        public System.DateTime Acualizado { get; set; }
-        public int EventoDeportivoID { get; set; }
+        public System.DateTime LastUpdate { get; set; }
+        public int SportEventID { get; set; }
     
-        public virtual EventosDeportivo EventosDeportivo { get; set; }
-        public virtual ICollection<ApuestasDeUsuario> ApuestasDeUsuarios { get; set; }
+        public virtual SportEvent SportEvent { get; set; }
+        public virtual ICollection<UserBet> UserBets { get; set; }
     }
 }

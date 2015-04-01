@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADOL.APP.CurrentAccountService.BusinessEntities
 {
-    public partial class ApuestasDeportiva
+    public partial class SportBet
     {
         private IOddProvider oddProvider;
         public IOddProvider OddProvider
@@ -15,7 +15,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             {
                 if (this.oddProvider == null)
                 {
-                    this.oddProvider = OddProviderFactory.GetOddProvider(this.Codigo);
+                    this.oddProvider = OddProviderFactory.GetOddProvider(this.Code);
                 }
                 return this.oddProvider;
             }

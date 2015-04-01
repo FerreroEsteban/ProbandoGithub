@@ -24,11 +24,11 @@ namespace ADOL.APP.WebApi.Controllers
             foreach (var sport in sports)
             { 
                 dynamic viewSport = new ExpandoObject();
-                viewSport.LeagueID = sport.IDdeProveedor;
-                viewSport.League = sport.Liga;
-                viewSport.Pais = sport.NombePais;
-                viewSport.InternalCode = sport.NombreInterno;
-                viewSport.Nombre = sport.Nombre;
+                viewSport.LeagueID = sport.ProviderID;
+                viewSport.League = sport.League;
+                viewSport.Pais = sport.CountryName;
+                viewSport.InternalCode = sport.InternalName;
+                viewSport.Nombre = sport.Name;
                 view.Add(viewSport);
             }
             return view;

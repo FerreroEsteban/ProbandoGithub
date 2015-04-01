@@ -28,11 +28,11 @@ namespace ADOL.APP.BusinessLayer.Test
         public void GetSportsEvents()
         {
             EventsManager mgr = new EventsManager();
-            var eventos = mgr.GetSportEvent("1");
-            Assert.IsTrue(eventos.Count > 0);
-            foreach (var evento in eventos)
+            var events = mgr.GetSportEvent("1");
+            Assert.IsTrue(events.Count > 0);
+            foreach (var sportEvent in events)
             {
-                Assert.IsTrue(evento.ApuestasDeportivas.Count > 0);
+                Assert.IsTrue(sportEvent.SportBets.Count > 0);
             }
         }
 
@@ -70,7 +70,7 @@ namespace ADOL.APP.BusinessLayer.Test
         public void CheckUserBets()
         {
             BetManager mng = new BetManager();
-            List<BE.ApuestasDeUsuario> bets = mng.GetUserBets("d09ff82d-4afa-44ae-b8b0-8ba94bc6eaca");
+            List<BE.UserBet> bets = mng.GetUserBets("d09ff82d-4afa-44ae-b8b0-8ba94bc6eaca");
             Assert.IsTrue(bets.Count > 0);
         }
     }   

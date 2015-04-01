@@ -27,7 +27,7 @@ namespace ADOL.APP.WebApi.Controllers
                 viewBet.BetType = bet.BetType;
                 viewBet.BetPrice = bet.BetPrice;
                 viewBet.Amount = bet.Amount;
-                viewBet.BetTitle = bet.ApuestasDeportiva.OddProvider.GetOddName(bet.BetType);
+                viewBet.BetTitle = bet.SportBet.OddProvider.GetOddName(bet.BetType);
                 view.Add(viewBet);
             }
             return view;

@@ -16,13 +16,13 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
     public class BookmakerAccess
     {
-        public List<BE.EventosDeportivo> PullEvents(List<BE.Deporte> activeSports)
+        public List<BE.SportEvent> PullEvents(List<BE.Sport> activeSports)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             String Xml;
             XmlDocument doc = null;
-            List<BE.EventosDeportivo> sports = new List<BE.EventosDeportivo>();
+            List<BE.SportEvent> sports = new List<BE.SportEvent>();
 
             string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&cnid={0}&mgid={1}&psid={2}";
             //string[] allowedSports = new string[] { "1" };
@@ -30,9 +30,9 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             //string[] allowedLeags = new string[] { "1002", "1111" };
 
             string requestUri = string.Format(uriTemplate,
-                                                string.Join(",", activeSports.Select(p => p.Pais).Distinct().ToArray()),// allowedGroups),
-                                                string.Join(",", activeSports.Select(p => p.Liga).Distinct().ToArray()),//allowedLeags),
-                                                string.Join(",", activeSports.Select(p => p.Codigo).Distinct().ToArray()));
+                                                string.Join(",", activeSports.Select(p => p.Country).Distinct().ToArray()),// allowedGroups),
+                                                string.Join(",", activeSports.Select(p => p.League).Distinct().ToArray()),//allowedLeags),
+                                                string.Join(",", activeSports.Select(p => p.Code).Distinct().ToArray()));
 
             // Create the web request  
             request = WebRequest.Create(requestUri) as HttpWebRequest;
@@ -60,23 +60,23 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             {
                 XmlNodeList offer = match.SelectNodes("bookmaker/offer");
 
-                BE.EventosDeportivo sportEvent = new BE.EventosDeportivo();
-                sportEvent.Codigo = match.Attributes["id"].Value;
-                sportEvent.CodigoLiga = match.SelectSingleNode("group").Attributes["mgid"].Value;
-                sportEvent.CodigoPais = match.SelectSingleNode("group").Attributes["cnid"].Value;
+                BE.SportEvent sportEvent = new BE.SportEvent();
+                sportEvent.Code = match.Attributes["id"].Value;
+                sportEvent.LeagueCode = match.SelectSingleNode("group").Attributes["mgid"].Value;
+                sportEvent.CountryCode = match.SelectSingleNode("group").Attributes["cnid"].Value;
                 
-                sportEvent.Nombre = string.Format("{0} - {1}",
+                sportEvent.Name = string.Format("{0} - {1}",
                                                  match.SelectSingleNode("hteam").InnerText,
                                                   match.SelectSingleNode("ateam").InnerText);
-                sportEvent.Inicio = DateTime.Parse(match.SelectSingleNode("time").InnerText);
-                sportEvent.Fin = sportEvent.Inicio.AddMinutes((double)90);
-                sportEvent.Local = match.SelectSingleNode("hteam").InnerText;
-                sportEvent.Visitante = match.SelectSingleNode("ateam").InnerText;
-                sportEvent.DeporteID = activeSports.Where(p => p.Liga.Equals(match.SelectSingleNode("group").Attributes["mgid"].Value)).First().ID;
+                sportEvent.Init = DateTime.Parse(match.SelectSingleNode("time").InnerText);
+                sportEvent.End = sportEvent.Init.AddMinutes((double)90); //cambiar por un proveedor que pueda distinguir por deporte
+                sportEvent.Home = match.SelectSingleNode("hteam").InnerText;
+                sportEvent.Away = match.SelectSingleNode("ateam").InnerText;
+                sportEvent.SportID = activeSports.Where(p => p.League.Equals(match.SelectSingleNode("group").Attributes["mgid"].Value)).First().ID;
 
-                BE.ApuestasDeportiva userBet = new BE.ApuestasDeportiva();
-                userBet.Acualizado = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);
-                userBet.Nombre = offer[offer.Count - 1].Attributes["otname"].Value;
+                BE.SportBet userBet = new BE.SportBet();
+                userBet.LastUpdate = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);
+                userBet.Name = offer[offer.Count - 1].Attributes["otname"].Value;
 
                 XmlNodeList odds = offer[offer.Count - 1].SelectNodes("odds");
                 XmlNode odd = odds[odds.Count - 1];
@@ -84,8 +84,8 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
                 userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
                 userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
-                userBet.Codigo = offer[offer.Count - 1].Attributes["otname"].Value;
-                sportEvent.ApuestasDeportivas.Add(userBet);
+                userBet.Code = offer[offer.Count - 1].Attributes["otname"].Value;
+                sportEvent.SportBets.Add(userBet);
                 sports.Add(sportEvent);
             }
             return sports;
@@ -98,7 +98,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             String Xml;
             XmlDocument doc = null;
 
-            string uriTemplate = string.Format(@"http://xml2.tip-ex.com/feed/result/xml.php?ident=discoverytx&passwd=57t6y67&spid={0}&date=today", sportCode);
+            string uriTemplate = string.Format(@"http://xml2.tip-ex.com/feed/result/xml.php?ident=discoverytx&passwd=57t6y67&spid={0}&mgid=1002,1111&date=yesterday", sportCode);
 
             // Create the web request  
             request = WebRequest.Create(uriTemplate) as HttpWebRequest;

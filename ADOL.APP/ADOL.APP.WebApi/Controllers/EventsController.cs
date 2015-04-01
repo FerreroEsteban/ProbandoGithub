@@ -15,19 +15,19 @@ namespace ADOL.APP.WebApi.Controllers
         public dynamic GetActiveEvents(string id)
         {
             EventsManager mgr = new EventsManager();
-            var eventos = mgr.GetLeagueEvents(id);
+            var leagueEvents = mgr.GetLeagueEvents(id);
             dynamic view = new List<ExpandoObject>();
-            foreach (var singleEvent in eventos)
+            foreach (var singleEvent in leagueEvents)
             {
                 dynamic thisEvent = new ExpandoObject();
                 thisEvent.ID = singleEvent.ID;
-                thisEvent.Code = singleEvent.Codigo;
-                thisEvent.Nombre = singleEvent.Nombre;
-                thisEvent.Local = singleEvent.Local;
-                thisEvent.Visitante = singleEvent.Visitante;
-                thisEvent.Date = singleEvent.Inicio.ToString("dd MMM");
-                thisEvent.Time = singleEvent.Inicio.ToString("hh:mm");
-                thisEvent.ApuestasDisponibles = GetEventOdds(singleEvent.ApuestasDeportivas);
+                thisEvent.Code = singleEvent.Code;
+                thisEvent.Nombre = singleEvent.Name;
+                thisEvent.Local = singleEvent.Home;
+                thisEvent.Visitante = singleEvent.Away;
+                thisEvent.Date = singleEvent.Init.ToString("dd MMM");
+                thisEvent.Time = singleEvent.Init.ToString("hh:mm");
+                thisEvent.ApuestasDisponibles = GetEventOdds(singleEvent.SportBets);
                 view.Add(thisEvent);
             }
             return view;
@@ -40,27 +40,27 @@ namespace ADOL.APP.WebApi.Controllers
             return GetEventOdds(odds);
         }
 
-        private dynamic GetEventOdds(ICollection<ApuestasDeportiva> collection)
+        private dynamic GetEventOdds(ICollection<SportBet> collection)
         {
             dynamic view = new List<ExpandoObject>();
-            foreach (var apuesta in collection)
+            foreach (var bet in collection)
             {
-                dynamic apuestaDisponible = new ExpandoObject();
-                apuestaDisponible.ID = apuesta.ID;
-                apuestaDisponible.oddtype = apuesta.Codigo;
+                dynamic betAvailable = new ExpandoObject();
+                betAvailable.ID = bet.ID;
+                betAvailable.oddtype = bet.Code;
                 dynamic oddCollection = new List<ExpandoObject>();
-                foreach (var oddtype in apuesta.OddProvider.GetAvailables())
+                foreach (var oddtype in bet.OddProvider.GetAvailables())
                 {
                     dynamic singleOdd = new ExpandoObject();
                     singleOdd.Code = oddtype.Key;
                     singleOdd.Name = oddtype.Value;
-                    singleOdd.Price = apuesta.GetOddPrice(oddtype.Key);
+                    singleOdd.Price = bet.GetOddPrice(oddtype.Key);
                     oddCollection.Add(singleOdd);
                 }
 
-                apuestaDisponible.OddCollection = oddCollection;
+                betAvailable.OddCollection = oddCollection;
 
-                view.Add(apuestaDisponible);
+                view.Add(betAvailable);
             }
             return view;
         }
