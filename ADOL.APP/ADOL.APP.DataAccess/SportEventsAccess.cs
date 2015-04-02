@@ -95,7 +95,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             return this.GetActiveSports().Where(p => p.Code.Equals(code)).ToList();
         }
 
-        public List<BE.SportEvent> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvents(string sportCode)
         {
             List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
             using (var db = new BE.ADOLDBEntities())
@@ -108,6 +108,17 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                     sportEvent.SportBets = singleEvent.SportBets;
                     returnValue.Add(sportEvent);
                 }
+            }
+            return returnValue;
+        }
+
+        public BE.SportEvent GetSportEvent(string eventCode)
+        {
+            BE.SportEvent returnValue = new BE.SportEvent();
+
+            using (var db = new BE.ADOLDBEntities())
+            {
+                returnValue = db.SportEvents.First(e => e.Code == eventCode);
             }
             return returnValue;
         }

@@ -28,7 +28,7 @@ namespace ADOL.APP.BusinessLayer.Test
         public void GetSportsEvents()
         {
             EventsManager mgr = new EventsManager();
-            var events = mgr.GetSportEvent("1");
+            var events = mgr.GetSportEvents("1");
             Assert.IsTrue(events.Count > 0);
             foreach (var sportEvent in events)
             {

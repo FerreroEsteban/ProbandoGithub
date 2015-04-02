@@ -701,7 +701,8 @@
                 }
 
         .simple,
-        .combinada {
+        .combinada,
+        .waitingResult {
             display: none;
             margin: 0 -1em;
             border: 1px solid #f7b22c;

@@ -15,19 +15,33 @@ namespace ADOL.APP.WebApi.Controllers
 {
     public class BetController : ApiController
     {
+
         public dynamic GetUserBet(string id)
         {
             BetManager mgr = new BetManager();
+            EventsManager mgrEvent = new EventsManager();
             var bets = mgr.GetUserBets(id);
             dynamic view = new List<ExpandoObject>();
             foreach (var bet in bets)
             {
+                var match = mgrEvent.GetSportEvent(bet.MatchCode);
+                dynamic thisEvent = new ExpandoObject();
+                thisEvent.ID = match.ID;
+                thisEvent.code = match.Code;
+                thisEvent.nombre = match.Name;
+                thisEvent.local = match.Home;
+                thisEvent.visitante = match.Away;
+                thisEvent.date = match.Init.ToString("dd MMM");
+                thisEvent.time = match.Init.ToString("hh:mm");
+               
                 dynamic viewBet = new ExpandoObject();
-                viewBet.ID = bet.ID;
-                viewBet.BetType = bet.BetType;
-                viewBet.BetPrice = bet.BetPrice;
-                viewBet.Amount = bet.Amount;
-                viewBet.BetTitle = bet.SportBet.OddProvider.GetOddName(bet.BetType);
+                viewBet.betId = bet.ID;
+                viewBet.oddType = bet.SportBet.Code;
+                viewBet.price = bet.BetPrice;
+                viewBet.amount = bet.Amount;
+                viewBet.oddCode = bet.BetType;
+                viewBet.match = thisEvent;
+                
                 view.Add(viewBet);
             }
             return view;

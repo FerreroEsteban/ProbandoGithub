@@ -42,10 +42,16 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             seax.StoreEvents(eventosGuardados);
         }
 
-        public List<BE.SportEvent> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvents(string sportCode)
         {
             SportEventsAccess seax = new SportEventsAccess();
-            return seax.GetSportEvent(sportCode);
+            return seax.GetSportEvents(sportCode);
+        }
+
+        public BE.SportEvent GetSportEvent(string matchCode)
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetSportEvent(matchCode);
         }
 
         public List<BE.SportEvent> GetLeagueEvents(string leagueId)

@@ -21,15 +21,46 @@ namespace ADOL.APP.WebApi.Controllers
             var sports = mgr.GetActiveSports();
             dynamic view = new List<ExpandoObject>();
 
-            foreach (var sport in sports)
-            { 
-                dynamic viewSport = new ExpandoObject();
-                viewSport.LeagueID = sport.ProviderID;
-                viewSport.League = sport.League;
-                viewSport.Pais = sport.CountryName;
-                viewSport.InternalCode = sport.InternalName;
-                viewSport.Nombre = sport.Name;
-                view.Add(viewSport);
+            string lastCode = null, lastCountry = null;
+
+            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+            {
+                if (lastCode != sport.Code)
+                {
+                    lastCode = sport.Code;
+                    dynamic viewSport = new ExpandoObject();
+                    dynamic countries = new List<ExpandoObject>();
+
+                    viewSport.code = lastCode;
+
+                    #region paises
+                    foreach (var pais in sports.Where(s => s.Code == lastCode).OrderBy(s => s.CountryName).ThenBy(s => s.Name))
+                    {
+                        if (lastCountry != pais.Country)
+                        {
+                            dynamic country = new ExpandoObject();
+                            dynamic leagues = new List<ExpandoObject>();
+
+                            lastCountry = pais.Country;
+                            country.countryID = pais.Country;
+                            country.countryName = pais.CountryName;
+                            #region Ligas
+                            foreach (var liga in sports.Where(s => s.Code == lastCode && s.CountryName == lastCountry).OrderBy(s => s.Name))
+                            {
+                                dynamic league = new List<ExpandoObject>();
+                                league.code = liga.League;
+                                league.name = liga.Name == "" ? liga.InternalName : liga.Name;
+                                leagues.Add(league);
+                            }
+                            #endregion
+                            country.leagues = leagues;
+                            countries.Add(country);
+                        }
+                    }
+                    #endregion
+                    viewSport.countries = countries;
+                    view.Add(viewSport);
+                }
             }
             return view;
         }
