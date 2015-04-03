@@ -3,6 +3,7 @@
 
 app.controller('matchsController', function ($scope, $http, $sce) {
 
+
     $scope.matchs = null;
     $scope.detailMatch = null;
 
@@ -14,10 +15,24 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.showBets = "simple";
     $scope.composedBetAmount = 0;
     $scope.matchDetailIdx = null;
-    $scope.SelectedSportID;
-    $scope.SelectedSportName;
+    $scope.breadcrumbPath;
 
-    $scope.getItems = function (leagueId) {
+    $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+           .success(function (data, status) {
+               if (data != null) {
+                   if (data.length != null) {
+                       $scope.showBets = "pending";
+                       $scope.pendingBets = data;
+                   }
+               }
+           })
+           .error(function (data, status) {
+               alert('error al obtener datos');
+           });
+
+
+    $scope.getItems = function (leagueId, path) {
+        $scope.breadcrumbPath = path;
         $http({ method: 'GET', url: 'api/Events/GetActiveEvents/' + leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
             .success(function (data, status) {              
                 $scope.matchs = data;
@@ -30,7 +45,12 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
-               $scope.pendingBets = data;
+               if (data != null) {
+                   if (data.length != null) {
+                       $scope.showBets = "pending";
+                       $scope.pendingBets = data;
+                   }
+               }
            })
            .error(function (data, status) {
                alert('error al obtener datos');
@@ -47,6 +67,24 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                 alert('error al obtener datos');
             });
     };
+
+    $scope.getBreadcrumb = function () {
+        if ($scope.breadcrumbPath == null) {
+            return "";
+        }
+        var breadcrumbItems = $scope.breadcrumbPath.split(',');
+        var breadcrumb = "";
+        if (breadcrumbItems.length) {
+            for (var i = 0; i < breadcrumbItems.length; i++) {
+                breadcrumb += '<span>' + breadcrumbItems[i] + '</span>';
+            }
+        }
+        return $sce.trustAsHtml(breadcrumb);
+    }
+
+    $scope.setBreadcrumbPath = function (path) {
+        $scope.breadcrumbPath = path;
+    }
 
     $scope.betMatchResult = function (matchId, betId, oddCode) {
         
@@ -112,7 +150,17 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     }
     
     $scope.betsAvailable = function () {
-        return true;
+        if ($scope.pendingBets != null) {
+            if ($scope.pendingBets.length >= 0) {
+                return true;
+            }
+        }
+        if ($scope.bets != null) {
+            if ($scope.bets.length >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     $scope.areBets = function (simple) {
@@ -187,11 +235,6 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         $scope.showBets = "composed";
     }
         
-    $scope.SelectSport = function (sportId, spName) {
-        $scope.SelectedSportID = sportId;
-        $scope.SelectedSportName = spName;
-    }
-
     $scope.ViewMathcBets = function (matchCode, matchIndex) {
         $http({ method: 'GET', url: 'api/Events/GetEventOdds/' + matchCode, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
              .success(function (data, status) {

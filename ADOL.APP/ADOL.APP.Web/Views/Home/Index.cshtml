@@ -16,10 +16,8 @@
     </div>
     <div>
         <div id="events" class="col-b">
-            <div class="breadcrum" ng-repeat="menuLevel in menuLevels">
-                <a href="#">{{SelectedSportName}}</a><a href="#">America</a><a href="#">Argentina</a><a href="#">Torneo Julio Humberto Grondona 2015</a>
-            </div>
-
+            <div class="breadcrum"  ng-bind-html="getBreadcrumb()" ></div>
+           
             <a class="banner" href="#">
                 <img width="482px" height="67px" src="Images/banner-2.jpg">
             </a>
