@@ -20,7 +20,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
                if (data != null) {
-                   if (data.length != null) {
+                   if (data.length > 0) {
                        $scope.showBets = "pending";
                        $scope.pendingBets = data;
                    }
@@ -151,15 +151,16 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     
     $scope.betsAvailable = function () {
         if ($scope.pendingBets != null) {
-            if ($scope.pendingBets.length >= 0) {
+            if ($scope.pendingBets.length > 0) {
                 return true;
             }
         }
         if ($scope.bets != null) {
-            if ($scope.bets.length >= 0) {
+            if ($scope.bets.length > 0) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -312,11 +313,15 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         var betsData = [];
         if ($scope.showBets == "simple") {
             $.each($scope.bets, function (index, bet) {
-                betsData.push({ ID: bet.betId, Amount: bet.amount, BetType: bet.odd.code });
+                if (bet.simple) {
+                    betsData.push({ ID: bet.betId, Amount: bet.amount, BetType: bet.odd.code });
+                }
             });
         } else if ($scope.showBets == "composed") {
             $.each($scope.bets, function (index, bet) {
-                betsData.push({ ID: bet.betId, Amount: $scope.composedBetAmount, BetType: bet.odd.code });
+                if (bet.composed) {
+                    betsData.push({ ID: bet.betId, Amount: $scope.composedBetAmount, BetType: bet.odd.code });
+                }
             });
         }
 
