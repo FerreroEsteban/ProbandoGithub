@@ -340,7 +340,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         });
     }
     
-    $scope.OptionText = function (match, bet, oddCode) {
+    $scope.OptionText = function (match, bet, oddCode) {        
         switch (bet.oddType) {
             case "three way":
                 {
