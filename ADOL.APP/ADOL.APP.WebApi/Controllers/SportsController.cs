@@ -21,44 +21,61 @@ namespace ADOL.APP.WebApi.Controllers
             var sports = mgr.GetActiveSports();
             dynamic view = new List<ExpandoObject>();
 
-            string lastCode = null, lastCountry = null;
-
-            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+            string lastCode = null, lastRegion = null, lastCountry = null;
+            
+            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
             {
                 if (lastCode != sport.Code)
                 {
                     lastCode = sport.Code;
                     dynamic viewSport = new ExpandoObject();
-                    dynamic countries = new List<ExpandoObject>();
+                    dynamic regions = new List<ExpandoObject>();
 
                     viewSport.code = lastCode;
+                    viewSport.name = sport.Name;
 
-                    #region paises
-                    foreach (var pais in sports.Where(s => s.Code == lastCode).OrderBy(s => s.CountryName).ThenBy(s => s.Name))
+                    foreach (var region in sports.Where(s => s.Code == lastCode).OrderBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
                     {
-                        if (lastCountry != pais.Country)
+                        if (lastRegion != region.RegionID)
                         {
-                            dynamic country = new ExpandoObject();
-                            dynamic leagues = new List<ExpandoObject>();
+                            lastRegion = region.RegionID;
+                            dynamic newRegion = new ExpandoObject();
+                            dynamic countries = new List<ExpandoObject>();
 
-                            lastCountry = pais.Country;
-                            country.countryID = pais.Country;
-                            country.countryName = pais.CountryName;
-                            #region Ligas
-                            foreach (var liga in sports.Where(s => s.Code == lastCode && s.CountryName == lastCountry).OrderBy(s => s.Name))
+                            newRegion.name = region.RegionName;
+                            newRegion.code = region.RegionID;
+
+                            #region paises
+                            foreach (var pais in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion).OrderBy(s => s.CountryName).ThenBy(s => s.TournamentName))
                             {
-                                dynamic league = new List<ExpandoObject>();
-                                league.code = liga.League;
-                                league.name = liga.Name == "" ? liga.InternalName : liga.Name;
-                                leagues.Add(league);
+                                if (lastCountry != pais.Country)
+                                {
+                                    dynamic country = new ExpandoObject();
+                                    dynamic leagues = new List<ExpandoObject>();
+
+                                    lastCountry = pais.Country;
+                                    country.code = pais.Country;
+                                    country.name = pais.CountryName;
+                                    #region Ligas
+                                    foreach (var liga in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion && s.Country == lastCountry).OrderBy(s => s.TournamentName))
+                                    {
+                                        dynamic league = new ExpandoObject();
+                                        league.code = liga.TournamentID;
+                                        league.name = liga.TournamentName == "" ? liga.InternalName : liga.TournamentName;
+                                        leagues.Add(league);
+                                    }
+                                    #endregion
+                                    country.leagues = leagues;
+                                    countries.Add(country);
+                                }
                             }
                             #endregion
-                            country.leagues = leagues;
-                            countries.Add(country);
+                            newRegion.countries = countries;
+                            regions.Add(newRegion);
                         }
                     }
-                    #endregion
-                    viewSport.countries = countries;
+                    viewSport.regions = regions;
+
                     view.Add(viewSport);
                 }
             }

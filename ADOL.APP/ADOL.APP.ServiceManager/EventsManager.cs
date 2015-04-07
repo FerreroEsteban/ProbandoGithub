@@ -31,7 +31,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     var evento = eventosGuardados.Where(p => p.Code.Equals(newEvent.Code)).First();
                     evento.Init = newEvent.Init;
-                    evento.SportBets = newEvent.SportBets;
+                    evento.SportBets = newEvent.SportBets.ToList();
                 }
                 else
                 {
@@ -58,6 +58,12 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetEvents(leagueId);
+        }
+
+        public List<BE.SportEvent> GetTournamentEvents(string tournamentId)
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetEventsByTournament(tournamentId);
         }
 
         public List<BE.SportBet> GetEventOdds(string matchID)

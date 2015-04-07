@@ -1,6 +1,7 @@
 ﻿using ADOL.APP.CurrentAccountService.ServiceManager;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,34 +23,71 @@ namespace ADOL.APP.Web.Controllers
 
         public ActionResult Index()
         {
-            //var events = new EventsManager();
-            //events.UpdateEvents();
-            //using (var client = new HttpClient())
-            //{
-            //    EventsManager man = new EventsManager();
-            //    man.UpdateEvents();
-            //    man.GetSportEvent("FB");
-            //    client.BaseAddress = new Uri(baseURL);
-            //    client.DefaultRequestHeaders.Accept.Clear();
-            //    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            EventsManager mgr = new EventsManager();
+            var sports = mgr.GetActiveSports();
+            dynamic view = new List<ExpandoObject>();
 
-            //    // New code:
-            //    HttpResponseMessage response = client.GetAsync("xml.php?ident=discoverytx&passwd=57t6y67&mgstr=FBARG").Result;
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        List<match> partidos = new List<match>();
+            string lastCode = null, lastRegion = null, lastCountry = null;
+      
+            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+            {
+                if (lastCode != sport.Code)
+                {
+                    lastCode = sport.Code;
+                    dynamic viewSport = new ExpandoObject();
+                    dynamic regions = new List<ExpandoObject>();
 
-            //        foreach (XElement partido in response.Content.ReadAsAsync<XElement>().Result.Elements("match"))
-            //        {
-            //            partidos.Add(new match() { Local = partido.Element("hteam").Value, Visitante = partido.Element("ateam").Value });
-            //        }
+                    viewSport.code = lastCode;
+                    viewSport.name = sport.Name;
 
+                    foreach (var region in sports.Where(s => s.Code == lastCode).OrderBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+                    {
+                        if (lastRegion != region.RegionID)
+                        {
+                            lastRegion = region.RegionID;
+                            dynamic newRegion = new ExpandoObject();
+                            dynamic countries = new List<ExpandoObject>();
 
+                            newRegion.name = region.RegionName;
+                            newRegion.code = region.RegionID;
 
-            //        ViewBag.Partidos = partidos;
-            //    }
-            //}
+                            #region paises
+                            foreach (var pais in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion).OrderBy(s => s.CountryName).ThenBy(s => s.TournamentName))
+                            {
+                                if (lastCountry != pais.Country)
+                                {
+                                    dynamic country = new ExpandoObject();
+                                    dynamic leagues = new List<ExpandoObject>();
 
+                                    lastCountry = pais.Country;
+                                    country.code = pais.Country;
+                                    country.name = pais.CountryName;
+                                    country.flag = pais.MenuFlagKey;
+                                    #region Ligas
+                                    foreach (var liga in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion && s.Country == lastCountry).OrderBy(s => s.TournamentName))
+                                    {
+                                        dynamic league = new ExpandoObject();
+                                        league.code = liga.TournamentID;
+                                        league.name = liga.TournamentName == "" ? liga.InternalName : liga.TournamentName;
+                                        leagues.Add(league);
+                                    }
+                                    #endregion
+                                    country.leagues = leagues;
+                                    countries.Add(country);
+                                }
+                            }
+                            #endregion
+                            newRegion.countries = countries;
+                            regions.Add(newRegion);
+                        }
+                    }
+                    viewSport.regions = regions;
+
+                    view.Add(viewSport);
+                }
+            }
+            ViewBag.menu = view;
+            
             return View();
         }
 

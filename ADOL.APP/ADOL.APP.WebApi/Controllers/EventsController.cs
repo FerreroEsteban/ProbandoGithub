@@ -15,7 +15,7 @@ namespace ADOL.APP.WebApi.Controllers
         public dynamic GetActiveEvents(string id)
         {
             EventsManager mgr = new EventsManager();
-            var leagueEvents = mgr.GetLeagueEvents(id);
+            var leagueEvents = mgr.GetTournamentEvents(id);
             dynamic view = new List<ExpandoObject>();
             foreach (var singleEvent in leagueEvents)
             {

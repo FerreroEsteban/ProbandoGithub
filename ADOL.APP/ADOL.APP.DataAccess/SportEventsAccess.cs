@@ -14,7 +14,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
         {
             using (var dbcontext = new BE.ADOLDBEntities())
             {
-                return dbcontext.SportEvents.Where(p => p.Active && p.Init > DateTime.UtcNow).ToList();
+                return dbcontext.SportEvents.Include("SportBets").Where(p => p.Active && p.Init > DateTime.UtcNow).ToList();
             }
         }
 
@@ -131,6 +131,24 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                 BE.SportEvent sportEvent = new BE.SportEvent();
                 var sports = db.Sports.ToList();
                 var events = db.Sports.Where(p => p.League.Equals(leagueId)).First().SportEvents.ToList();
+                foreach (var singleEvent in events)
+                {
+                    sportEvent = singleEvent;
+                    sportEvent.SportBets = singleEvent.SportBets;
+                    returnValue.Add(sportEvent);
+                }
+            }
+            return returnValue;
+        }
+
+        public List<BE.SportEvent> GetEventsByTournament(string tournamentId)
+        {
+            List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
+            using (var db = new BE.ADOLDBEntities())
+            {
+                BE.SportEvent sportEvent = new BE.SportEvent();
+                var sports = db.Sports.ToList();
+                var events = db.Sports.Where(p => p.TournamentID.Equals(tournamentId)).First().SportEvents.ToList();
                 foreach (var singleEvent in events)
                 {
                     sportEvent = singleEvent;

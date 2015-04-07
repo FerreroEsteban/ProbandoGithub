@@ -46,7 +46,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
                if (data != null) {
-                   if (data.length != null) {
+                   if (data.length > 0) {
                        $scope.showBets = "pending";
                        $scope.pendingBets = data;
                    }
@@ -165,7 +165,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     }
 
     $scope.areBets = function (simple) {
-        if ($scope.bets == null || $scope.bets.length == 0) {
+        if ($scope.bets == null || $scope.bets.length == 0) {            
             return false;
         }
 
@@ -182,6 +182,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                 }
             }
         }
+
         return false;
     }
 
