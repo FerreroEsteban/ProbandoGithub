@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
+using System.Data.Entity;
 
 namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 {
@@ -95,7 +96,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             return this.GetActiveSports().Where(p => p.Code.Equals(code)).ToList();
         }
 
-        public List<BE.SportEvent> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvents(string sportCode)
         {
             List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
             using (var db = new BE.ADOLDBEntities())
@@ -110,6 +111,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                 }
             }
             return returnValue;
+        }
+
+        public BE.SportBet GetSportBet(int sportBetID)
+        {
+            using (var db = new BE.ADOLDBEntities())
+            {
+                return db.SportBets.Include(s => s.SportEvent).Where(p => p.ID.Equals(sportBetID)).First();
+            }
         }
 
         public List<BE.SportEvent> GetEvents(string leagueId)

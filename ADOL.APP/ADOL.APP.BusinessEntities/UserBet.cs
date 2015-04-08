@@ -15,15 +15,19 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
     public partial class UserBet
     {
         public int ID { get; set; }
-        public string Token { get; set; }
+        public string TransactionID { get; set; }
+        public int UserID { get; set; }
         public int SportBetID { get; set; }
         public decimal Amount { get; set; }
         public string MatchCode { get; set; }
-        public bool Hit { get; set; }
+        public string MatchName { get; set; }
+        public Nullable<bool> Hit { get; set; }
         public string BetType { get; set; }
         public decimal BetPrice { get; set; }
         public string LinkedCode { get; set; }
+        public Nullable<int> PaymentStatus { get; set; }
     
         public virtual SportBet SportBet { get; set; }
+        public virtual User User { get; set; }
     }
 }

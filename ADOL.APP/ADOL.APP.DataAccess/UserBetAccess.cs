@@ -14,33 +14,30 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 {
     public class UserBetAccess
     {
-        public void AddUserBet(string userToken, bool isLinked,List<Tuple<int,decimal,string>> bets)
+        public bool StoreUserBet(List<BE.UserBet> bets)
         {
-            using (var db = new BE.ADOLDBEntities())
+            try
             {
-                using (TransactionScope scope = new TransactionScope())
+                using (var db = new BE.ADOLDBEntities())
                 {
-                    var linkID = Guid.NewGuid();
-                    foreach (var bet in bets)
+                    using (TransactionScope scope = new TransactionScope())
                     {
-                        
-                        var sportBet = db.SportBets.Where(p => p.ID.Equals(bet.Item1)).First();
-                        var betPrice = sportBet.GetOddPrice(bet.Item3);
-
-                        BE.UserBet au = new BE.UserBet();
-                        au.SportBetID = bet.Item1;
-                        au.Token = userToken;
-                        au.Amount = bet.Item2;
-                        au.BetType = bet.Item3;
-                        au.BetPrice = betPrice;
-                        au.LinkedCode = isLinked ? linkID.ToString() : null;
-                        au.MatchCode = sportBet.SportEvent.Code;
-
-                        db.UserBets.Add(au);
-                        db.SaveChanges();
+                        var linkID = Guid.NewGuid();
+                        foreach (var bet in bets)
+                        {
+                            db.UserBets.Add(bet);
+                            db.SaveChanges();
+                        }
+                        scope.Complete();
+                        return true;
                     }
-                    scope.Complete();
                 }
+                
+            }
+            catch (Exception ex)
+            { 
+                //do something with ex
+                return false;
             }
         }
 
@@ -49,7 +46,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             List<BE.UserBet> returnValue = new List<BE.UserBet>();
             using (var db = new BE.ADOLDBEntities())
             {
-                var userBets = db.UserBets.Where(p => p.Token.Equals(userToken)).ToList();
+                var userBets = db.UserBets.Where(p => p.User.SessionToken.Equals(userToken)).ToList();
                 foreach (var userBet in userBets)
                 {
                     BE.UserBet item = new BE.UserBet();

@@ -45,7 +45,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
         public List<BE.SportEvent> GetSportEvent(string sportCode)
         {
             SportEventsAccess seax = new SportEventsAccess();
-            return seax.GetSportEvent(sportCode);
+            return seax.GetSportEvents(sportCode);
         }
 
         public List<BE.SportEvent> GetLeagueEvents(string leagueId)

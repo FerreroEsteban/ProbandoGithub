@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ADOL.APP.CurrentAccountService
+namespace ADOL.APP.CurrentAccountService.BusinessEntities
 {
-    public class BaseResponse<T> where T : IEnumerable
+    public class BaseResponse<T>
     {
-        internal T data;
+        private T data;
         public ResponseStatus Status { get; set; }
         public string Message { get; set; }
 

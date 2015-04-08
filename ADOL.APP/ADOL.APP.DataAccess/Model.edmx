@@ -10,6 +10,7 @@
           <EntitySet Name="SportEvents" EntityType="ADOLDBModel.Store.SportEvents" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Sports" EntityType="ADOLDBModel.Store.Sports" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserBets" EntityType="ADOLDBModel.Store.UserBets" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Users" EntityType="ADOLDBModel.Store.Users" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="SportBets_FK1" Association="ADOLDBModel.Store.SportBets_FK1">
             <End Role="SportEvents" EntitySet="SportEvents" />
             <End Role="SportBets" EntitySet="SportBets" />
@@ -20,6 +21,10 @@
           </AssociationSet>
           <AssociationSet Name="UserBets_FK" Association="ADOLDBModel.Store.UserBets_FK">
             <End Role="SportBets" EntitySet="SportBets" />
+            <End Role="UserBets" EntitySet="UserBets" />
+          </AssociationSet>
+          <AssociationSet Name="UserBets_FK2" Association="ADOLDBModel.Store.UserBets_FK2">
+            <End Role="Users" EntitySet="Users" />
             <End Role="UserBets" EntitySet="UserBets" />
           </AssociationSet>
         </EntityContainer>
@@ -73,14 +78,28 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Token" Type="varchar" Nullable="false" MaxLength="36" />
+          <Property Name="TransactionID" Type="varchar" Nullable="false" MaxLength="36" />
+          <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="SportBetID" Type="int" Nullable="false" />
           <Property Name="Amount" Type="decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="MatchCode" Type="varchar" Nullable="false" MaxLength="10" />
-          <Property Name="Hit" Type="bit" Nullable="false" />
+          <Property Name="MatchName" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="Hit" Type="bit" />
           <Property Name="BetType" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="BetPrice" Type="decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="LinkedCode" Type="varchar" MaxLength="36" />
+          <Property Name="PaymentStatus" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UID" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="NickName" Type="varchar" Nullable="false" MaxLength="100" />
+          <Property Name="SessionToken" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="LaunchToken" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Balance" Type="decimal" Nullable="false" Scale="2" />
         </EntityType>
         <Association Name="SportBets_FK1">
           <End Role="SportEvents" Type="ADOLDBModel.Store.SportEvents" Multiplicity="1" />
@@ -118,6 +137,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="UserBets_FK2">
+          <End Role="Users" Type="ADOLDBModel.Store.Users" Multiplicity="1" />
+          <End Role="UserBets" Type="ADOLDBModel.Store.UserBets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserBets">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
@@ -128,6 +159,7 @@
           <EntitySet Name="SportEvents" EntityType="ADOLDBModel.SportEvent" />
           <EntitySet Name="Sports" EntityType="ADOLDBModel.Sport" />
           <EntitySet Name="UserBets" EntityType="ADOLDBModel.UserBet" />
+          <EntitySet Name="Users" EntityType="ADOLDBModel.User" />
           <AssociationSet Name="SportBets_FK1" Association="ADOLDBModel.SportBets_FK1">
             <End Role="SportEvents" EntitySet="SportEvents" />
             <End Role="SportBets" EntitySet="SportBets" />
@@ -139,6 +171,10 @@
           <AssociationSet Name="SportEvents_FK1" Association="ADOLDBModel.SportEvents_FK1">
             <End Role="Sports" EntitySet="Sports" />
             <End Role="SportEvents" EntitySet="SportEvents" />
+          </AssociationSet>
+          <AssociationSet Name="UserBets_FK2" Association="ADOLDBModel.UserBets_FK2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserBets" EntitySet="UserBets" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="SportBet">
@@ -196,15 +232,31 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
-          <Property Name="Token" Type="String" Nullable="false" MaxLength="36" Unicode="false" FixedLength="false" />
+          <Property Name="TransactionID" Type="String" Nullable="false" MaxLength="36" Unicode="false" FixedLength="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="SportBetID" Type="Int32" Nullable="false" />
           <Property Name="Amount" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="MatchCode" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
-          <Property Name="Hit" Type="Boolean" Nullable="false" />
+          <Property Name="MatchName" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="Hit" Type="Boolean" />
           <Property Name="BetType" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
           <Property Name="BetPrice" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="LinkedCode" Type="String" MaxLength="36" Unicode="false" FixedLength="false" />
+          <Property Name="PaymentStatus" Type="Int32" />
           <NavigationProperty Name="SportBet" Relationship="ADOLDBModel.UserBets_FK" FromRole="UserBets" ToRole="SportBets" />
+          <NavigationProperty Name="User" Relationship="ADOLDBModel.UserBets_FK2" FromRole="UserBets" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="UID" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="NickName" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="SessionToken" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="LaunchToken" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="Balance" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="UserBets" Relationship="ADOLDBModel.UserBets_FK2" FromRole="Users" ToRole="UserBets" />
         </EntityType>
         <Association Name="SportBets_FK1">
           <End Role="SportEvents" Type="ADOLDBModel.SportEvent" Multiplicity="1" />
@@ -239,6 +291,18 @@
             </Principal>
             <Dependent Role="SportEvents">
               <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserBets_FK2">
+          <End Role="Users" Type="ADOLDBModel.User" Multiplicity="1" />
+          <End Role="UserBets" Type="ADOLDBModel.UserBet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserBets">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -300,14 +364,29 @@
             <EntityTypeMapping TypeName="ADOLDBModel.UserBet">
               <MappingFragment StoreEntitySet="UserBets">
                 <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="SportBetID" ColumnName="SportBetID" />
                 <ScalarProperty Name="Amount" ColumnName="Amount" />
                 <ScalarProperty Name="MatchCode" ColumnName="MatchCode" />
+                <ScalarProperty Name="MatchName" ColumnName="MatchName" />
                 <ScalarProperty Name="Hit" ColumnName="Hit" />
                 <ScalarProperty Name="BetType" ColumnName="BetType" />
                 <ScalarProperty Name="BetPrice" ColumnName="BetPrice" />
                 <ScalarProperty Name="LinkedCode" ColumnName="LinkedCode" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ADOLDBModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="SessionToken" ColumnName="SessionToken" />
+                <ScalarProperty Name="LaunchToken" ColumnName="LaunchToken" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

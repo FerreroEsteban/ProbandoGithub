@@ -29,5 +29,6 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         public DbSet<SportEvent> SportEvents { get; set; }
         public DbSet<Sport> Sports { get; set; }
         public DbSet<UserBet> UserBets { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
