@@ -46,8 +46,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
                if (data != null) {
-                   if (data.length > 0) {
-                       $scope.showBets = "pending";
+                   if (data.length > 0) {                      
                        $scope.pendingBets = data;
                    }
                }
@@ -131,18 +130,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         }
     }
     
-    $scope.getBetKind = function (betId, pendingResult) {
-
-        var oddType = null;
-
-        if (!pendingResult) {
-            var betIndex = GetBetIndexFromBets(betId);
-            oddType = $scope.bets[betIndex].oddType
-        }
-        else {
-            var betIndex = GetBetIndexFromPendingBets(betId);
-            oddType = $scope.pendingBets[betIndex].oddType
-        }
+    $scope.getBetKind = function (oddType) {
         switch (oddType) {
             case "three way": return "Ganador del partido";                
         }
@@ -346,8 +334,8 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         });
     }
     
-    $scope.OptionText = function (match, bet, oddCode) {        
-        switch (bet.oddType) {
+    $scope.OptionText = function (match, oddType, oddCode) {        
+        switch (oddType) {
             case "three way":
                 {
                     switch (oddCode) {
