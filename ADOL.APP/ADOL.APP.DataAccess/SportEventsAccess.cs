@@ -101,7 +101,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             using (var db = new BE.ADOLDBEntities())
             {
                 BE.SportEvent sportEvent = new BE.SportEvent();
-                var events = db.Sports.Where(p => p.League.Equals(sportCode)).First().SportEvents.ToList();
+                var events = db.Sports.Where(p => p.Code.Equals(sportCode)).First().SportEvents.ToList();
                 foreach (var singleEvent in events)
                 {
                     sportEvent = singleEvent;
