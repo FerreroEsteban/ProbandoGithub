@@ -166,7 +166,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             }
         } else {
             for (var i = 0; i < $scope.bets.length; i++) {
-                if ($scope.bets[i].simple) {
+                if ($scope.bets[i].composed) {
                     return $scope.bets[i].composed;
                 }
             }
