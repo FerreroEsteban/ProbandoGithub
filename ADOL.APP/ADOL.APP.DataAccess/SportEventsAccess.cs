@@ -148,7 +148,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             {
                 BE.SportEvent sportEvent = new BE.SportEvent();
                 var sports = db.Sports.ToList();
-                var events = db.Sports.Where(p => p.TournamentID.Equals(tournamentId)).First().SportEvents.ToList();
+                var events = db.Sports.Where(p => p.TournamentID.Equals(tournamentId)).First().SportEvents.Where(se=>se.Init>= DateTime.UtcNow).ToList();
                 foreach (var singleEvent in events)
                 {
                     sportEvent = singleEvent;

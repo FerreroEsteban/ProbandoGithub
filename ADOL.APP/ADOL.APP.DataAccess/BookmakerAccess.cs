@@ -24,75 +24,78 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             XmlDocument doc = null;
             List<BE.SportEvent> sports = new List<BE.SportEvent>();
 
-            string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&cnid={0}&mgid={1}&psid={2}";
-            //string[] allowedSports = new string[] { "1" };
-            //string[] allowedGroups = new string[] { "465", "467" };
-            //string[] allowedLeags = new string[] { "1002", "1111" };
 
-            string requestUri = string.Format(uriTemplate,
-                                                string.Join(",", activeSports.Select(p => p.Country).Distinct().ToArray()),// allowedGroups),
-                                                string.Join(",", activeSports.Select(p => p.League).Distinct().ToArray()),//allowedLeags),
-                                                string.Join(",", activeSports.Select(p => p.Code).Distinct().ToArray()));
-
-            // Create the web request  
-            request = WebRequest.Create(requestUri) as HttpWebRequest;
-
-
-            // Get response  
-            using (response = request.GetResponse() as HttpWebResponse)
+            foreach (var sportCode in activeSports.Select(p => p.Code).Distinct())
             {
-                // Get the response stream  
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-
-                Xml = reader.ReadToEnd();
-                doc = new XmlDocument();
-                doc.LoadXml(Xml);
-            }
-
-
-            //XmlNamespaceManager nmgr = new XmlNamespaceManager(doc.NameTable);
-            //nmgr.AddNamespace("rest", "http://schemas.microsoft.com/search/local/ws/rest/v1");
-            XmlNodeList matches = doc.SelectNodes("matches/match");
-
-            var nodeList = new List<XmlNode>(matches.Cast<XmlNode>());
-
-            foreach (XmlNode match in nodeList)
-            {
-                XmlNodeList offer = match.SelectNodes("bookmaker/offer");
-
-                string torunamentID = match.SelectSingleNode("group").Attributes["id"].Value;
-                if (activeSports.Any(p => p.TournamentID.Equals(torunamentID)))
+                foreach (var league in activeSports.Where(s => s.Code == sportCode).Select(p => p.League).Distinct())
                 {
-                    BE.SportEvent sportEvent = new BE.SportEvent();
-                    sportEvent.Code = match.Attributes["id"].Value;
-                    sportEvent.LeagueCode = match.SelectSingleNode("group").Attributes["id"].Value;
-                    sportEvent.CountryCode = match.SelectSingleNode("group").Attributes["cnid"].Value;
+                    string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&mgid={0}&spid={1}&days=14";
 
-                    sportEvent.Name = string.Format("{0} - {1}",
-                                                     match.SelectSingleNode("hteam").InnerText,
-                                                      match.SelectSingleNode("ateam").InnerText);
-                    sportEvent.Init = DateTime.Parse(match.SelectSingleNode("time").InnerText);
-                    sportEvent.End = sportEvent.Init.AddMinutes((double)90); //cambiar por un proveedor que pueda distinguir por deporte
-                    sportEvent.Home = match.SelectSingleNode("hteam").InnerText;
-                    sportEvent.Away = match.SelectSingleNode("ateam").InnerText;
-                    sportEvent.SportID = activeSports.Where(p => p.TournamentID.Equals(torunamentID)).First().ID;
+                    var sportlea = activeSports.Select(p => p.Code).Distinct().ToList();
+                    string requestUri = string.Format(uriTemplate,
+                                                string.Join(",", league),//allowedLeags),
+                                                string.Join(",", sportCode));
 
-                    BE.SportBet userBet = new BE.SportBet();
-                    userBet.LastUpdate = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);
-                    userBet.Name = offer[offer.Count - 1].Attributes["otname"].Value;
+                    // Create the web request  
+                    request = WebRequest.Create(requestUri) as HttpWebRequest;
 
-                    XmlNodeList odds = offer[offer.Count - 1].SelectNodes("odds");
-                    XmlNode odd = odds[odds.Count - 1];
+                    // Get response  
+                    using (response = request.GetResponse() as HttpWebResponse)
+                    {
+                        // Get the response stream  
+                        StreamReader reader = new StreamReader(response.GetResponseStream());
 
-                    userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                    userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                    userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                    userBet.Code = offer[offer.Count - 1].Attributes["otname"].Value;
-                    sportEvent.SportBets.Add(userBet);
-                    sports.Add(sportEvent);
+                        Xml = reader.ReadToEnd();
+                        doc = new XmlDocument();
+                        doc.LoadXml(Xml);
+                    }
 
+                    //XmlNamespaceManager nmgr = new XmlNamespaceManager(doc.NameTable);
+                    //nmgr.AddNamespace("rest", "http://schemas.microsoft.com/search/local/ws/rest/v1");
+                    XmlNodeList matches = doc.SelectNodes("matches/match");
+
+                    var nodeList = new List<XmlNode>(matches.Cast<XmlNode>());
+
+                    foreach (XmlNode match in nodeList)
+                    {
+                        XmlNodeList offer = match.SelectNodes("bookmaker/offer");
+
+                        string torunamentID = match.SelectSingleNode("group").Attributes["id"].Value;
+                        if (activeSports.Any(p => p.TournamentID.Equals(torunamentID)))
+                        {
+                            BE.SportEvent sportEvent = new BE.SportEvent();
+                            sportEvent.Code = match.Attributes["id"].Value;
+                            sportEvent.LeagueCode = match.SelectSingleNode("group").Attributes["id"].Value;
+                            sportEvent.CountryCode = match.SelectSingleNode("group").Attributes["cnid"].Value;
+
+                            sportEvent.Name = string.Format("{0} - {1}",
+                                                             match.SelectSingleNode("hteam").InnerText,
+                                                              match.SelectSingleNode("ateam").InnerText);
+                            sportEvent.Init = DateTime.Parse(match.SelectSingleNode("time").InnerText);
+                            sportEvent.End = sportEvent.Init.AddMinutes((double)90); //cambiar por un proveedor que pueda distinguir por deporte
+                            sportEvent.Home = match.SelectSingleNode("hteam").InnerText;
+                            sportEvent.Away = match.SelectSingleNode("ateam").InnerText;
+                            sportEvent.SportID = activeSports.Where(p => p.TournamentID.Equals(torunamentID)).First().ID;
+
+                            BE.SportBet userBet = new BE.SportBet();
+                            userBet.LastUpdate = DateTime.Parse(offer[offer.Count - 1].Attributes["last_updated"].Value);
+                            userBet.Name = offer[offer.Count - 1].Attributes["otname"].Value;
+
+                            XmlNodeList odds = offer[offer.Count - 1].SelectNodes("odds");
+                            XmlNode odd = odds[odds.Count - 1];
+
+                            userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                            userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                            userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                            userBet.Code = offer[offer.Count - 1].Attributes["otname"].Value;
+                            sportEvent.SportBets.Add(userBet);
+                            sports.Add(sportEvent);
+
+                        }
+                    }
                 }
             }
+
             return sports;
         }
 
