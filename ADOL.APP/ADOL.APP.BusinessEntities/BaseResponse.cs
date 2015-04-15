@@ -17,9 +17,9 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         {
             this.data = responseData;
             this.Status = status;
-            this.Message  = message;
+            this.Message = message;
         }
-        
+
         public T GetData()
         {
             return (T)data;

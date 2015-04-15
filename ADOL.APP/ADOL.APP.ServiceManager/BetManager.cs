@@ -9,41 +9,45 @@ using ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Xml.Linq;
 using System.Threading;
+using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
     public class BetManager
     {
-        public bool AddUserBet(string userToken, int BetType, List<Tuple<int, decimal, string>> bets)
+        public BE.BaseResponse<bool> AddUserBet(string userToken, int BetType, List<Tuple<int, decimal, string>> bets)
         {
             UserAccess ua = new UserAccess();
             var user = ua.GetUser(userToken);
             decimal amountToValidte = bets.Sum(p => p.Item2);
-
+            BE.BaseResponse<bool> returnData;
             try
             {
                 if (UserWalletFacade.ValidateFundsAvailable(user, amountToValidte))
                 {
                     if (BetType > 0)
                     {
-                        return ProcessCombinedBets(amountToValidte, bets, user);
+                        returnData = ProcessCombinedBets(amountToValidte, bets, user);
                     }
                     else
                     {
-                        return ProcessSingleBets(bets, user);
+                        returnData =  ProcessSingleBets(bets, user);
                     }
                 }
-                return false;
+                returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No hay fondos suficientes para la operacion");
             }
             catch (Exception ex)
             {
-                return false;
+                RequestContextHelper.SetLastError(ex.Message);
+                returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, ex.Message);
             }
+
+            return returnData;
         }
 
-        private bool ProcessSingleBets(List<Tuple<int, decimal, string>> bets, BE.User user)
+        private BE.BaseResponse<bool> ProcessSingleBets(List<Tuple<int, decimal, string>> bets, BE.User user)
         {
-            Dictionary<BE.UserBet,BE.BaseWalletResponseData> userBets = new Dictionary<BE.UserBet,BE.BaseWalletResponseData>();
+            Dictionary<BE.UserBet, BE.BaseWalletResponseData> userBets = new Dictionary<BE.UserBet, BE.BaseWalletResponseData>();
             SportEventsAccess sea = new SportEventsAccess();
             UserBetAccess uba = new UserBetAccess();
             foreach (var bet in bets)
@@ -75,30 +79,43 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 req.TransactionID = userbet.TransactionID;
 
                 BE.BaseResponse<BE.BaseWalletResponseData> response = UserWalletFacade.ProcessBetDebit(req);
-                if (response.Status.Equals(BE.ResponseStatus.OK))
+                userBets.Add(userbet, response.GetData());
+                if (response.Status.Equals(BE.ResponseStatus.Fail))
                 {
-                    userBets.Add(userbet, response.GetData());
+                    RequestContextHelper.SetLastError(response.Message);
                 }
-                else
-                { 
+                //else
+                //{
                     //Todo: log defect
-                    new Thread(delegate()
-                    {
-                        DoRollBack(userBets);
-                    }).Start();
-                    return false;
-                }
+                    //new Thread(delegate()
+                    //{
+                    //    DoRollBack(userBets);
+                    //}).Start();
+                    //RequestContextHelper.SetLastError(response.Message);
+                //}
+                RequestContextHelper.SetCurrentToken(response.GetData().SessionToken);
+                RequestContextHelper.SetCurrentBalance(response.GetData().Balance);
             }
 
-            if (!uba.StoreUserBet(userBets.Keys.ToList()))
+            if (string.IsNullOrEmpty(RequestContextHelper.GetLastError()))
             {
                 new Thread(delegate()
                 {
                     DoRollBack(userBets);
                 }).Start();
-                return false;
             }
-            return true;
+            else
+            {
+                if (!uba.StoreUserBet(userBets.Keys.ToList()))
+                {
+                    new Thread(delegate()
+                    {
+                        DoRollBack(userBets);
+                    }).Start();
+                    return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No se pudo guardar la apuesta por un error interno");
+                }
+            }
+            return new BE.BaseResponse<bool>(true, BE.ResponseStatus.OK);
         }
 
         private void DoRollBack(Dictionary<BE.UserBet, BE.BaseWalletResponseData> userBets)
@@ -132,7 +149,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
         }
 
-        private bool ProcessCombinedBets(decimal betAmount, List<Tuple<int, decimal, string>> bets, BE.User user)
+        private BE.BaseResponse<bool> ProcessCombinedBets(decimal betAmount, List<Tuple<int, decimal, string>> bets, BE.User user)
         {
             List<BE.UserBet> userBets = new List<BE.UserBet>();
             SportEventsAccess sea = new SportEventsAccess();
@@ -176,13 +193,13 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             if (response.Status.Equals(BE.ResponseStatus.Fail))
             {
                 //userBets.Add(userbet, response.GetData());
-                
+
                 userBets.ForEach(ub => combinedBet.Add(ub, response.GetData()));
                 new Thread(delegate()
                 {
                     DoRollBack(combinedBet);
                 }).Start();
-                return false;
+                return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, response.Message);
             }
             UserBetAccess uba = new UserBetAccess();
             if (!uba.StoreUserBet(userBets))
@@ -191,9 +208,9 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     DoRollBack(combinedBet);
                 }).Start();
-                return false;
+                return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No se pudo guardar la puesta por un error interno");
             }
-            return true;
+            return new BE.BaseResponse<bool>(true, BE.ResponseStatus.OK);
         }
 
         private decimal GetBetAmount(int betType, int userBetsCount, decimal amountToValidate, decimal singlBetAmount)
@@ -242,23 +259,31 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 
             foreach (var userbet in userbets)
             {
-               XElement matchDetails = new XElement("MatchDetail", 
-                    new XElement("MatchCode", userbet.MatchCode),
-                    new XElement("MatchName", userbet.MatchName),
-                    new XElement("BetName", userbet.BetType)
-                    );
+                XElement matchDetails = new XElement("MatchDetail",
+                     new XElement("MatchCode", userbet.MatchCode),
+                     new XElement("MatchName", userbet.MatchName),
+                     new XElement("BetName", userbet.BetType)
+                     );
 
-               eventsDetail.Add(matchDetails);
+                eventsDetail.Add(matchDetails);
             }
 
             detail.Add(eventsDetail);
             return detail.ToString();
         }
 
-        public List<BE.UserBet> GetUserBets(string userToken)
+        public BE.BaseResponse<List<BE.UserBet>> GetUserBets(string userToken)
         {
             UserBetAccess uba = new UserBetAccess();
-            return uba.GetUserBets(userToken);
+            try
+            {
+                return new BE.BaseResponse<List<BE.UserBet>>(uba.GetUserBets(userToken), BE.ResponseStatus.OK);
+            }
+            catch (Exception ex)
+            {
+                RequestContextHelper.SetLastError(ex.Message);
+                return new BE.BaseResponse<List<BE.UserBet>>(new List<BE.UserBet>(), BE.ResponseStatus.Fail, ex.Message);
+            }
         }
     }
 }

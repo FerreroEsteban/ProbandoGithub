@@ -1,3 +1,4 @@
+<<<<<<< UserWallet
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,11 +36,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.UserUID = serviceData.IUD;
             data.NickName = serviceData.NickName;
             data.Balance = (decimal)serviceData.Balance;
-            data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
+            data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode),serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
             data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
-
+            
             if (data.errorCode.Equals((int)WalletErrorCode.Success))
             {
                 return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.OK);
@@ -49,16 +50,16 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.Fail, string.Format("Service error: {0} - {1}", data.errorCode, data.ErrorMessage));
             }
         }
-
+        
         public static BaseResponse<BaseWalletResponseData> ProcessBetDebit(DebitRequest request)
         {
             dynamic requestData = new ExpandoObject();
-            requestData.Token = request.SessionToken;
-            requestData.UID = request.UserUID;
-            requestData.TransactionID = request.TransactionID;
-            requestData.EventId = request.EventID;
-            requestData.EventName = request.EventName;
-            requestData.DebitAmount = request.Amount;
+            requestData.token = request.SessionToken;
+            requestData.uid = request.UserUID;
+            requestData.transactionId = request.TransactionID;
+            requestData.eventId = request.EventID;
+            requestData.eventName = request.EventName;
+            requestData.debitAmount = request.Amount;
             requestData.betDetail = request.BetDetail;
 
             dynamic serviceData = new ExpandoObject();
@@ -67,13 +68,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 
             BaseWalletResponseData data = new BaseWalletResponseData();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            data.TransactionID = serviceData.TransactionID;
+            data.UserUID = serviceData.IUD;
+            data.NickName = serviceData.NickName;
             data.Balance = (decimal)serviceData.Balance;
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
             data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
-
+            
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
@@ -81,7 +83,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             }
             else
             {
-                return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.Fail, string.Format("Service error: {0} - {1}", data.errorCode, data.ErrorMessage));
+                return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.Fail, string.Format("Service error: {0} - {1}",data.errorCode, data.ErrorMessage));
             }
 
         }
@@ -89,28 +91,20 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
         public static BaseResponse<BaseWalletResponseData> ProcessBetCredit(CreditRequest request)
         {
             dynamic requestData = new ExpandoObject();
-            requestData.Token = request.SessionToken;
-            requestData.UID = request.UserUID;
-            requestData.TransactionID = request.TransactionID;
-            requestData.EventId = request.EventID;
-            requestData.EventName = request.EventName;
-            requestData.CreditAmount = request.Amount;
-            requestData.WinningDetail = request.BetDetail;
+            requestData.token = request.SessionToken;
+            requestData.uid = request.UserUID;
+            requestData.transactionId = request.TransactionID;
+            requestData.eventId = request.EventID;
+            requestData.eventName = request.EventName;
+            requestData.creditAmount = request.Amount;
+            requestData.winningDetails = request.BetDetail;
 
             dynamic serviceData = new ExpandoObject();
 
             CallService(ConfigurationHelper.GetConfigurationItem("CreditServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            data.UserUID = serviceData.IUD;
-            data.TransactionID = serviceData.TransactionID;
-            data.Balance = (decimal)serviceData.Balance;
-            data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
-            data.ErrorMessage = serviceData.ErrorDescription;
-            data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
-
+            //populate data
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
                 return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.OK);
@@ -124,27 +118,19 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
         public static BaseResponse<BaseWalletResponseData> ProcessRollback(BaseRequest request)
         {
             dynamic requestData = new ExpandoObject();
-            requestData.Token = request.SessionToken;
-            requestData.UID = request.UserUID;
-            requestData.TransactionID = request.TransactionID;
-            requestData.EventId = request.EventID;
-            requestData.EventName = request.EventName;
-            requestData.RollbackAmount = request.Amount;
+            requestData.token = request.SessionToken;
+            requestData.uid = request.UserUID;
+            requestData.transactionId = request.TransactionID;
+            requestData.eventId = request.EventID;
+            requestData.eventName = request.EventName;
+            requestData.rollbackAmount = request.Amount;
 
             dynamic serviceData = new ExpandoObject();
 
             CallService(ConfigurationHelper.GetConfigurationItem("RollbackServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            data.UserUID = serviceData.IUD;
-            data.TransactionID = serviceData.TransactionID;
-            data.Balance = (decimal)serviceData.Balance;
-            data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
-            data.ErrorMessage = serviceData.ErrorDescription;
-            data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
-
+            //populate data
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
                 return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.OK);
@@ -160,37 +146,44 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             HttpWebRequest httpRequest = null;
             HttpWebResponse httpResponse = null;
 
-            try
+            // Create the web request  
+            httpRequest = WebRequest.Create(serviceUrl) as HttpWebRequest;
+            httpRequest.Method = "POST";
+            httpRequest.ContentType = "application/json";
+
+            httpRequest.ContentLength = requestData.Length;
+
+            StreamWriter requestWriter = new StreamWriter(httpRequest.GetRequestStream(), System.Text.Encoding.ASCII);
+            requestWriter.Write(requestData);
+            requestWriter.Close();
+
+            //requestStream.Write(
+
+            // Get response  
+            using (httpResponse = httpRequest.GetResponse() as HttpWebResponse)
             {
-                // Create the web request  
-                httpRequest = WebRequest.Create(serviceUrl) as HttpWebRequest;
-                httpRequest.Method = "POST";
-                httpRequest.ContentType = "Application/json";
-
-                httpRequest.ContentLength = requestData.Length;
-
-                StreamWriter requestWriter = new StreamWriter(httpRequest.GetRequestStream(), System.Text.Encoding.ASCII);
-                requestWriter.Write(requestData);
-                requestWriter.Close();
-
-                // Get response  
-                using (httpResponse = httpRequest.GetResponse() as HttpWebResponse)
-                {
-                    // Get the response stream  
-                    StreamReader reader = new StreamReader(httpResponse.GetResponseStream());
-                    responseData = reader.ReadToEnd();
-                }
-            }
-            catch (Exception ex)
-            {
-                responseData = new ExpandoObject();
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                responseData.Token = requestData.Token;
-                responseData.UID = requestData.UID;
-                responseData.ErrorCode = -1;
-                responseData.ErrorMessage = ex.Message + ex.InnerException != null ? ex.InnerException.Message : string.Empty;
-                responseData.Date = serializer.Serialize(DateTime.UtcNow);
+                // Get the response stream  
+                StreamReader reader = new StreamReader(httpResponse.GetResponseStream());
+                responseData = reader.ReadToEnd();
             }
         }
     }
 }
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
+{
+    public static class UserWalletFacade
+    {
+        public static bool ValidateFundsAvailable(string userToken, decimal amount)
+        {
+            return true;
+        }
+    }
+}
+>>>>>>> local

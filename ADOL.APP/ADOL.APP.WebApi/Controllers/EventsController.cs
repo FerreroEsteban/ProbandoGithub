@@ -10,24 +10,24 @@ using System.Dynamic;
 
 namespace ADOL.APP.WebApi.Controllers
 {
-    public class EventsController : ApiController
+    public class EventsController : ApiBaseController
     {
         public dynamic GetActiveEvents(string id)
         {
             EventsManager mgr = new EventsManager();
-            var leagueEvents = mgr.GetLeagueEvents(id);
+            var leagueEvents = mgr.GetTournamentEvents(id);
             dynamic view = new List<ExpandoObject>();
             foreach (var singleEvent in leagueEvents)
             {
                 dynamic thisEvent = new ExpandoObject();
                 thisEvent.ID = singleEvent.ID;
-                thisEvent.Code = singleEvent.Code;
-                thisEvent.Nombre = singleEvent.Name;
-                thisEvent.Local = singleEvent.Home;
-                thisEvent.Visitante = singleEvent.Away;
-                thisEvent.Date = singleEvent.Init.ToString("dd MMM");
-                thisEvent.Time = singleEvent.Init.ToString("hh:mm");
-                thisEvent.ApuestasDisponibles = GetEventOdds(singleEvent.SportBets);
+                thisEvent.code = singleEvent.Code;
+                thisEvent.nombre = singleEvent.Name;
+                thisEvent.local = singleEvent.Home;
+                thisEvent.visitante = singleEvent.Away;
+                thisEvent.date = singleEvent.Init.ToString("dd MMM");
+                thisEvent.time = singleEvent.Init.ToString("hh:mm");
+                thisEvent.apuestasDisponibles = GetEventOdds(singleEvent.SportBets);
                 view.Add(thisEvent);
             }
             return view;
@@ -47,18 +47,18 @@ namespace ADOL.APP.WebApi.Controllers
             {
                 dynamic betAvailable = new ExpandoObject();
                 betAvailable.ID = bet.ID;
-                betAvailable.oddtype = bet.Code;
+                betAvailable.oddType = bet.Code;
                 dynamic oddCollection = new List<ExpandoObject>();
-                foreach (var oddtype in bet.OddProvider.GetAvailables())
+                foreach (var oddType in bet.OddProvider.GetAvailables())
                 {
                     dynamic singleOdd = new ExpandoObject();
-                    singleOdd.ID = string.Format("{0}_{1}", betAvailable.ID, oddtype.Key);
-                    singleOdd.code = oddtype.Key;
-                    singleOdd.Price = bet.GetOddPrice(oddtype.Key);
+                    singleOdd.ID = string.Format("{0}_{1}", bet.ID, oddType.Key);
+                    singleOdd.code = oddType.Key;
+                    singleOdd.price = bet.GetOddPrice(oddType.Key);
                     oddCollection.Add(singleOdd);
                 }
 
-                betAvailable.OddCollection = oddCollection;
+                betAvailable.oddCollection = oddCollection;
 
                 view.Add(betAvailable);
             }

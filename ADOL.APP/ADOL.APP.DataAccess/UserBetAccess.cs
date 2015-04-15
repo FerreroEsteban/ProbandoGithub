@@ -32,10 +32,10 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                         return true;
                     }
                 }
-                
+
             }
             catch (Exception ex)
-            { 
+            {
                 //do something with ex
                 return false;
             }

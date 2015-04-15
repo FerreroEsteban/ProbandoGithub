@@ -3,44 +3,65 @@
 }
 <div id="talon" >
     <h5>Tus apuestas</h5>
-    <div class="{{bets.length == 0 ? 'hidden' :'' }}">
+    <div class="{{ betsAvailable() ? '' :'hidden' }}">
         <div class="tipodeapuesta">
             <span>Apuesta:</span>
-            <div class="tab">
-                <a href="#simple" ng-click="simpleBetsEnabled()" class="btn-tab selected">Simple</a>
-                <a href="#combinada" ng-click="composedBetsEnabled()"  class="btn-tab">Combinada</a>
+            <div class="tab" >       
+                <a href="#waitingResult" ng-click="getPendingBets()" class="btn-tab {{showBets == 'pending' ? 'selected':''}}">Pendientes</a>        
+                <a href="#simple" ng-click="simpleBetsEnabled()" class="btn-tab {{ areBets(true) && showBets == 'simple' ? 'selected':''}}">Simple</a>
+                <a href="#combinada" ng-click="composedBetsEnabled()"  class="btn-tab {{ areBets(false) && showBets == 'composed'  ? 'selected':''}}">Combinada</a>
             </div>
-        </div>
+        </div>        
         <div>
+            <div id="waitingResult" class="tab-content waitingResult {{showBets == 'pending' ? 'show':''}}">
+                <ul class="apuesta" ng-repeat="bet in pendingBets | filter:filterSimpleBets">
+                    <li class="title">{{ bet.match.nombre }}</li>
+                    <li class="desc">{{ getBetKind(bet.oddType)  }}</li>            
+                    <li class="yourbet">{{ OptionText(bet.match, bet.oddType, bet.oddCode) }}<span class="value">{{ bet.price }}</span></li>
+                    <li class="cantidad">Importe <span class="number">{{bet.amount + " ARS"}}</span></li>
+                    <li class="yourbet">Ganancia posible<span class="value">{{ (bet.price*bet.amount).toFixed(2) +' ARS'}}</span></li>
+                </ul>
+                <ul class="apuesta" ng-repeat="bet in pendingBets | filter:filterComposedBets">
+                    <li ng-repeat="detail in bet.betInfo">
+                        <span class="title">{{detail.match.nombre}}</span><br />
+                        <span>{{ getBetKind(detail.betDetail.oddType) +': '+ OptionText(detail.match, detail.betDetail.oddType, detail.betDetail.oddCode)  }}</span>
+                    </li>          
+                    <li class="yourbet">&nbsp;<span class="value">{{ bet.price }}</span></li>
+                    <li class="cantidad">Importe <span class="number">{{bet.amount + " ARS"}}</span></li>
+                    <li class="yourbet">Ganancia posible<span class="value">{{ (bet.price*bet.amount).toFixed(2) +' ARS'}}</span></li>
+                </ul>
+            </div>
             <!-- tipo de apuesta SIMPLE -->
-            <div id="simple" class="tab-content simple show"  >
+            <div id="simple" class="tab-content simple {{ areBets(true) && showBets == 'simple' ? 'show':''}}"  >
                 <ul class="apuesta" ng-repeat="bet in bets | filter:filterSimpleBets | orderBy: bet.betId">
                     <li ng-click="removeSimpleBet(bet.betId)" class="delete-btn">X</li>
                     <li class="title">{{ bet.match.nombre }}</li>
-                    <li class="desc">{{ getBetKind(bet.betId)  }}</li>
-                    <li class="yourbet">{{ OptionText(bet.match, bet, bet.odd) }}<span class="value">{{ bet.odd.price }}</span></li>
-                    <li class="cantidad">Importe <span class="number"><input id="simpleBetImport{{bet.betId}}" min="0" ng-model="bet.ammount" placeholder="$" numericsaving>ars</span></li>
+                    <li class="desc">{{ getBetKind(bet.oddType)  }}</li>
+                    <li class="yourbet">{{ OptionText(bet.match, bet.oddType, bet.odd.code) }}<span class="value">{{ bet.odd.price }}</span></li>
+                    <li class="cantidad">Importe <span class="number"><input id="simpleBetImport{{bet.betId}}" min="0" ng-model="bet.amount" placeholder="$" numericsaving>ars</span></li>
                 </ul>
+                <div class="{{areBets(true)?'hidden':''}}"><ul class="apuesta"><li><p class="error-msj" style="font-weight:bolder;font-size:1em;" >No hay apuestas simples para mostrar</p></li></ul></div>
             </div>           
             <!-- tipo de apuesta COMBINADA -->
-            <div id="combinada" class="tab-content combinada">
+            <div id="combinada" class="tab-content combinada {{ areBets(false) && showBets == 'composed'  ? 'show':''}}">
                 <ul class="apuesta"  ng-repeat="bet in bets | filter:filterComposedBets">
                     <span class="delete-btn" ng-click="removeComposedBet(bet.betId)">X</span>
                     <li class="title">{{ bet.match.nombre }}</li>
-                    <li class="desc">{{ getBetKind(bet.betId)  }}</li>
-                    <li class="yourbet">{{ OptionText(bet.match, bet, bet.odd) }}<span class="value">{{ bet.odd.price }}</span></li>
+                    <li class="desc">{{ getBetKind(bet.oddType)  }}</li>
+                    <li class="yourbet">{{ OptionText(bet.match, bet.oddType, bet.odd.code) }}<span class="value">{{ bet.odd.price }}</span></li>
                 </ul>
-                <ul class="apuesta importe">
-                    <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmmount" placeholder="$" numericsaving></li>
+                <ul class=" {{areBets(false)?'apuesta importe':'hidden'}}">
+                    <li class="cantidad">Importe <span class="number"><input type="text" ng-model="composedBetAmount" placeholder="$" numericsaving></li>
                 </ul>
+                <div class="{{areBets(false)?'hidden':''}}"><ul class="apuesta"><li><p class="error-msj" style="font-weight:bolder;font-size:1em;" >No hay apuestas compuestas para mostrar</p></li></ul></div>
             </div>           
         </div>
-            <ul class="resumen">
+            <ul class="{{ showBets == 'pending' || ( !areBets(false) && showBets == 'composed') || ( !areBets(true) && showBets == 'simple')  ?'hidden':'resumen'}}">
                 <li>Cuota total:<span class="value" ng-bind="betsQuota()" ></span></li>
-                <li>Importe total:<span class="value">&nbsp;ars</span><span class="value" ng-bind="betsAmmount()"></span></li>
+                <li>Importe total:<span class="value">&nbsp;ars</span><span class="value" ng-bind="betsAmount()"></span></li>
                 <li><span>Ganancia posible:</span><span class="value">&nbsp;ARS</span><span  class="value" ng-bind="betsWinnings()"><</li>
             </ul>
-            <div class="confirmar">
+            <div class="{{ showBets == 'pending' || ( !areBets(false) && showBets == 'composed') || ( !areBets(true) && showBets == 'simple') ?'hidden':'confirmar'}}">
                 <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}" >No tienes suficiente crédito para realizar esta apuesta</p>            
                 <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }}&nbsp;ars</span></p>
                 <a ng-click="ConfirmBets()" class="{{ hasFounds() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>

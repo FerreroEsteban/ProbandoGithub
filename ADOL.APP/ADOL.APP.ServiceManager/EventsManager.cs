@@ -9,6 +9,7 @@ using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Linq.Expressions;
 using System.Data.Entity;
+using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
@@ -31,7 +32,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 {
                     var evento = eventosGuardados.Where(p => p.Code.Equals(newEvent.Code)).First();
                     evento.Init = newEvent.Init;
-                    evento.SportBets = newEvent.SportBets;
+                    evento.SportBets = newEvent.SportBets.ToList();
                 }
                 else
                 {
@@ -42,10 +43,16 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             seax.StoreEvents(eventosGuardados);
         }
 
-        public List<BE.SportEvent> GetSportEvent(string sportCode)
+        public List<BE.SportEvent> GetSportEvents(string sportCode)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetSportEvents(sportCode);
+        }
+
+        public BE.SportEvent GetSportEvent(string matchCode)
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetSportEvent(matchCode);
         }
 
         public List<BE.SportEvent> GetLeagueEvents(string leagueId)
@@ -54,15 +61,30 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             return seax.GetEvents(leagueId);
         }
 
+        public List<BE.SportEvent> GetTournamentEvents(string tournamentId)
+        {
+            SportEventsAccess seax = new SportEventsAccess();
+            return seax.GetEventsByTournament(tournamentId);
+        }
+
         public List<BE.SportBet> GetEventOdds(string matchID)
         {
             SportEventsAccess seax = new SportEventsAccess();
             return seax.GetEventOdd(matchID);
         }
 
-        public List<BE.Sport> GetActiveSports()
+        public List<BE.Sport> GetActiveSports(BE.BaseRequest req)
         {
             SportEventsAccess seax = new SportEventsAccess();
+            if (!string.IsNullOrEmpty(req.LaunchToken))
+            {
+                var response = UserWalletFacade.ProcessLogin(req);
+                if (response.Status.Equals(BE.ResponseStatus.OK))
+                {
+                    RequestContextHelper.SetCurrentToken(response.GetData().SessionToken);
+                    RequestContextHelper.SetCurrentBalance(response.GetData().Balance);
+                }
+            }
             return seax.GetActiveSports();
         }
 

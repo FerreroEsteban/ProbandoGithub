@@ -4,12 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a0db42298121485298bf885f9c6b800b" Name="Diagrama1">
+      <Diagram DiagramId="5b4a4b2d9f0248498bc345676d4385b0" Name="Diagrama1">
         <EntityTypeShape EntityType="ADOLDBModel.SportBet" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.SportEvent" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.Sport" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.UserBet" Width="1.5" PointX="7.5" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ADOLDBModel.User" Width="1.5" PointX="5.25" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.SportEvent" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.Sport" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.UserBet" Width="1.5" PointX="7.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ADOLDBModel.User" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
         <AssociationConnector Association="ADOLDBModel.SportBets_FK1" ManuallyRouted="false" />
         <AssociationConnector Association="ADOLDBModel.UserBets_FK" ManuallyRouted="false" />
         <AssociationConnector Association="ADOLDBModel.SportEvents_FK1" ManuallyRouted="false" />

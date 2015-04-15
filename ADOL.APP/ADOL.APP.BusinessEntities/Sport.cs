@@ -23,11 +23,16 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         public string Name { get; set; }
         public string League { get; set; }
         public string Country { get; set; }
+        public string MenuFlagKey { get; set; }
         public string Code { get; set; }
         public bool Active { get; set; }
         public string ProviderID { get; set; }
         public string InternalName { get; set; }
         public string CountryName { get; set; }
+        public string RegionID { get; set; }
+        public string RegionName { get; set; }
+        public string TournamentID { get; set; }
+        public string TournamentName { get; set; }
     
         public virtual ICollection<SportEvent> SportEvents { get; set; }
     }

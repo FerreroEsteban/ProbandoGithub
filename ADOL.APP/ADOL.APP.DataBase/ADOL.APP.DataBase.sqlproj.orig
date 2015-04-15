@@ -62,13 +62,30 @@
     <Folder Include="dbo\Scripts" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< UserWallet
+    <Build Include="dbo\Tables\UserBets_1.sql" />
+    <Build Include="dbo\Tables\Sports_1.sql" />
+    <Build Include="dbo\Tables\SportEvents_1.sql" />
+    <Build Include="dbo\Tables\SportBets.sql" />
+    <Build Include="dbo\Tables\Users.sql" />
+  </ItemGroup>
+  <ItemGroup>
+=======
+>>>>>>> local
     <RefactorLog Include="ADOL.APP.DataBase.refactorlog" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\Scripts\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="dbo\Scripts\Deportes.sql" />
     <None Include="ADOL.APP.DataBase.publish.xml" />
+    <None Include="dbo\Scripts\Sports.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\Users.sql" />
+    <Build Include="dbo\Tables\UserBets.sql" />
+    <Build Include="dbo\Tables\Sports.sql" />
+    <Build Include="dbo\Tables\SportEvents.sql" />
+    <Build Include="dbo\Tables\SportBets.sql" />
   </ItemGroup>
 </Project>

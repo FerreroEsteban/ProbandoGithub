@@ -21,7 +21,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
         {
             using (var db = new BE.ADOLDBEntities())
             {
-                if(db.Users.Any(p => p.UID.Equals(userData.UID)))
+                if (db.Users.Any(p => p.UID.Equals(userData.UID)))
                 {
                     var user = db.Users.Where(p => p.UID.Equals(userData.UID)).First();
                     user.LaunchToken = userData.LaunchToken;
@@ -38,3 +38,4 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
         }
     }
 }
+
