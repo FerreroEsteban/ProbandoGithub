@@ -37,6 +37,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +49,10 @@
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseResponse.cs" />
     <Compile Include="BetType.cs" />
+    <Compile Include="DTOs\RegionDTO.cs" />
+    <Compile Include="DTOs\LeagueDTO.cs" />
+    <Compile Include="DTOs\CountryDTO.cs" />
+    <Compile Include="DTOs\SportDTO.cs" />
     <Compile Include="Extensions\UserBet.cs" />
     <Compile Include="Extensions\SportBet.cs" />
     <Compile Include="Extensions\BaseOddProvider.cs" />

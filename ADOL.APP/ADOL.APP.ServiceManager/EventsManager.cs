@@ -9,6 +9,7 @@ using ADOL.APP.CurrentAccountService.DataAccess.DBAccess;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Linq.Expressions;
 using System.Data.Entity;
+using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
@@ -72,10 +73,73 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             return seax.GetEventOdd(matchID);
         }
 
-        public List<BE.Sport> GetActiveSports()
+        public List<SportDTO> GetActiveSports()
         {
             SportEventsAccess seax = new SportEventsAccess();
-            return seax.GetActiveSports();
+            List<BE.Sport> sports = seax.GetActiveSports();
+
+            List<SportDTO> sportsDto = new List<SportDTO>();
+            
+            string lastCode = null, lastRegion = null, lastCountry = null;
+
+            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+            {
+                if (lastCode != sport.Code)
+                {
+                    lastCode = sport.Code;
+                    SportDTO viewSport = new SportDTO();
+                    List<RegionDTO> regions = new List<RegionDTO>();
+
+                    viewSport.Code = lastCode;
+                    viewSport.Name = sport.Name;
+
+                    foreach (var region in sports.Where(s => s.Code == lastCode).OrderBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+                    {
+                        if (lastRegion != region.RegionID)
+                        {
+                            lastRegion = region.RegionID;
+                            RegionDTO newRegion = new RegionDTO();
+                            List<CountryDTO> countries = new List<CountryDTO>();
+
+                            newRegion.Name = region.RegionName;
+                            newRegion.Code = region.RegionID;
+
+                            #region paises
+                            foreach (var pais in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion).OrderBy(s => s.CountryName).ThenBy(s => s.TournamentName))
+                            {
+                                if (lastCountry != pais.Country)
+                                {
+                                    CountryDTO country = new CountryDTO();
+                                    List<LeagueDTO> leagues = new List<LeagueDTO>();
+
+                                    lastCountry = pais.Country;
+                                    country.Code = pais.Country;
+                                    country.Flag = pais.MenuFlagKey;
+                                    country.Name = pais.CountryName;
+                                    #region Ligas
+                                    foreach (var liga in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion && s.Country == lastCountry).OrderBy(s => s.TournamentName))
+                                    {
+                                        LeagueDTO league = new LeagueDTO();
+                                        league.Code = liga.TournamentID;
+                                        league.Name = liga.TournamentName == "" ? liga.InternalName : liga.TournamentName;
+                                        leagues.Add(league);
+                                    }
+                                    #endregion
+                                    country.Leagues = leagues;
+                                    countries.Add(country);
+                                }
+                            }
+                            #endregion
+                            newRegion.Countries = countries;
+                            regions.Add(newRegion);
+                        }
+                    }
+                    viewSport.Regions = regions;
+
+                    sportsDto.Add(viewSport);
+                }
+            }
+            return sportsDto;
         }
 
         public List<BE.Sport> GetActiveSportLeagues(string sportcode)

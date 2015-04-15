@@ -1,32 +1,32 @@
-﻿@foreach (var sport in ViewBag.menu)
+﻿@foreach (var sport in Model)
 {
     <ul class="mtree transit" style="opacity: 1;">
         <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);">
-            <a href="" ng-click="setBreadcrumbPath('@sport.name')" style="cursor: pointer;"><i class="sport sport-futbol"></i><span>@sport.name</span></a>
+            <a href="" ng-click="setBreadcrumbPath('@sport.Name')" style="cursor: pointer;"><i class="sport sport-futbol"></i><span>@sport.Name</span></a>
             <ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-                @foreach (var region in sport.regions)
+                @foreach (var region in sport.Regions)
                 {
                     <li class="mtree-node mtree-closed">
-                        <a href="#" ng-click="setBreadcrumbPath('@sport.name'+','+'@region.name')" style="cursor: pointer;">@region.name</a>
+                        <a href="#" ng-click="setBreadcrumbPath('@sport.Name'+','+'@region.Name')" style="cursor: pointer;">@region.Name</a>
                         <ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-                            @foreach (var country in region.countries)
+                            @foreach (var country in region.Countries)
                             {
-                                if(string.IsNullOrWhiteSpace(country.name))
+                                if(string.IsNullOrWhiteSpace(country.Name))
                                 {
-                                     foreach (var league in country.leagues)
+                                     foreach (var league in country.Leagues)
                                      { 
-                                         <li><a ng-click="getItems(@league.code,'@sport.name'+','+'@region.name'+','+'@league.name')">@league.name</a></li>
+                                         <li><a ng-click="getItems(@league.Code,'@sport.Name'+','+'@region.Name'+','+'@league.Name')">@league.Name</a></li>
                                      }
                                 }
                                 else
                                 {
                                     <li class="mtree-node mtree-closed">
-                                        <a href="#" ng-click="setBreadcrumbPath('@sport.name'+','+'@region.name'+','+'@country.name')" style="cursor: pointer;"><img src="Images/blank.gif" class="flag @country.flag" alt="Argentina"> @country.name</a>
+                                        <a href="#" ng-click="setBreadcrumbPath('@sport.Name'+','+'@region.Name'+','+'@country.Name')" style="cursor: pointer;"><img src="Images/blank.gif" class="flag @country.Flag" alt="Argentina"> @country.Name</a>
                                         <ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
                                  
-                                        @foreach (var league in country.leagues)
+                                        @foreach (var league in country.Leagues)
                                         { 
-                                            <li><a ng-click="getItems(@league.code,'@sport.name'+','+'@region.name'+','+'@country.name'+','+'@league.name')">@league.name</a></li>
+                                            <li><a ng-click="getItems(@league.Code,'@sport.Name'+','+'@region.Name'+','+'@country.Name'+','+'@league.Name')">@league.Name</a></li>
                                         }
                                     </ul>
                                 </li>
@@ -39,207 +39,3 @@
         </li>
     </ul>
 }
-
-@*<ul class="mtree transit" style="opacity: 1;">
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);">
-        <a href="#" ng-click="setBreadcrumbPath('Fútbol')" style="cursor: pointer;"><i class="sport sport-futbol"></i><span>Fútbol</span></a>
-        <ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-            <li><a href="#">Africa</a></li>
-            <li class="mtree-node mtree-closed"><a href="#" ng-click="setBreadcrumbPath('Fútbol,America')" style="cursor: pointer;">America</a>
-                <ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-                    <li class="mtree-node mtree-closed">
-                        <a href="#" ng-click="setBreadcrumbPath('Fútbol,America,Argentina')" style="cursor: pointer;">
-                            <img src="Images/blank.gif" class="flag flag-ar" alt="Argentina">
-                            Argentina</a>
-                        <ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                            <li><a ng-click="getItems(1009,'Fútbol,America,Argentina,Copa Argentina' )">Copa Argentina</a></li>
-                        </ul>
-                    </li>
-                    <li><a ng-click="getItems(1097,'Fútbol,America,Copa Sudamericana' )">Copa Sudamericana</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-bo" alt="Bolivia">
-                        Bolivia</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-br" alt="Brasil">
-                        Brasil</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-cl" alt="Chile">
-                        Chile</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-co" alt="Colombia">
-                        Colombia</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-cr" alt="Costa Rica">
-                        Costa Rica</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-ec" alt="Ecuador">
-                        Ecuador</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-gt" alt="Guatemala">
-                        Guatemala</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-hn" alt="Honduras">
-                        Honduras</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-jm" alt="Jamaica">
-                        Jamaica</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-mx" alt="Mexico">
-                        Mexico</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-py" alt="Paraguay">
-                        Paraguay</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-pe" alt="Peru">
-                        Peru</a></li>
-                    <li><a href="#">
-                        <img src="Images/blank.gif" class="flag flag-ve" alt="Venezuela">
-                        Venezuela</a></li>
-                </ul>
-            </li>
-            <li><a href="#">Asia</a></li>
-            <li><a href="#">Europa</a></li>
-            <li><a href="#">Mundial</a></li>
-            <li><a href="#">Oceania</a></li>
-        </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-basket"></i><span>Basket</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-tenis"></i><span>Tenis</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-voley"></i><span>Voley</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-handball"></i><span>Handball</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-rugby"></i><span>Rugby</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-golf"></i><span>Golf</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-hockeysobrehielo"></i><span>Hockey sobre hielo</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-futbolamericano"></i><span>Fútbol americano</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-boxeo"></i><span>Boxeo</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-tenisdemesa"></i><span>Tenis de mesa</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-automovilismo"></i><span>Automovilismo</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-motociclismo"></i><span>Motociclismo</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-        <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-combate"></i><span>Combate</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-                <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                    <li><a href="#">Submenu 3</a></li>
-                </ul>
-                </li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    <li class="mtree-node mtree-closed" style="opacity: 1; transform: translateY(0px);"><a href="#" style="cursor: pointer;"><i class="sport sport-voleyplaya"></i><span>Voley playa</span></a><ul class="mtree-level-1" style="overflow: hidden; height: 0px; display: none;">
-        <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 1</a><ul class="mtree-level-2" style="overflow: hidden; height: 0px; display: none;">
-            <li class="mtree-node mtree-closed"><a href="#" style="cursor: pointer;">Submenu 2</a><ul class="mtree-level-3" style="overflow: hidden; height: 0px; display: none;">
-                <li><a href="#">Submenu 3</a></li>
-            </ul>
-            </li>
-        </ul>
-        </li>
-    </ul>
-    </li>
-</ul>*@
