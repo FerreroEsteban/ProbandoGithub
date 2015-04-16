@@ -10,6 +10,7 @@ using System.Dynamic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using Newtonsoft.Json;
+using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
 
 namespace ADOL.APP.WebApi.Controllers
 {
@@ -21,9 +22,10 @@ namespace ADOL.APP.WebApi.Controllers
             BetManager mgr = new BetManager();
             EventsManager mgrEvent = new EventsManager();
             var bets = mgr.GetUserBets(id);
+               
             if (bets.Status.Equals(ResponseStatus.OK))
             {
-                dynamic view = new List<ExpandoObject>();
+                List<UserBetDTO> betList = new List<UserBetDTO>();
 
                 string lastProcessedLinkedCode = null;
 
@@ -32,64 +34,66 @@ namespace ADOL.APP.WebApi.Controllers
                     if (string.IsNullOrWhiteSpace(bet.LinkedCode) || (bet.LinkedCode != lastProcessedLinkedCode))
                     {
 
-                        dynamic viewBet = new ExpandoObject();
-                        viewBet.betId = bet.ID;
-                        viewBet.amount = bet.Amount;
-                        viewBet.simple = string.IsNullOrWhiteSpace(bet.LinkedCode);
-                        viewBet.composed = !viewBet.simple;
-                        if (viewBet.simple)
+                        UserBetDTO viewBet = new UserBetDTO();
+                        viewBet.ID = bet.ID;
+                        viewBet.Amount = bet.Amount;
+                        viewBet.Simple = string.IsNullOrWhiteSpace(bet.LinkedCode);
+                        viewBet.Composed = !viewBet.Simple;
+                        if (viewBet.Simple)
                         {
-                            viewBet.oddType = bet.SportBet.Code;
-                            viewBet.oddCode = bet.BetType;
-                            viewBet.price = bet.BetPrice;
+                            viewBet.OddType = bet.SportBet.Code;
+                            viewBet.OddCode = bet.BetType;
+                            viewBet.Price = bet.BetPrice;
 
                             var match = mgrEvent.GetSportEvent(bet.MatchCode);
-                            dynamic thisEvent = new ExpandoObject();
+                            MatchDTO thisEvent = new MatchDTO();
                             thisEvent.ID = match.ID;
-                            thisEvent.code = match.Code;
-                            thisEvent.nombre = match.Name;
-                            thisEvent.local = match.Home;
-                            thisEvent.visitante = match.Away;
-                            thisEvent.date = match.Init.ToString("dd MMM");
-                            thisEvent.time = match.Init.ToString("hh:mm");
-                            viewBet.match = thisEvent;
+                            thisEvent.Code = match.Code;
+                            thisEvent.Name = match.Name;
+                            thisEvent.Local = match.Home;
+                            thisEvent.Visitante = match.Away;
+                            thisEvent.Date = match.Init.ToString("dd MMM");
+                            thisEvent.Time = match.Init.ToString("hh:mm");
+                            viewBet.Match = thisEvent;
                         }
                         else
                         {
-                            viewBet.price = 1;
+                            viewBet.Price = 1;
                             lastProcessedLinkedCode = bet.LinkedCode;
-                            viewBet.betInfo = new List<ExpandoObject>();
+                            viewBet.BetInfo = new List<BetInfoItemDTO>();
                             foreach (var linkedBet in bets.GetData().Where(b => b.LinkedCode == bet.LinkedCode))
                             {
-                                viewBet.price = viewBet.price * linkedBet.BetPrice;
+                                viewBet.Price = viewBet.Price * linkedBet.BetPrice;
                                 var match = mgrEvent.GetSportEvent(bet.MatchCode);
-                                dynamic betDetail = new ExpandoObject();
-                                betDetail.oddType = linkedBet.SportBet.Code;
-                                betDetail.oddCode = linkedBet.BetType;
+                                BetDetailDTO betDetail = new BetDetailDTO();
+                                betDetail.OddType = linkedBet.SportBet.Code;
+                                betDetail.OddCode = linkedBet.BetType;
 
-                                dynamic matchDetail = new ExpandoObject();
+                                MatchDTO matchDetail = new MatchDTO();
                                 matchDetail.ID = match.ID;
-                                matchDetail.code = match.Code;
-                                matchDetail.nombre = match.Name;
-                                matchDetail.local = match.Home;
-                                matchDetail.visitante = match.Away;
-                                matchDetail.date = match.Init.ToString("dd MMM");
-                                matchDetail.time = match.Init.ToString("hh:mm");
+                                matchDetail.Code = match.Code;
+                                matchDetail.Name  = match.Name;
+                                matchDetail.Local = match.Home;
+                                matchDetail.Visitante = match.Away;
+                                matchDetail.Date = match.Init.ToString("dd MMM");
+                                matchDetail.Time = match.Init.ToString("hh:mm");
 
-                                dynamic betInfoItem = new ExpandoObject();
-                                betInfoItem.betDetail = betDetail;
-                                betInfoItem.match = matchDetail;
+                                BetInfoItemDTO betInfoItem = new BetInfoItemDTO();
+                                betInfoItem.BetDetail = betDetail;
+                                betInfoItem.Match = matchDetail;
 
-                                viewBet.betInfo.Add(betInfoItem);
+                                viewBet.BetInfo.Add(betInfoItem);
                             }
 
                         }
-                        view.Add(viewBet);
+                        betList.Add(viewBet);
                     }
 
                 }
-                return this.GetView(view);
+                
+                return this.GetView(betList);
             }
+            
             return this.GetView("OperationFails");
         }
 

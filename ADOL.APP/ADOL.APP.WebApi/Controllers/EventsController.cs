@@ -7,6 +7,7 @@ using System.Web.Http;
 using ADOL.APP.CurrentAccountService.ServiceManager;
 using ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Dynamic;
+using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
 
 namespace ADOL.APP.WebApi.Controllers
 {
@@ -16,21 +17,21 @@ namespace ADOL.APP.WebApi.Controllers
         {
             EventsManager mgr = new EventsManager();
             var leagueEvents = mgr.GetTournamentEvents(id);
-            dynamic view = new List<ExpandoObject>();
+            List<EventDTO> view = new List<EventDTO>();
             foreach (var singleEvent in leagueEvents)
             {
-                dynamic thisEvent = new ExpandoObject();
+                EventDTO thisEvent = new EventDTO();
                 thisEvent.ID = singleEvent.ID;
-                thisEvent.code = singleEvent.Code;
-                thisEvent.nombre = singleEvent.Name;
-                thisEvent.local = singleEvent.Home;
-                thisEvent.visitante = singleEvent.Away;
-                thisEvent.date = singleEvent.Init.ToString("dd MMM");
-                thisEvent.time = singleEvent.Init.ToString("hh:mm");
-                thisEvent.apuestasDisponibles = GetEventOdds(singleEvent.SportBets);
+                thisEvent.Code = singleEvent.Code;
+                thisEvent.Name = singleEvent.Name;
+                thisEvent.Local = singleEvent.Home;
+                thisEvent.Visitante = singleEvent.Away;
+                thisEvent.Date = singleEvent.Init.ToString("dd MMM");
+                thisEvent.Time = singleEvent.Init.ToString("hh:mm");
+                thisEvent.AvailableBets = GetEventOdds(singleEvent.SportBets);
                 view.Add(thisEvent);
             }
-            return view;
+            return this.GetView(view);
         }
 
         public dynamic GetEventOdds(string id)
@@ -40,29 +41,29 @@ namespace ADOL.APP.WebApi.Controllers
             return GetEventOdds(odds);
         }
 
-        private dynamic GetEventOdds(ICollection<SportBet> collection)
+        private List<BetDTO> GetEventOdds(ICollection<SportBet> collection)
         {
-            dynamic view = new List<ExpandoObject>();
+            List<BetDTO> bets = new List<BetDTO>();
             foreach (var bet in collection)
             {
-                dynamic betAvailable = new ExpandoObject();
+                BetDTO betAvailable = new BetDTO();
                 betAvailable.ID = bet.ID;
-                betAvailable.oddType = bet.Code;
-                dynamic oddCollection = new List<ExpandoObject>();
+                betAvailable.OddType = bet.Code;
+                List<OddDTO> oddCollection = new List<OddDTO>();
                 foreach (var oddType in bet.OddProvider.GetAvailables())
                 {
-                    dynamic singleOdd = new ExpandoObject();
+                    OddDTO singleOdd = new OddDTO();
                     singleOdd.ID = string.Format("{0}_{1}", bet.ID, oddType.Key);
-                    singleOdd.code = oddType.Key;
-                    singleOdd.price = bet.GetOddPrice(oddType.Key);
+                    singleOdd.Code = oddType.Key;
+                    singleOdd.Price = bet.GetOddPrice(oddType.Key);
                     oddCollection.Add(singleOdd);
                 }
 
-                betAvailable.oddCollection = oddCollection;
+                betAvailable.OddCollection = oddCollection;
 
-                view.Add(betAvailable);
+                bets.Add(betAvailable);
             }
-            return view;
+            return bets;
         }
     }
 }

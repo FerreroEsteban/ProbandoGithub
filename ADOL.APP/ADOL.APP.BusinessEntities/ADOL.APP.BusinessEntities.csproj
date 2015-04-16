@@ -51,6 +51,14 @@
     <Compile Include="BetType.cs" />
     <Compile Include="CreditRequest.cs" />
     <Compile Include="DebitRequest.cs" />
+    <Compile Include="DTOs\ActionResultDTO.cs" />
+    <Compile Include="DTOs\BetDTO.cs" />
+    <Compile Include="DTOs\OddDTO.cs" />
+    <Compile Include="DTOs\UserBetDTO.cs" />
+    <Compile Include="DTOs\BetInfoDTO.cs" />
+    <Compile Include="DTOs\BetDetailDTO.cs" />
+    <Compile Include="DTOs\EventDTO.cs" />
+    <Compile Include="DTOs\MatchDTO.cs" />
     <Compile Include="DTOs\RegionDTO.cs" />
     <Compile Include="DTOs\LeagueDTO.cs" />
     <Compile Include="DTOs\CountryDTO.cs" />

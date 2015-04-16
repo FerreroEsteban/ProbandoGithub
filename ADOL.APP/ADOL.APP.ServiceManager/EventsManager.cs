@@ -74,7 +74,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             return seax.GetEventOdd(matchID);
         }
 
-        public List<SportDTO> GetActiveSports()
+        public List<SportDTO> GetActiveSports(BE.BaseRequest req)
         {
             SportEventsAccess seax = new SportEventsAccess();
             if (!string.IsNullOrEmpty(req.LaunchToken))

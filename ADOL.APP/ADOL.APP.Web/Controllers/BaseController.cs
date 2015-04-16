@@ -90,15 +90,17 @@ namespace ADOL.APP.Web.Controllers
 
         protected BaseController()
         {
+           
+        }
+        
+        protected override void EndExecute(IAsyncResult asyncResult)
+        {
             if (!string.IsNullOrEmpty(Request.Params["token"]))
             {
                 this.CurrentSessionToken = Request.Params["token"].ToString();
                 this.IsLoginRequest = true;
             }
-        }
 
-        protected override void EndExecute(IAsyncResult asyncResult)
-        {
             UpdateCookieValue();
             base.EndExecute(asyncResult);
         }
@@ -111,6 +113,12 @@ namespace ADOL.APP.Web.Controllers
 
         private void UpdateContextValues()
         {
+             if (!string.IsNullOrEmpty(Request.Params["token"]))
+            {
+                this.CurrentSessionToken = Request.Params["token"].ToString();
+                this.IsLoginRequest = true;
+            }
+
             HttpCookie userCookie = System.Web.HttpContext.Current.Request.Cookies["ADOL.APP"];
             this.UserName = userCookie["UserName"];
             this.CurrentSessionBalance = decimal.Parse(userCookie["Balance"]);

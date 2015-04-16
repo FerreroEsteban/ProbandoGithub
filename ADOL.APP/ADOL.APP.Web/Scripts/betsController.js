@@ -20,10 +20,12 @@ app.controller('matchsController', function ($scope, $http, $sce) {
 
     $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
-               if (data != null) {
-                   if (data.length > 0) {
+               if (data != null && data.lastError == null) {
+                   $scope.walletFounds = data.balance;
+                   $scope.userName = data.userName;
+                   if (data.data.length > 0) {
                        $scope.showBets = "pending";
-                       $scope.pendingBets = data;
+                       $scope.pendingBets = data.data;
                    }
                }
            })
@@ -35,10 +37,14 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.getItems = function (leagueId, path) {
         $scope.breadcrumbPath = path;
         $http({ method: 'GET', url: 'api/Events/GetActiveEvents/' + leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
-            .success(function (data, status) {              
-                $scope.matchs = data;
-                $scope.matchDetailIdx = null;
-                $scope.showRegion = "matchs";
+            .success(function (data, status) {
+                if (data != null && data.lastError == null) {
+                    $scope.walletFounds = data.balance;
+                    $scope.userName = data.userName;
+                    $scope.matchs = data.data;
+                    $scope.matchDetailIdx = null;
+                    $scope.showRegion = "matchs";
+                }
             })
             .error(function (data, status) {
                 alert('error al obtener datos');
@@ -46,9 +52,11 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
-               if (data != null) {
-                   if (data.length > 0) {                      
-                       $scope.pendingBets = data;
+               if (data != null && data.lastError == null) {
+                   $scope.walletFounds = data.balance;
+                   $scope.userName = data.userName;
+                   if (data.data.length > 0) {
+                       $scope.pendingBets = data.data;
                    }
                }
            })
@@ -59,9 +67,14 @@ app.controller('matchsController', function ($scope, $http, $sce) {
 
     $scope.getPendingBets = function () {
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
-            .success(function (data, status) {              
-                $scope.pendingBets = data;
-                $scope.showBets = "pending";
+            .success(function (data, status) {
+                if (data != null && data.lastError == null) {
+                    $scope.walletFounds = data.balance;
+                    $scope.userName = data.userName;
+                    if (data.data.length > 0) {
+                        $scope.pendingBets = data.data;
+                    }
+                }
             })
             .error(function (data, status) {
                 alert('error al obtener datos');
