@@ -40,6 +40,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +75,10 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="SportEventsAccess.cs" />
+    <Compile Include="User.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserAccess.cs" />
     <Compile Include="UserBet.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

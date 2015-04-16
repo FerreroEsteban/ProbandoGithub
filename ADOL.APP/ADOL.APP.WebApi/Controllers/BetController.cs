@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace ADOL.APP.WebApi.Controllers
 {
-    public class BetController : ApiController
+    public class BetController : ApiBaseController
     {
 
         public dynamic GetUserBet(string id)
@@ -21,77 +21,82 @@ namespace ADOL.APP.WebApi.Controllers
             BetManager mgr = new BetManager();
             EventsManager mgrEvent = new EventsManager();
             var bets = mgr.GetUserBets(id);
-            dynamic view = new List<ExpandoObject>();
-
-            string lastProcessedLinkedCode = null;
-
-            foreach (var bet in bets.OrderBy(b => b.LinkedCode))
+            if (bets.Status.Equals(ResponseStatus.OK))
             {
-                if (string.IsNullOrWhiteSpace(bet.LinkedCode) || (bet.LinkedCode != lastProcessedLinkedCode))
+                dynamic view = new List<ExpandoObject>();
+
+                string lastProcessedLinkedCode = null;
+
+                foreach (var bet in bets.GetData().OrderBy(b => b.LinkedCode))
                 {
-
-                    dynamic viewBet = new ExpandoObject();
-                    viewBet.betId = bet.ID;
-                    viewBet.amount = bet.Amount;
-                    viewBet.simple = string.IsNullOrWhiteSpace(bet.LinkedCode);
-                    viewBet.composed = !viewBet.simple;
-                    if (viewBet.simple)
+                    if (string.IsNullOrWhiteSpace(bet.LinkedCode) || (bet.LinkedCode != lastProcessedLinkedCode))
                     {
-                        viewBet.oddType = bet.SportBet.Code;
-                        viewBet.oddCode = bet.BetType;
-                        viewBet.price = bet.BetPrice;
 
-                        var match = mgrEvent.GetSportEvent(bet.MatchCode);
-                        dynamic thisEvent = new ExpandoObject();
-                        thisEvent.ID = match.ID;
-                        thisEvent.code = match.Code;
-                        thisEvent.nombre = match.Name;
-                        thisEvent.local = match.Home;
-                        thisEvent.visitante = match.Away;
-                        thisEvent.date = match.Init.ToString("dd MMM");
-                        thisEvent.time = match.Init.ToString("hh:mm");
-                        viewBet.match = thisEvent;
-                    }
-                    else
-                    {
-                        viewBet.price = 1;
-                        lastProcessedLinkedCode = bet.LinkedCode;
-                        viewBet.betInfo = new List<ExpandoObject>();
-                        foreach (var linkedBet in bets.Where(b => b.LinkedCode == bet.LinkedCode))
+                        dynamic viewBet = new ExpandoObject();
+                        viewBet.betId = bet.ID;
+                        viewBet.amount = bet.Amount;
+                        viewBet.simple = string.IsNullOrWhiteSpace(bet.LinkedCode);
+                        viewBet.composed = !viewBet.simple;
+                        if (viewBet.simple)
                         {
-                            viewBet.price = viewBet.price * linkedBet.BetPrice;
+                            viewBet.oddType = bet.SportBet.Code;
+                            viewBet.oddCode = bet.BetType;
+                            viewBet.price = bet.BetPrice;
+
                             var match = mgrEvent.GetSportEvent(bet.MatchCode);
-                            dynamic betDetail = new ExpandoObject();
-                            betDetail.oddType = linkedBet.SportBet.Code;
-                            betDetail.oddCode = linkedBet.BetType;
-
-                            dynamic matchDetail = new ExpandoObject();
-                            matchDetail.ID = match.ID;
-                            matchDetail.code = match.Code;
-                            matchDetail.nombre = match.Name;
-                            matchDetail.local = match.Home;
-                            matchDetail.visitante = match.Away;
-                            matchDetail.date = match.Init.ToString("dd MMM");
-                            matchDetail.time = match.Init.ToString("hh:mm");
-
-                            dynamic betInfoItem = new ExpandoObject();
-                            betInfoItem.betDetail = betDetail;
-                            betInfoItem.match = matchDetail;
-
-                            viewBet.betInfo.Add(betInfoItem);
+                            dynamic thisEvent = new ExpandoObject();
+                            thisEvent.ID = match.ID;
+                            thisEvent.code = match.Code;
+                            thisEvent.nombre = match.Name;
+                            thisEvent.local = match.Home;
+                            thisEvent.visitante = match.Away;
+                            thisEvent.date = match.Init.ToString("dd MMM");
+                            thisEvent.time = match.Init.ToString("hh:mm");
+                            viewBet.match = thisEvent;
                         }
+                        else
+                        {
+                            viewBet.price = 1;
+                            lastProcessedLinkedCode = bet.LinkedCode;
+                            viewBet.betInfo = new List<ExpandoObject>();
+                            foreach (var linkedBet in bets.GetData().Where(b => b.LinkedCode == bet.LinkedCode))
+                            {
+                                viewBet.price = viewBet.price * linkedBet.BetPrice;
+                                var match = mgrEvent.GetSportEvent(bet.MatchCode);
+                                dynamic betDetail = new ExpandoObject();
+                                betDetail.oddType = linkedBet.SportBet.Code;
+                                betDetail.oddCode = linkedBet.BetType;
 
+                                dynamic matchDetail = new ExpandoObject();
+                                matchDetail.ID = match.ID;
+                                matchDetail.code = match.Code;
+                                matchDetail.nombre = match.Name;
+                                matchDetail.local = match.Home;
+                                matchDetail.visitante = match.Away;
+                                matchDetail.date = match.Init.ToString("dd MMM");
+                                matchDetail.time = match.Init.ToString("hh:mm");
+
+                                dynamic betInfoItem = new ExpandoObject();
+                                betInfoItem.betDetail = betDetail;
+                                betInfoItem.match = matchDetail;
+
+                                viewBet.betInfo.Add(betInfoItem);
+                            }
+
+                        }
+                        view.Add(viewBet);
                     }
-                    view.Add(viewBet);
+
                 }
+                return this.GetView(view);
             }
-            return view;
+            return this.GetView("OperationFails");
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "AddUserBet")]
-        public bool AddUserBet(RequestData data)
+        public dynamic AddUserBet(RequestData data)
         {
-            var userToken = data.token;
+            var userToken = this.CurrentSessionToken; //data.token;
             var betType = (int)Enum.Parse(typeof(BetType), data.betsType);
 
             BetManager mgr = new BetManager();
@@ -103,7 +108,8 @@ namespace ADOL.APP.WebApi.Controllers
                 bets.Add(bet);
             }
 
-            return mgr.AddUserBet(userToken, (int)betType, bets);
+            var success = mgr.AddUserBet(userToken, (int)betType, bets);
+            return this.GetView(GetUserBet(this.CurrentSessionToken));
         }
     }
 

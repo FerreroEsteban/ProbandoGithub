@@ -68,6 +68,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                             sportEvent.LeagueCode = match.SelectSingleNode("group").Attributes["id"].Value;
                             sportEvent.CountryCode = match.SelectSingleNode("group").Attributes["cnid"].Value;
 
+
                             sportEvent.Name = string.Format("{0} - {1}",
                                                              match.SelectSingleNode("hteam").InnerText,
                                                               match.SelectSingleNode("ateam").InnerText);

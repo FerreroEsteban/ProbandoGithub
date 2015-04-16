@@ -45,10 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseFilter.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseResponse.cs" />
+    <Compile Include="BaseResponseData.cs" />
     <Compile Include="BetType.cs" />
+    <Compile Include="CreditRequest.cs" />
+    <Compile Include="DebitRequest.cs" />
     <Compile Include="DTOs\RegionDTO.cs" />
     <Compile Include="DTOs\LeagueDTO.cs" />
     <Compile Include="DTOs\CountryDTO.cs" />
@@ -81,9 +83,13 @@
     <Compile Include="SportEvent.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="UserBet.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="WalletErrorCode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

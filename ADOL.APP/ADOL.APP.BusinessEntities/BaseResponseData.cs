@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace ADOL.APP.CurrentAccountService.BusinessEntities
 {
-    public class BaseRequest
+    public class BaseWalletResponseData
     {
-        public string LaunchToken { get; set; }
         public string SessionToken { get; set; }
         public string UserUID { get; set; }
+        public string NickName { get; set; }
         public string TransactionID { get; set; }
-        public int EventID { get; set; }
-        public string EventName { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
+        public WalletErrorCode errorCode { get; set; }
+        public string ErrorMessage { get; set; }
+        public DateTime Date { get; set; }
     }
 }

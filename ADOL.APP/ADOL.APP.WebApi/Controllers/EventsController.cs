@@ -10,7 +10,7 @@ using System.Dynamic;
 
 namespace ADOL.APP.WebApi.Controllers
 {
-    public class EventsController : ApiController
+    public class EventsController : ApiBaseController
     {
         public dynamic GetActiveEvents(string id)
         {

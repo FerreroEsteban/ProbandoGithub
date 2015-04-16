@@ -10,6 +10,7 @@ using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Linq.Expressions;
 using System.Data.Entity;
 using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
+using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
@@ -76,6 +77,15 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
         public List<SportDTO> GetActiveSports()
         {
             SportEventsAccess seax = new SportEventsAccess();
+            if (!string.IsNullOrEmpty(req.LaunchToken))
+            {
+                var response = UserWalletFacade.ProcessLogin(req);
+                if (response.Status.Equals(BE.ResponseStatus.OK))
+                {
+                    RequestContextHelper.SetCurrentToken(response.GetData().SessionToken);
+                    RequestContextHelper.SetCurrentBalance(response.GetData().Balance);
+                }
+            }
             List<BE.Sport> sports = seax.GetActiveSports();
 
             List<SportDTO> sportsDto = new List<SportDTO>();
