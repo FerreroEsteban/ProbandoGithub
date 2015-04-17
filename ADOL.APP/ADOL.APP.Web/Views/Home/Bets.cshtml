@@ -2,7 +2,7 @@
     ViewBag.Title = "Acerca de";
 }
 <div id="talon" >
-    <h5>Tus apuestas</h5>
+    <h5>Tus apuestas - @Model.UserNick</h5>
     <div class="{{ betsAvailable() ? '' :'hidden' }}">
         <div class="tipodeapuesta">
             <span>Apuesta:</span>

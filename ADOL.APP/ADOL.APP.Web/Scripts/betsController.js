@@ -38,26 +38,32 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         $scope.breadcrumbPath = path;
         $http({ method: 'GET', url: 'api/Events/GetActiveEvents/' + leagueId, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
             .success(function (data, status) {
-                if (data != null && data.lastError == null) {
+                if (data != null && data.lastError == "") {
                     $scope.walletFounds = data.balance;
                     $scope.userName = data.userName;
                     $scope.matchs = data.data;
                     $scope.matchDetailIdx = null;
                     $scope.showRegion = "matchs";
                 }
+                else {
+                    alert(data.lastError);
+                }
             })
             .error(function (data, status) {
-                alert('error al obtener datos');
+                alert('Error al obtener eventos para la liga: '+data.lastError);
             });
                
         $http({ method: 'GET', url: 'api/bet/getuserbet/' + $scope.token, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
            .success(function (data, status) {
-               if (data != null && data.lastError == null) {
+               if (data != null && data.lastError == "") {
                    $scope.walletFounds = data.balance;
                    $scope.userName = data.userName;
                    if (data.data.length > 0) {
                        $scope.pendingBets = data.data;
                    }
+               }
+               else {
+                   alert("Error al obtener apuestas de usuario: "+data.lastError);
                }
            })
            .error(function (data, status) {
