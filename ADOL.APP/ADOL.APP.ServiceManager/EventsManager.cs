@@ -14,8 +14,13 @@ using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
-    public class EventsManager
+    public class EventsManager : BaseManager
     {
+        public EventsManager() :base()
+        { 
+        
+        }
+
         public void UpdateEvents()
         { 
             BookmakerAccess bmax = new BookmakerAccess();
@@ -77,79 +82,102 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
         public List<SportDTO> GetActiveSports(BE.BaseRequest req)
         {
             SportEventsAccess seax = new SportEventsAccess();
-            if (!string.IsNullOrEmpty(req.LaunchToken))
+            var successLogin = true;
+            if (!string.IsNullOrEmpty(req.LaunchToken) && string.IsNullOrEmpty(RequestContextHelper.SessionToken))
             {
                 var response = UserWalletFacade.ProcessLogin(req);
                 if (response.Status.Equals(BE.ResponseStatus.OK))
                 {
-                    RequestContextHelper.SetCurrentToken(response.GetData().SessionToken);
-                    RequestContextHelper.SetCurrentBalance(response.GetData().Balance);
+                    //RequestContextHelper.SessionToken = response.GetData().SessionToken;
+                    //RequestContextHelper.UserBalance = response.GetData().Balance;
+                    //RequestContextHelper.UserName = response.GetData().NickName;
+
+                    UserAccess ua = new UserAccess();
+                    BE.User user = new BE.User();
+                    user.LaunchToken = req.LaunchToken;
+                    user.SessionToken = response.GetData().SessionToken;
+                    user.UID = response.GetData().UserUID;
+                    user.Balance = response.GetData().Balance;
+                    user.NickName = response.GetData().NickName;
+
+                    ua.LoginUser(user);
+                    this.UpdateCurrentUserData(user);
                 }
-            }
-            List<BE.Sport> sports = seax.GetActiveSports();
-
-            List<SportDTO> sportsDto = new List<SportDTO>();
-            
-            string lastCode = null, lastRegion = null, lastCountry = null;
-
-            foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
-            {
-                if (lastCode != sport.Code)
+                else
                 {
-                    lastCode = sport.Code;
-                    SportDTO viewSport = new SportDTO();
-                    List<RegionDTO> regions = new List<RegionDTO>();
-
-                    viewSport.Code = lastCode;
-                    viewSport.Name = sport.Name;
-
-                    foreach (var region in sports.Where(s => s.Code == lastCode).OrderBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
-                    {
-                        if (lastRegion != region.RegionID)
-                        {
-                            lastRegion = region.RegionID;
-                            RegionDTO newRegion = new RegionDTO();
-                            List<CountryDTO> countries = new List<CountryDTO>();
-
-                            newRegion.Name = region.RegionName;
-                            newRegion.Code = region.RegionID;
-
-                            #region paises
-                            foreach (var pais in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion).OrderBy(s => s.CountryName).ThenBy(s => s.TournamentName))
-                            {
-                                if (lastCountry != pais.Country)
-                                {
-                                    CountryDTO country = new CountryDTO();
-                                    List<LeagueDTO> leagues = new List<LeagueDTO>();
-
-                                    lastCountry = pais.Country;
-                                    country.Code = pais.Country;
-                                    country.Flag = pais.MenuFlagKey;
-                                    country.Name = pais.CountryName;
-                                    #region Ligas
-                                    foreach (var liga in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion && s.Country == lastCountry).OrderBy(s => s.TournamentName))
-                                    {
-                                        LeagueDTO league = new LeagueDTO();
-                                        league.Code = liga.TournamentID;
-                                        league.Name = liga.TournamentName == "" ? liga.InternalName : liga.TournamentName;
-                                        leagues.Add(league);
-                                    }
-                                    #endregion
-                                    country.Leagues = leagues;
-                                    countries.Add(country);
-                                }
-                            }
-                            #endregion
-                            newRegion.Countries = countries;
-                            regions.Add(newRegion);
-                        }
-                    }
-                    viewSport.Regions = regions;
-
-                    sportsDto.Add(viewSport);
+                    successLogin = false;
+                    RequestContextHelper.LastError = response.Message;
                 }
             }
-            return sportsDto;
+
+            if (successLogin)
+            {
+                List<BE.Sport> sports = seax.GetActiveSports();
+
+                List<SportDTO> sportsDto = new List<SportDTO>();
+
+                string lastCode = null, lastRegion = null, lastCountry = null;
+
+                foreach (var sport in sports.OrderBy(s => s.Code).ThenBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+                {
+                    if (lastCode != sport.Code)
+                    {
+                        lastCode = sport.Code;
+                        SportDTO viewSport = new SportDTO();
+                        List<RegionDTO> regions = new List<RegionDTO>();
+
+                        viewSport.Code = lastCode;
+                        viewSport.Name = sport.Name;
+
+                        foreach (var region in sports.Where(s => s.Code == lastCode).OrderBy(s => s.RegionName).ThenBy(s => s.CountryName).ThenBy(s => s.Name))
+                        {
+                            if (lastRegion != region.RegionID)
+                            {
+                                lastRegion = region.RegionID;
+                                RegionDTO newRegion = new RegionDTO();
+                                List<CountryDTO> countries = new List<CountryDTO>();
+
+                                newRegion.Name = region.RegionName;
+                                newRegion.Code = region.RegionID;
+
+                                #region paises
+                                foreach (var pais in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion).OrderBy(s => s.CountryName).ThenBy(s => s.TournamentName))
+                                {
+                                    if (lastCountry != pais.Country)
+                                    {
+                                        CountryDTO country = new CountryDTO();
+                                        List<LeagueDTO> leagues = new List<LeagueDTO>();
+
+                                        lastCountry = pais.Country;
+                                        country.Code = pais.Country;
+                                        country.Flag = pais.MenuFlagKey;
+                                        country.Name = pais.CountryName;
+                                        #region Ligas
+                                        foreach (var liga in sports.Where(s => s.Code == lastCode && s.RegionID == lastRegion && s.Country == lastCountry).OrderBy(s => s.TournamentName))
+                                        {
+                                            LeagueDTO league = new LeagueDTO();
+                                            league.Code = liga.TournamentID;
+                                            league.Name = liga.TournamentName == "" ? liga.InternalName : liga.TournamentName;
+                                            leagues.Add(league);
+                                        }
+                                        #endregion
+                                        country.Leagues = leagues;
+                                        countries.Add(country);
+                                    }
+                                }
+                                #endregion
+                                newRegion.Countries = countries;
+                                regions.Add(newRegion);
+                            }
+                        }
+                        viewSport.Regions = regions;
+
+                        sportsDto.Add(viewSport);
+                    }
+                }
+                return sportsDto;
+            }
+            return new List<SportDTO>();
         }
 
         public List<BE.Sport> GetActiveSportLeagues(string sportcode)

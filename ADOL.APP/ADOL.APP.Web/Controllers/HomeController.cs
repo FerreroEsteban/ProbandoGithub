@@ -1,5 +1,6 @@
 ﻿using ADOL.APP.CurrentAccountService.BusinessEntities;
 using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
+using ADOL.APP.CurrentAccountService.Helpers;
 using ADOL.APP.CurrentAccountService.ServiceManager;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,13 @@ namespace ADOL.APP.Web.Controllers
             ActionResultDTO dataModel = new ActionResultDTO();
 
             dataModel.Sports = mgr.GetActiveSports(this.currentRequest);
-            dataModel.ErrorMessage = this.LastError;
-            dataModel.UserNick = this.UserName;
-            dataModel.UserBalance = this.CurrentSessionBalance;
+            dataModel.ErrorMessage = RequestContextHelper.LastError;
+            dataModel.UserNick = RequestContextHelper.UserName;
+            dataModel.UserBalance = RequestContextHelper.UserBalance;
+
+            RequestContextHelper.LastError = null;
+
+            System.Web.HttpContext.Current.Response.Cookies.Add(new HttpCookie("sessionToken", RequestContextHelper.SessionToken));
            
             return View(model: dataModel);
         }

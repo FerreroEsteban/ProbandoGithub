@@ -13,12 +13,18 @@ using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
-    public class BetManager
+    public class BetManager : BaseManager
     {
+        public BetManager()
+            : base()
+        { 
+            //do nothing
+        }
+        
         public BE.BaseResponse<bool> AddUserBet(string userToken, int BetType, List<Tuple<int, decimal, string>> bets)
         {
-            UserAccess ua = new UserAccess();
-            var user = ua.GetUser(userToken);
+            var user = this.GetSessionUser();
+            
             decimal amountToValidte = bets.Sum(p => p.Item2);
             BE.BaseResponse<bool> returnData;
             try
@@ -38,10 +44,10 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
             catch (Exception ex)
             {
-                RequestContextHelper.SetLastError(ex.Message);
+                RequestContextHelper.LastError = ex.Message;
                 returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, ex.Message);
             }
-
+            
             return returnData;
         }
 
@@ -50,6 +56,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             Dictionary<BE.UserBet, BE.BaseWalletResponseData> userBets = new Dictionary<BE.UserBet, BE.BaseWalletResponseData>();
             SportEventsAccess sea = new SportEventsAccess();
             UserBetAccess uba = new UserBetAccess();
+            var withErrors = false;
             foreach (var bet in bets)
             {
                 var sportbet = sea.GetSportBet(bet.Item1);
@@ -82,22 +89,17 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 userBets.Add(userbet, response.GetData());
                 if (response.Status.Equals(BE.ResponseStatus.Fail))
                 {
-                    RequestContextHelper.SetLastError(response.Message);
+                    RequestContextHelper.LastError = response.Message;
+                    withErrors = true;
+                    break;
                 }
-                //else
-                //{
-                    //Todo: log defect
-                    //new Thread(delegate()
-                    //{
-                    //    DoRollBack(userBets);
-                    //}).Start();
-                    //RequestContextHelper.SetLastError(response.Message);
-                //}
-                RequestContextHelper.SetCurrentToken(response.GetData().SessionToken);
-                RequestContextHelper.SetCurrentBalance(response.GetData().Balance);
+                
+                RequestContextHelper.SessionToken = response.GetData().SessionToken;
+                RequestContextHelper.UserBalance = response.GetData().Balance;
+                RequestContextHelper.UserName = response.GetData().NickName;
             }
 
-            if (string.IsNullOrEmpty(RequestContextHelper.GetLastError()))
+            if (withErrors)
             {
                 new Thread(delegate()
                 {
@@ -192,7 +194,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             BE.BaseResponse<BE.BaseWalletResponseData> response = UserWalletFacade.ProcessBetDebit(req);
             if (response.Status.Equals(BE.ResponseStatus.Fail))
             {
-                //userBets.Add(userbet, response.GetData());
+                RequestContextHelper.LastError = response.Message;
 
                 userBets.ForEach(ub => combinedBet.Add(ub, response.GetData()));
                 new Thread(delegate()
@@ -210,6 +212,11 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 }).Start();
                 return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No se pudo guardar la puesta por un error interno");
             }
+
+            RequestContextHelper.SessionToken = response.GetData().SessionToken;
+            RequestContextHelper.UserBalance = response.GetData().Balance;
+            RequestContextHelper.UserName = response.GetData().NickName;
+
             return new BE.BaseResponse<bool>(true, BE.ResponseStatus.OK);
         }
 
@@ -281,7 +288,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
             catch (Exception ex)
             {
-                RequestContextHelper.SetLastError(ex.Message);
+                RequestContextHelper.LastError = ex.Message;
                 return new BE.BaseResponse<List<BE.UserBet>>(new List<BE.UserBet>(), BE.ResponseStatus.Fail, ex.Message);
             }
         }

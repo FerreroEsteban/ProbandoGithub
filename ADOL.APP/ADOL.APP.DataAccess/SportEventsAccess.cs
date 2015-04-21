@@ -152,20 +152,22 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
 
         public List<BE.SportEvent> GetEventsByTournament(string tournamentId)
         {
-            List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
+            //List<BE.SportEvent> returnValue = new List<BE.SportEvent>();
             using (var db = new BE.ADOLDBEntities())
             {
-                BE.SportEvent sportEvent = new BE.SportEvent();
-                var sports = db.Sports.ToList();
-                var events = db.Sports.Where(p => p.TournamentID.Equals(tournamentId)).First().SportEvents.ToList();
-                foreach (var singleEvent in events)
-                {
-                    sportEvent = singleEvent;
-                    sportEvent.SportBets = singleEvent.SportBets;
-                    returnValue.Add(sportEvent);
-                }
+                //BE.SportEvent sportEvent = new BE.SportEvent();
+                //var sports = db.Sports.ToList();
+                //var events = db.Sports.Where(p => p.TournamentID.Equals(tournamentId)).First().SportEvents.ToList();
+
+                return db.SportEvents.Include(p => p.SportBets).Where(p => p.Sport.TournamentID.Equals(tournamentId)).ToList();
+                //foreach (var singleEvent in events)
+                //{
+                //    sportEvent = singleEvent;
+                //    sportEvent.SportBets = singleEvent.SportBets;
+                //    returnValue.Add(sportEvent);
+                //}
             }
-            return returnValue;
+            //return returnValue;
         }
 
         public List<BE.SportBet> GetEventOdd(string matchID)

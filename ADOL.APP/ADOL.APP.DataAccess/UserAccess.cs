@@ -27,6 +27,8 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
                     user.LaunchToken = userData.LaunchToken;
                     user.SessionToken = userData.SessionToken;
                     user.Balance = userData.Balance;
+                    db.Users.Attach(user);
+                    db.Entry(user).State = System.Data.EntityState.Modified;
                 }
                 else
                 {

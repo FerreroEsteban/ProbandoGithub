@@ -11,6 +11,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using Newtonsoft.Json;
 using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
+using ADOL.APP.CurrentAccountService.Helpers;
 
 namespace ADOL.APP.WebApi.Controllers
 {
@@ -21,7 +22,8 @@ namespace ADOL.APP.WebApi.Controllers
         {
             BetManager mgr = new BetManager();
             EventsManager mgrEvent = new EventsManager();
-            var bets = mgr.GetUserBets(id);
+            //var bets = mgr.GetUserBets(id);
+            var bets = mgr.GetUserBets(RequestContextHelper.SessionToken);
                
             if (bets.Status.Equals(ResponseStatus.OK))
             {
@@ -100,7 +102,7 @@ namespace ADOL.APP.WebApi.Controllers
         [WebInvoke(Method = "POST", UriTemplate = "AddUserBet")]
         public dynamic AddUserBet(RequestData data)
         {
-            var userToken = this.CurrentSessionToken; //data.token;
+            var userToken = RequestContextHelper.SessionToken; //data.token;
             var betType = (int)Enum.Parse(typeof(BetType), data.betsType);
 
             BetManager mgr = new BetManager();
@@ -113,7 +115,7 @@ namespace ADOL.APP.WebApi.Controllers
             }
 
             var success = mgr.AddUserBet(userToken, (int)betType, bets);
-            return this.GetView(GetUserBet(this.CurrentSessionToken));
+            return this.GetView(GetUserBet(RequestContextHelper.SessionToken));
         }
     }
 

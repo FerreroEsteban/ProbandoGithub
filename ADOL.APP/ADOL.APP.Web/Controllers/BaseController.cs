@@ -5,76 +5,12 @@ using System.Web;
 using System.Web.Mvc;
 using ADOL.APP.CurrentAccountService.Helpers;
 using ADOL.APP.CurrentAccountService.BusinessEntities;
+using System.Net.Http.Headers;
 
 namespace ADOL.APP.Web.Controllers
 {
     public class BaseController : Controller
     {
-        public string CurrentSessionToken
-        {
-            get
-            {
-                return RequestContextHelper.GetCurrentToken();
-            }
-
-            set
-            {
-                this.req.SessionToken = value;
-                RequestContextHelper.SetCurrentToken(value);
-            }
-        }
-
-        public decimal CurrentSessionBalance
-        {
-            get
-            {
-                return RequestContextHelper.GetCurrentBalance();
-            }
-
-            set
-            {
-                RequestContextHelper.SetCurrentBalance(value);
-            }
-        }
-
-        public bool IsLoginRequest
-        {
-            get
-            {
-                return RequestContextHelper.IsLogin();
-            }
-            set
-            {
-                this.req.LaunchToken = this.CurrentSessionToken;
-                RequestContextHelper.SetIfLogin(value);
-            }
-        }
-
-        public string LastError
-        {
-            get
-            {
-                return RequestContextHelper.GetLastError();
-            }
-
-            private set
-            {
-                //Do nothing
-            }
-        }
-
-        public string UserName
-        {
-            get
-            {
-                return RequestContextHelper.GetUserName();
-            }
-            set
-            {
-                RequestContextHelper.SetUserName(value);
-            }
-        }
-
         private BaseRequest req = new BaseRequest();
         public BaseRequest currentRequest
         {
@@ -90,49 +26,16 @@ namespace ADOL.APP.Web.Controllers
 
         protected BaseController()
         {
-           
+            
         }
-        
-        protected override void EndExecute(IAsyncResult asyncResult)
+
+        protected override IAsyncResult BeginExecute(System.Web.Routing.RequestContext requestContext, AsyncCallback callback, object state)
         {
-            if (!string.IsNullOrEmpty(Request.Params["token"]))
+            if (!string.IsNullOrEmpty(requestContext.HttpContext.Request.Params["token"]) && string.IsNullOrEmpty(RequestContextHelper.SessionToken))
             {
-                this.CurrentSessionToken = Request.Params["token"].ToString();
-                this.IsLoginRequest = true;
+                this.req.LaunchToken = requestContext.HttpContext.Request.Params["token"];
             }
-
-            UpdateCookieValue();
-            base.EndExecute(asyncResult);
-        }
-
-        protected override void Initialize(System.Web.Routing.RequestContext requestContext)
-        {
-            base.Initialize(requestContext);
-            UpdateContextValues();
-        }
-
-        private void UpdateContextValues()
-        {
-             if (!string.IsNullOrEmpty(Request.Params["token"]))
-            {
-                this.CurrentSessionToken = Request.Params["token"].ToString();
-                this.IsLoginRequest = true;
-            }
-
-            HttpCookie userCookie = System.Web.HttpContext.Current.Request.Cookies["ADOL.APP"];
-            this.UserName = userCookie["UserName"];
-            this.CurrentSessionBalance = decimal.Parse(userCookie["Balance"]);
-            this.CurrentSessionToken = userCookie["sessionToken"];
-        }
-
-        private void UpdateCookieValue()
-        {
-            HttpCookie userCookie = new HttpCookie("ADOL.APP");
-            userCookie["UserName"] = this.UserName;
-            userCookie["Balance"] = this.CurrentSessionBalance.ToString();
-            userCookie["sessionToken"] = this.CurrentSessionToken;
-            userCookie.Expires = DateTime.Now.AddDays(30);
-            System.Web.HttpContext.Current.Response.Cookies.Add(userCookie);
+            return base.BeginExecute(requestContext, callback, state);
         }
     }
 }

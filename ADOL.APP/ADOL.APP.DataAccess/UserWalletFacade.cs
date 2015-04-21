@@ -19,10 +19,17 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             return user.Balance >= amount;
         }
 
+        private static JavaScriptSerializer GetSerializer()
+        {
+            return new JavaScriptSerializer();
+        }
+    
+    //JavaScriptSerializer jsSerializer = new JavaScriptSerializer();
+
         public static BaseResponse<BaseWalletResponseData> ProcessLogin(BaseRequest request)
         {
             dynamic requestData = new ExpandoObject();
-            requestData.token = request.SessionToken;
+            requestData.Token = request.LaunchToken;
 
             dynamic serviceData = new ExpandoObject();
 
@@ -32,15 +39,16 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-            data.UserUID = serviceData.IUD;
+            data.UserUID = serviceData.UID.ToString();
             data.NickName = serviceData.NickName;
             data.Balance = (decimal)serviceData.Balance;
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
+            //data.Date = serializer.Deserialize(serviceData.Date.ToString(), typeof(System.DateTime));
+            data.Date = serviceData.Date;
 
-            if (data.errorCode.Equals((int)WalletErrorCode.Success))
+            if (data.errorCode.Equals(WalletErrorCode.Success))
             {
                 return new BaseResponse<BaseWalletResponseData>(data, ResponseStatus.OK);
             }
@@ -72,7 +80,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
+            data.Date = serviceData.Date;
 
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
@@ -102,14 +110,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             CallService(ConfigurationHelper.GetConfigurationItem("CreditServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            //JavaScriptSerializer serializer = new JavaScriptSerializer();
             data.UserUID = serviceData.IUD;
             data.TransactionID = serviceData.TransactionID;
             data.Balance = (decimal)serviceData.Balance;
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
+            data.Date = serviceData.Date;
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
@@ -136,14 +144,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             CallService(ConfigurationHelper.GetConfigurationItem("RollbackServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            //JavaScriptSerializer serializer = new JavaScriptSerializer();
             data.UserUID = serviceData.IUD;
             data.TransactionID = serviceData.TransactionID;
             data.Balance = (decimal)serviceData.Balance;
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serializer.Deserialize(serviceData.Date, typeof(System.DateTime));
+            data.Date = GetSerializer().Deserialize(serviceData.Date, typeof(System.DateTime));
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
@@ -166,11 +174,11 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 httpRequest = WebRequest.Create(serviceUrl) as HttpWebRequest;
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = "Application/json";
-
-                httpRequest.ContentLength = requestData.Length;
+                var requestBody = GetRequestBody(requestData);
+                httpRequest.ContentLength = requestBody.Length;
 
                 StreamWriter requestWriter = new StreamWriter(httpRequest.GetRequestStream(), System.Text.Encoding.ASCII);
-                requestWriter.Write(requestData);
+                requestWriter.Write(requestBody);
                 requestWriter.Close();
 
                 // Get response  
@@ -178,19 +186,41 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 {
                     // Get the response stream  
                     StreamReader reader = new StreamReader(httpResponse.GetResponseStream());
-                    responseData = reader.ReadToEnd();
+                    responseData = System.Web.Helpers.Json.Decode(reader.ReadToEnd());
                 }
             }
             catch (Exception ex)
             {
                 responseData = new ExpandoObject();
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                responseData.Token = requestData.Token;
-                responseData.UID = requestData.UID;
+                //JavaScriptSerializer serializer = new JavaScriptSerializer();
+                responseData.Token = requestData.Token ?? string.Empty;
+                //responseData.UID = requestData.UID ?? string.Empty;
                 responseData.ErrorCode = -1;
-                responseData.ErrorMessage = ex.Message + ex.InnerException != null ? ex.InnerException.Message : string.Empty;
-                responseData.Date = serializer.Serialize(DateTime.UtcNow);
+                responseData.ErrorMessage = ex.Message + " - " + (ex.InnerException != null ? ex.InnerException.Message : string.Empty);
+                responseData.Date = GetSerializer().Serialize(DateTime.UtcNow);
             }
+        }
+
+        public static string GetRequestBody(ExpandoObject requestData)
+        {
+            IDictionary<string, object> keypairCollection = requestData as IDictionary<string, object>;
+            StringBuilder json = new StringBuilder();
+            List<string> body = new List<string>();
+            json.AppendLine("{");
+            foreach (KeyValuePair<string, object> pair in keypairCollection)
+            {
+                if (pair.Value is ExpandoObject)
+                {
+                    body.Add(string.Format("\"{0}\":{1}", pair.Key, UserWalletFacade.GetRequestBody(pair.Value as ExpandoObject)));
+                }
+                else
+                {
+                    body.Add(string.Format("\"{0}\":{1}", pair.Key, GetSerializer().Serialize(pair.Value)));
+                }
+            }
+            json.AppendLine(string.Join(",",body.ToArray()));
+            json.AppendLine("}");
+            return json.ToString();
         }
     }
 }

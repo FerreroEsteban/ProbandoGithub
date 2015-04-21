@@ -4,66 +4,211 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.SessionState;
 
 namespace ADOL.APP.CurrentAccountService.Helpers
 {
     public static class RequestContextHelper
     {
-        private static IDictionary GetContext()
+        private const string SESSION_TOKEN_KEY = "SessionToken";
+        private const string LAST_ERROR_KEY = "LastError";
+        private const string USER_NAME_KEY = "UserName";
+        private const string BALANCE_KEY = "Balance";
+
+        private static string requestToken = string.Empty;
+        private static string requestNickName = string.Empty;
+        private static decimal requestBalance = 0M;
+        private static string requestError = string.Empty;
+
+        //public static string RequestToken
+        //{
+        //    get
+        //    {
+        //        return requestToken;
+        //    }
+        //    set
+        //    {
+        //        requestToken = value;
+        //    }
+        //}
+
+        //public static string RequestNickName
+        //{
+        //    get
+        //    {
+        //        return requestNickName;
+        //    }
+        //    set
+        //    {
+        //        requestNickName = value;
+        //    }
+        //}
+
+        //public static decimal RequestBalance
+        //{
+        //    get
+        //    {
+        //        return requestBalance;
+        //    }
+        //    set
+        //    {
+        //        requestBalance = value;
+        //    }
+        //}
+
+        //public static string RequestError
+        //{
+        //    get
+        //    {
+        //        return requestError;
+        //    }
+        //    set
+        //    {
+        //        requestError = value;
+        //    }
+        //}
+
+        private static bool IsSessionEnabled
+        {
+            get
+            {
+                return GetSessionObjects() != null;
+            }
+            set
+            { 
+                //DO NOTHING
+            }
+        }
+
+        private static HttpSessionState GetSessionObjects()
+        {
+            return HttpContext.Current.Session;
+        }
+
+        public static string GetCookieValue(string cookieName)
+        {
+            return System.Web.HttpContext.Current.Request.Cookies[cookieName].Value.ToString();
+        }
+
+        public static void SetCookieValue(string cookieName, object cookieValue)
+        {
+            System.Web.HttpContext.Current.Response.Cookies.Add(new HttpCookie(cookieName, cookieValue.ToString()));
+        }
+
+        private static IDictionary GetApplicationContext()
         {
             return HttpContext.Current.Items;
         }
 
-        public static string GetCurrentToken()
+        public static string SessionToken
         {
-            return GetContext()["sessionToken"].ToString() ?? string.Empty;
+            get 
+            {
+                if (IsSessionEnabled)
+                {
+                    if (GetSessionObjects()[SESSION_TOKEN_KEY] != null)
+                    {
+                        return GetSessionObjects()[SESSION_TOKEN_KEY].ToString();
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }
+                else
+                {
+                    return requestToken;
+                }
+            }
+            set 
+            {
+                if (IsSessionEnabled)
+                {
+                    GetSessionObjects()[SESSION_TOKEN_KEY] = value;
+                }
+                else
+                {
+                    requestToken = value;
+                }
+            }
         }
 
-        public static void SetCurrentToken(string sessionToken)
+        public static string LastError
         {
-            if(string.IsNullOrEmpty(sessionToken) || sessionToken.Length < 30)
-                throw new ArgumentOutOfRangeException("sessionToken", "A valid sessionToken must be not null and needs more than 30 characters");
-            GetContext()["sessionToken"] = sessionToken;
+            get 
+            {
+                if (IsSessionEnabled)
+                {
+                    return GetSessionObjects()[LAST_ERROR_KEY] != null ? (string)GetSessionObjects()[LAST_ERROR_KEY] : string.Empty;
+                }
+                else
+                {
+                    return requestError;
+                }
+            }
+            set 
+            {
+                if (IsSessionEnabled)
+                {
+                    GetSessionObjects()[LAST_ERROR_KEY] = value;
+                }
+                else
+                {
+                    requestError = value;
+                }
+            }
         }
 
-        public static decimal GetCurrentBalance()
+        public static string UserName
         {
-            return (decimal)GetContext()["userBalance"];
+            get 
+            {
+                if (IsSessionEnabled)
+                {
+                    return GetSessionObjects()[USER_NAME_KEY] != null ? (string)GetSessionObjects()[USER_NAME_KEY] : string.Empty;
+                }
+                else
+                {
+                    return requestNickName;
+                }
+            }
+            set 
+            {
+                if (IsSessionEnabled)
+                {
+                    GetSessionObjects()[USER_NAME_KEY] = value;
+                }
+                else
+                {
+                    requestNickName = value;
+                }
+            }
         }
 
-        public static void SetCurrentBalance(decimal userBalance)
+        public static decimal UserBalance
         {
-            GetContext()["userBalance"] = userBalance;
-        }
-
-        public static bool IsLogin()
-        {
-            return (bool)GetContext()["withLogin"];
-        }
-
-        public static void SetIfLogin(bool withLogin)
-        {
-            GetContext()["withLogin"] = withLogin;
-        }
-
-        public static string GetLastError()
-        {
-            return GetContext()["LastError"].ToString();
-        }
-
-        public static void SetLastError(string value)
-        {
-            GetContext()["LastError"] = GetContext()["LastError"] == null ? value : string.Format("{0} - {1}", GetContext()["LastError"].ToString(), value);
-        }
-
-        public static string GetUserName()
-        {
-            return GetContext()["UserName"].ToString() ?? string.Empty;
-        }
-
-        public static void SetUserName(string userName)
-        {
-            GetContext()["UserName"] = userName;
+            get
+            {
+                if (IsSessionEnabled)
+                {
+                    return GetSessionObjects()[BALANCE_KEY] == null ? 0M : decimal.Parse(GetSessionObjects()[BALANCE_KEY].ToString());
+                }
+                else
+                {
+                    return requestBalance;
+                }
+            }
+            set 
+            {
+                if (IsSessionEnabled)
+                {
+                    GetSessionObjects()[BALANCE_KEY] = value;
+                }
+                else
+                {
+                    requestBalance = value;
+                }
+            }
         }
     }
 }

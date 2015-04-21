@@ -13,6 +13,12 @@ namespace ADOL.APP.WebApi.Controllers
 {
     public class EventsController : ApiBaseController
     {
+        public EventsController()
+            :base()
+        { 
+        
+        }
+        
         public dynamic GetActiveEvents(string id)
         {
             EventsManager mgr = new EventsManager();
@@ -38,7 +44,7 @@ namespace ADOL.APP.WebApi.Controllers
         {
             EventsManager mgr = new EventsManager();
             var odds = mgr.GetEventOdds(id);
-            return GetEventOdds(odds);
+            return GetView(GetEventOdds(odds));
         }
 
         private List<BetDTO> GetEventOdds(ICollection<SportBet> collection)
