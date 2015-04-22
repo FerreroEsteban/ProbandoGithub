@@ -25,7 +25,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 
         private void UpdateCurrentUserData()
         {
-            if (!string.IsNullOrEmpty(RequestContextHelper.SessionToken) && string.IsNullOrEmpty(RequestContextHelper.UserName))
+            if (!string.IsNullOrEmpty(RequestContextHelper.SessionToken) && this.currentUser == null)
             {
                 UserAccess ua = new UserAccess();
                 var user = ua.GetUser(RequestContextHelper.SessionToken);

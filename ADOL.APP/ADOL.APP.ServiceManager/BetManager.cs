@@ -249,7 +249,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 new XElement("Date", DateTime.UtcNow)
                 );
 
-            return detail.ToString();
+            return detail.ToString(SaveOptions.DisableFormatting);
         }
 
         private string GetDebitDetail(List<BE.UserBet> userbets)
@@ -276,7 +276,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             }
 
             detail.Add(eventsDetail);
-            return detail.ToString();
+            return detail.ToString(SaveOptions.DisableFormatting);
         }
 
         public BE.BaseResponse<List<BE.UserBet>> GetUserBets(string userToken)

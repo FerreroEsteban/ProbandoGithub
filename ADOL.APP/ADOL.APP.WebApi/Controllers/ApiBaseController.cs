@@ -39,7 +39,7 @@ namespace ADOL.APP.WebApi.Controllers
             dynamic returnValue = new ExpandoObject();
             returnValue.userName = RequestContextHelper.UserName;
             returnValue.balance = RequestContextHelper.UserBalance;
-            returnValue.lastError = RequestContextHelper.LastError;
+            returnValue.lastError = RequestContextHelper.LastError ?? string.Empty;
             returnValue.data = data;
             RequestContextHelper.LastError = null;
             System.Web.HttpContext.Current.Response.Cookies.Add(new HttpCookie("sessionToken", RequestContextHelper.SessionToken));

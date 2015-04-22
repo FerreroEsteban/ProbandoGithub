@@ -46,7 +46,23 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
             //data.Date = serializer.Deserialize(serviceData.Date.ToString(), typeof(System.DateTime));
-            data.Date = serviceData.Date;
+            //data.Date = serviceData.Date;
+            DateTime outputDate = DateTime.Now;
+            if(DateTime.TryParse(serviceData.Date.ToString(), out outputDate))
+            {
+                data.Date = outputDate;
+            }
+            else
+            {
+                if(serviceData.Date.GetType().Equals(typeof(System.DateTime)))
+                {
+                    data.Date = serviceData.Date;
+                }
+                else
+                {
+                    data.Date = DateTime.UtcNow;
+                }
+            }
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
@@ -80,7 +96,22 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serviceData.Date;
+            DateTime outputDate = DateTime.Now;
+            if(DateTime.TryParse(serviceData.Date.ToString(), out outputDate))
+            {
+                data.Date = outputDate;
+            }
+            else
+            {
+                if(serviceData.Date.GetType().Equals(typeof(System.DateTime)))
+                {
+                    data.Date = serviceData.Date;
+                }
+                else
+                {
+                    data.Date = DateTime.UtcNow;
+                }
+            }
 
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
@@ -117,7 +148,23 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = serviceData.Date;
+            //data.Date = serviceData.Date;
+            DateTime outputDate = DateTime.Now;
+            if(DateTime.TryParse(serviceData.Date.ToString(), out outputDate))
+            {
+                data.Date = outputDate;
+            }
+            else
+            {
+                if(serviceData.Date.GetType().Equals(typeof(System.DateTime)))
+                {
+                    data.Date = serviceData.Date;
+                }
+                else
+                {
+                    data.Date = DateTime.UtcNow;
+                }
+            }
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
@@ -151,7 +198,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            data.Date = GetSerializer().Deserialize(serviceData.Date, typeof(System.DateTime));
+            data.Date = serviceData.Date;
 
             if (data.errorCode.Equals(WalletErrorCode.Success))
             {
