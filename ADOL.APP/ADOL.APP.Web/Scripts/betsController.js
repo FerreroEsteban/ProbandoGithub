@@ -8,11 +8,11 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.detailMatch = null;
 
     $scope.walletFounds = 45;
-    $scope.token = "8c320d7d-dd58-4d4d-a908-f1806cc75c41";
+    $scope.token = "";
     $scope.bets = [];
     $scope.pendingBets = [];
     $scope.showRegion = "matchs";
-    $scope.showBets = "simple";
+    $scope.showBets = "pending";
     $scope.composedBetAmount = 0;
     $scope.matchDetailIdx = null;
     $scope.breadcrumbPath;
@@ -346,7 +346,14 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             success: function (responseData, textStatus, jqXHR) {
-                alert('Apuestas realizadas.');
+                if (responseData != null && responseData.lastError == null) {
+                    $scope.walletFounds = responseData.balance;
+                    $scope.userName = responseData.userName;
+                    if (responseData.data.length > 0) {
+                        $scope.showBets = "pending";
+                        $scope.pendingBets = responseData.data;
+                    }
+                }
             },
             error: function (responseData, textStatus, errorThrown) {
                 alert(responseData);

@@ -1,7 +1,6 @@
 ﻿
 $(document).ready(function () {
-    var mtree = $('ul.mtree');
-
+    var s = $('ul.mtree');
 
     s.find('button:first').addClass('active');
     s.find('.csl').on('click.mtree-close-same-level', function () {

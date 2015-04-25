@@ -12,7 +12,7 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         public string SessionToken { get; set; }
         public string UserUID { get; set; }
         public string TransactionID { get; set; }
-        public int EventID { get; set; }
+        public string EventID { get; set; }
         public string EventName { get; set; }
         public decimal Amount { get; set; }
     }

@@ -10,6 +10,7 @@ using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Xml.Linq;
 using System.Threading;
 using ADOL.APP.CurrentAccountService.Helpers;
+using ADOL.APP.CurrentAccountService.BusinessEntities;
 
 namespace ADOL.APP.CurrentAccountService.ServiceManager
 {
@@ -24,8 +25,8 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
         public BE.BaseResponse<bool> AddUserBet(string userToken, int BetType, List<Tuple<int, decimal, string>> bets)
         {
             var user = this.GetSessionUser();
-            
-            decimal amountToValidte = bets.Sum(p => p.Item2);
+
+            decimal amountToValidte = BetType > 0 ? bets[0].Item2 : bets.Sum(p => p.Item2);
             BE.BaseResponse<bool> returnData;
             try
             {
@@ -37,10 +38,13 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                     }
                     else
                     {
-                        returnData =  ProcessSingleBets(bets, user);
+                        returnData = ProcessSingleBets(bets, user);
                     }
                 }
-                returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No hay fondos suficientes para la operacion");
+                else
+                {
+                    returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No hay fondos suficientes para la operacion");
+                }
             }
             catch (Exception ex)
             {
@@ -61,25 +65,25 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             {
                 var sportbet = sea.GetSportBet(bet.Item1);
                 var userbet = new BE.UserBet();
-                userbet.User = user;
-                userbet.SportBet = sportbet;
+                userbet.UserID = user.ID;
+                userbet.SportBetID = sportbet.ID;
                 userbet.MatchCode = sportbet.SportEvent.Code;
                 userbet.MatchName = sportbet.SportEvent.Name;
                 userbet.PaymentStatus = null;
                 userbet.Hit = null;
                 userbet.TransactionID = Guid.NewGuid().ToString();
                 userbet.LinkedCode = null;
-                var oddProvider = userbet.GetOddProvider();
+                var oddProvider = userbet.GetOddProvider(sportbet.Code);
                 userbet.BetType = bet.Item3;
                 userbet.Amount = bet.Item2;
                 userbet.BetPrice = oddProvider.GetOddValue(bet.Item3, sportbet);
 
-                string detail = GetDebitDetail(userbet);
+                string detail = GetDebitDetail(userbet, user);
 
                 BE.DebitRequest req = new BE.DebitRequest();
                 req.Amount = userbet.Amount;
                 req.BetDetail = detail;
-                req.EventID = int.Parse(userbet.MatchCode);
+                req.EventID = userbet.MatchCode;
                 req.EventName = userbet.MatchName;
                 req.SessionToken = user.SessionToken;
                 req.UserUID = user.UID;
@@ -97,6 +101,9 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 RequestContextHelper.SessionToken = response.GetData().SessionToken;
                 RequestContextHelper.UserBalance = response.GetData().Balance;
                 RequestContextHelper.UserName = response.GetData().NickName;
+
+                user.SessionToken = response.GetData().SessionToken;
+                user.Balance = response.GetData().Balance;
             }
 
             if (withErrors)
@@ -117,6 +124,10 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                     return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No se pudo guardar la apuesta por un error interno");
                 }
             }
+
+            UserAccess ua = new UserAccess();
+            user = ua.UpdateUser(user);
+
             return new BE.BaseResponse<bool>(true, BE.ResponseStatus.OK);
         }
 
@@ -128,6 +139,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             {
                 if (userbet.Key.LinkedCode == null || (userbet.Key.LinkedCode != null && userbet.Key.Amount > 0))
                 {
+                    req = new BE.BaseRequest();
                     req.SessionToken = userbet.Value.SessionToken;
                     req.UserUID = userbet.Value.UserUID;
                     req.TransactionID = userbet.Value.TransactionID;
@@ -161,30 +173,32 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             {
                 var sportbet = sea.GetSportBet(bet.Item1);
                 var userbet = new BE.UserBet();
-                userbet.User = user;
-                userbet.SportBet = sportbet;
+                userbet.UserID = user.ID;
+                userbet.SportBetID = sportbet.ID;
                 userbet.MatchCode = sportbet.SportEvent.Code;
                 userbet.MatchName = sportbet.SportEvent.Name;
                 userbet.PaymentStatus = null;
                 userbet.Hit = null;
                 userbet.TransactionID = transaction;
                 userbet.LinkedCode = transaction;
-                var oddProvider = userbet.GetOddProvider();
+                var oddProvider = userbet.GetOddProvider(sportbet.Code);
                 userbet.BetType = bet.Item3;
                 userbet.Amount = userBets.Count > 0 ? 0M : betAmount;
 
                 totalBetPrice *= oddProvider.GetOddValue(bet.Item3, sportbet);
+
+                userBets.Add(userbet);
             }
 
             userBets.ForEach(p => p.BetPrice = totalBetPrice);
 
-            string detail = GetDebitDetail(userBets);
+            string detail = GetDebitDetail(userBets, user);
 
             BE.DebitRequest req = new BE.DebitRequest();
             req.Amount = userBets[0].Amount;
             req.BetDetail = detail;
-            //req.EventID = int.Parse(userbet.MatchCode);
-            //req.EventName = userbet.MatchName;
+            req.EventID = string.Join(",", userBets.Select(p => p.MatchCode).ToArray());
+            req.EventName = string.Join(",", userBets.Select(p => p.MatchName).ToArray());
             req.SessionToken = user.SessionToken;
             req.UserUID = user.UID;
             req.TransactionID = userBets[0].TransactionID;
@@ -217,6 +231,13 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             RequestContextHelper.UserBalance = response.GetData().Balance;
             RequestContextHelper.UserName = response.GetData().NickName;
 
+
+            user.SessionToken = response.GetData().SessionToken;
+            user.Balance = response.GetData().Balance;
+
+            UserAccess ua = new UserAccess();
+            user = ua.UpdateUser(user);
+
             return new BE.BaseResponse<bool>(true, BE.ResponseStatus.OK);
         }
 
@@ -235,11 +256,11 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             return singlBetAmount;
         }
 
-        private string GetDebitDetail(BE.UserBet userbet)
+        private string GetDebitDetail(BE.UserBet userbet, BE.User user)
         {
             XElement detail = new XElement("BetDetail",
                 new XElement("BetType", "single"),
-                new XElement("UserUID", userbet.User.UID),
+                new XElement("UserUID", user.UID),
                 new XElement("TransactionID", userbet.TransactionID),
                 new XElement("MatchCode", userbet.MatchCode),
                 new XElement("MatchName", userbet.MatchName),
@@ -252,11 +273,11 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             return detail.ToString(SaveOptions.DisableFormatting);
         }
 
-        private string GetDebitDetail(List<BE.UserBet> userbets)
+        private string GetDebitDetail(List<BE.UserBet> userbets, BE.User user)
         {
             XElement detail = new XElement("BetDetail",
                     new XElement("BetType", "combined"),
-                    new XElement("UserUID", userbets[0].User.UID),
+                    new XElement("UserUID", user.UID),
                     new XElement("TransactionID", userbets[0].TransactionID),
                     new XElement("BetAmount", userbets[0].Amount),
                     new XElement("BetPrice", userbets[0].BetPrice),

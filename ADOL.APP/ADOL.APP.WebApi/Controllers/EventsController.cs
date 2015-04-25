@@ -8,6 +8,7 @@ using ADOL.APP.CurrentAccountService.ServiceManager;
 using ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Dynamic;
 using ADOL.APP.CurrentAccountService.BusinessEntities.DTOs;
+using System.ServiceModel.Web;
 
 namespace ADOL.APP.WebApi.Controllers
 {
@@ -70,6 +71,22 @@ namespace ADOL.APP.WebApi.Controllers
                 bets.Add(betAvailable);
             }
             return bets;
+        }
+
+        [WebInvoke(Method = "POST", UriTemplate = "RefreshData")]
+        public dynamic RefreshEventsData()
+        {
+            try
+            {
+                EventsManager mgr = new EventsManager();
+                mgr.UpdateEvents();
+                return "excecution ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
         }
     }
 }

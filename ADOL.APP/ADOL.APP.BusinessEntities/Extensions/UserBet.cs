@@ -12,5 +12,10 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
         {
             return OddProviderFactory.GetOddProvider(this.SportBet.Code);
         }
+
+        public IOddProvider GetOddProvider(string oddType)
+        {
+            return OddProviderFactory.GetOddProvider(oddType);
+        }
     }
 }

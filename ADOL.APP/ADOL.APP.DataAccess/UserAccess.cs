@@ -38,6 +38,22 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             }
             return userData;
         }
+
+        public BE.User UpdateUser(BE.User userData)
+        {
+            using (var db = new BE.ADOLDBEntities())
+            {
+                var user = db.Users.Where(p => p.UID.Equals(userData.UID)).First();
+                user.LaunchToken = userData.LaunchToken;
+                user.SessionToken = userData.SessionToken;
+                user.Balance = userData.Balance;
+                db.Users.Attach(user);
+                db.Entry(user).State = System.Data.EntityState.Modified;
+
+                db.SaveChanges();
+            }
+            return userData;
+        }
     }
 }
 

@@ -115,7 +115,7 @@ namespace ADOL.APP.WebApi.Controllers
             }
 
             var success = mgr.AddUserBet(userToken, (int)betType, bets);
-            return this.GetView(GetUserBet(RequestContextHelper.SessionToken));
+            return this.GetUserBet(RequestContextHelper.SessionToken);
         }
     }
 
