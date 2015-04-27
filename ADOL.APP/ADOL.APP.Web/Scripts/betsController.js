@@ -28,6 +28,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
 
     $scope.getPendingBets = function () {
         getPendingBets();
+        $scope.showBets = "pending";
     };
 
     $scope.getBreadcrumb = function () {
@@ -152,6 +153,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
 
     $scope.removeAllBets = function () {
         $scope.bets = [];
+        showPendingBets();
     }
 
     $scope.hasFounds = function () {
@@ -259,7 +261,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                             $.each(simpleBetsToRemove, function (index, betID) {
                                 removeSimpleBet(betID);
                             });
-                            $("#WaitingResultBets")[0].click()
+                            showPendingBets();
                         }
                     }
                 },
@@ -439,6 +441,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     function removeBet(betID) {
         var betIndex = GetBetIndexFromBets(betID);
         $scope.bets.splice(betIndex, 1);
+        if ($scope.bets.length > 0) {
+            showPendingBets();
+        }
     }
 
     function removeSimpleBet(betId) {
@@ -449,6 +454,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             }
             else {
                 $scope.bets.splice(betIndex, 1);
+                if($scope.bets.length == 0){
+                    showPendingBets();
+                }
             }
         }
     }
@@ -461,8 +469,16 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             }
             else {
                 $scope.bets.splice(betIndex, 1);
+                if ($scope.bets.length == 0) {
+                    showPendingBets();
+                }
             }
         }
+    }
+
+    function showPendingBets() {
+        $("#WaitingResultBets")[0].click()
+        $scope.showBets = "pending";
     }
 
 });

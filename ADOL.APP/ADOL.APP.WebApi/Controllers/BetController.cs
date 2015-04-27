@@ -66,7 +66,7 @@ namespace ADOL.APP.WebApi.Controllers
                             foreach (var linkedBet in bets.GetData().Where(b => b.LinkedCode == bet.LinkedCode))
                             {
                                 viewBet.Price = viewBet.Price * linkedBet.BetPrice;
-                                var match = mgrEvent.GetSportEvent(bet.MatchCode);
+                                var match = mgrEvent.GetSportEvent(linkedBet.MatchCode);
                                 BetDetailDTO betDetail = new BetDetailDTO();
                                 betDetail.OddType = linkedBet.SportBet.Code;
                                 betDetail.OddCode = linkedBet.BetType;
