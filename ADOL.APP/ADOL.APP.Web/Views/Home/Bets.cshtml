@@ -7,9 +7,9 @@
         <div class="tipodeapuesta">
             <span>Apuesta:</span>
             <div class="tab" >       
-                <a href="#waitingResult" ng-click="getPendingBets()" class="btn-tab {{showBets == 'pending' ? 'selected':''}}">Pendientes</a>        
-                <a href="#simple" ng-click="simpleBetsEnabled()" class="btn-tab {{ areBets(true) && showBets == 'simple' ? 'selected':''}}">Simple</a>
-                <a href="#combinada" ng-click="composedBetsEnabled()"  class="btn-tab {{ areBets(false) && showBets == 'composed'  ? 'selected':''}}">Combinada</a>
+                <a id="WaitingResultBets" href="#waitingResult" ng-click="getPendingBets()" class="btn-tab {{showBets == 'pending' ? 'selected':''}}">Pendientes</a>        
+                <a id="SimpleBets" href="#simple" ng-click="simpleBetsEnabled()" class="btn-tab {{ areBets(true) && showBets == 'simple' ? 'selected':''}}">Simple</a>
+                <a id="ComposedBets" href="#combinada" ng-click="composedBetsEnabled()"  class="btn-tab {{ areBets(false) && showBets == 'composed'  ? 'selected':''}}">Combinada</a>
             </div>
         </div>        
         <div>
