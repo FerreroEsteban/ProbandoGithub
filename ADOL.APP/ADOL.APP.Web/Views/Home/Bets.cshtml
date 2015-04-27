@@ -64,7 +64,7 @@
             <div class="{{ showBets == 'pending' || ( !areBets(false) && showBets == 'composed') || ( !areBets(true) && showBets == 'simple') ?'hidden':'confirmar'}}">
                 <p class="{{ !hasFounds() ? 'error-msj':'hidden'}}" >No tienes suficiente crédito para realizar esta apuesta</p>            
                 <p class="{{ hasFounds() ? 'yourcredit':'hidden'}}" >Tu crédito disponible es <span>{{ availablefounds() }}&nbsp;ars</span></p>
-                <a ng-click="ConfirmBets()" class="{{ hasFounds() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>
+                <a ng-click="ConfirmBets()" class="{{ canConfirmBets() ? 'btn btn-main':'hidden'}}" style="cursor: pointer; cursor: hand;">Confirmar apuesta </a>
                 <a ng-click="removeAllBets()" style="cursor: pointer; cursor: hand;" class="cancel">borrar apuestas</a>
             </div>
     </div>

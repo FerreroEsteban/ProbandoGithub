@@ -16,9 +16,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.composedBetAmount = 0;
     $scope.matchDetailIdx = null;
     $scope.breadcrumbPath;
-
-
+    
     getPendingBets();
+    
 
 
     $scope.getItems = function (leagueId, path) {
@@ -158,6 +158,10 @@ app.controller('matchsController', function ($scope, $http, $sce) {
         return betsAmount() <= $scope.walletFounds;
     }
 
+    $scope.canConfirmBets = function () {
+        return betsAmount() <= $scope.walletFounds && betsAmount() > 0;
+    }
+
     $scope.availablefounds = function () {
         return ($scope.walletFounds - betsAmount()).toFixed(2);
     }
@@ -260,12 +264,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                     }
                 },
                 error: function (responseData, textStatus, errorThrown) {
-                    alert(responseData);
+                    alert(responseData.lastError);
                 }
             });
-        }
-        else {
-            alert("sin pauestas para realizar");
         }
     }
 
@@ -315,7 +316,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                 }
             })
             .error(function (data, status) {
-                alert('Error al obtener eventos para la liga: ' + data.lastError);
+                alert(data.lastError);
             });
     }
 
@@ -331,7 +332,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                 }
             })
             .error(function (data, status) {
-                alert('error al obtener datos');
+                alert(data.lastError);
             });
     }
         
