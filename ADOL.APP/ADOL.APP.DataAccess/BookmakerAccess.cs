@@ -23,7 +23,8 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             String Xml;
             XmlDocument doc = null;
             List<BE.SportEvent> sports = new List<BE.SportEvent>();
-            var oddTypes = new int[] { 0, 65536 };
+            //var oddTypes = new int[] { 0, 65536, 327680, 2097153 };
+            var oddTypes = new int[] { 0, 65536, 327680 };
 
             foreach (var sportCode in activeSports.Select(p => p.Code).Distinct())
             {
@@ -85,18 +86,21 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                             {
                                 XmlNode xmlOdd = match.SelectSingleNode("bookmaker/offer[@ot=" + oddId + "]");
 
-                                BE.SportBet userBet = new BE.SportBet();
-                                userBet.LastUpdate = DateTime.Parse(xmlOdd.Attributes["last_updated"].Value);
-                                userBet.Name = xmlOdd.Attributes["otname"].Value;
+                                if (xmlOdd != null)
+                                {
+                                    BE.SportBet userBet = new BE.SportBet();
+                                    userBet.LastUpdate = DateTime.Parse(xmlOdd.Attributes["last_updated"].Value);
+                                    userBet.Name = xmlOdd.Attributes["otname"].Value.Trim();
 
-                                XmlNodeList odds = xmlOdd.SelectNodes("odds");
-                                XmlNode odd = odds[odds.Count - 1];
+                                    XmlNodeList odds = xmlOdd.SelectNodes("odds");
+                                    XmlNode odd = odds[odds.Count - 1];
 
-                                userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                                userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                                userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
-                                userBet.Code = xmlOdd.Attributes["otname"].Value;
-                                sportEvent.SportBets.Add(userBet);
+                                    userBet.Odd1 = decimal.Parse(odd.SelectSingleNode("o1").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                                    userBet.Odd2 = decimal.Parse(odd.SelectSingleNode("o2").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                                    userBet.Odd3 = decimal.Parse(odd.SelectSingleNode("o3").InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                                    userBet.Code = xmlOdd.Attributes["otname"].Value.Trim();
+                                    sportEvent.SportBets.Add(userBet);
+                                }
 
                             }
                             sports.Add(sportEvent);

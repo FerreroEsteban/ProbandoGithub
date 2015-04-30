@@ -35,7 +35,7 @@ namespace ADOL.APP.WebApi.Controllers
                 thisEvent.Visitante = singleEvent.Away;
                 thisEvent.Date = singleEvent.Init.ToString("dd MMM");
                 thisEvent.Time = singleEvent.Init.ToString("hh:mm");
-                thisEvent.AvailableBets = GetEventOdds(singleEvent.SportBets);
+                thisEvent.AvailableBets = GetEventOdds(singleEvent.SportBets.Where(b=>b.Name.Trim() == "three way").ToList());
                 view.Add(thisEvent);
             }
             return this.GetView(view);
