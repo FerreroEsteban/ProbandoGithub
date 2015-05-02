@@ -81,6 +81,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.getBetKind = function (oddType) {
         switch (oddType) {
             case "three way": return "Ganador del partido";
+            case "three way - ht": return "Ganador del primer tiempo";
+            case "three way - 2nd hf": return "Ganador del segundo tiempo";
+            case "odd/even": return "Cantidad de goles";
         }
         return "Unknown bet type";
     }
@@ -273,8 +276,10 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     }
 
     $scope.OptionText = function (match, oddType, oddCode) {
-        switch (oddType) {
+        switch (oddType) {            
             case "three way":
+            case "three way - ht":
+            case "three way - 2nd hf":
                 {
                     switch (oddCode) {
                         case "tw_home":
@@ -283,6 +288,17 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                             return "Empate";
                         case "tw_away":
                             return match.visitante;
+                    }
+                }
+            case "odd/even":
+                {
+                    switch (oddCode) {
+                        case "tw_home":
+                            return "Par";
+                        case "tw_draw":
+                            return "";
+                        case "tw_away":
+                            return "Impar";
                     }
                 }
             default:

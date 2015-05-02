@@ -33,7 +33,7 @@
                             <img src="images/stats-icon.png"></span>
                         <span class="event-lines">+33</span>
                     </div>
-                    <div class="select-bet tres" ng-repeat="bet in match.apuestasDisponibles track by bet.ID">
+                    <div class="select-bet tres" ng-repeat="bet in match.apuestasDisponibles track by bet.ID ">
                         <div ng-class="isOddSelected(match, bet, odd)?'selected':''" ng-click="betMatchResult(match.ID, bet.ID, odd.code)" ng-repeat="odd in bet.oddCollection track by odd.ID">
                             <span>{{ OptionText(match, bet.oddType, odd.code) }}</span><span class="value">{{ odd.price }}</span>
                         </div>
@@ -51,9 +51,9 @@
                         <span class="event-lines">+33</span>
                     </div>
                     <!-- apuesta -->
-                    <div class="typeofbet">
-                        <h4>Resultado del partido</h4>
-                        <div class="select-bet tres" ng-repeat="bet in detailMatch.apuestasDisponibles track by bet.ID">
+                    <div class="typeofbet" ng-repeat="bet in detailMatch.apuestasDisponibles track by bet.ID">
+                        <h4>{{getBetKind(bet.oddType)}}</h4>
+                        <div class="select-bet tres" >
                             <div ng-class="isOddSelected(detailMatch, bet, odd)?'selected':''" ng-click="betMatchResult(detailMatch.ID, bet.ID, odd.code)" ng-repeat="odd in bet.oddCollection track by odd.ID">
                                 <span>{{ OptionText(detailMatch, bet.oddType, odd.code) }}</span><span class="value">{{ odd.price }}</span>
                             </div>
