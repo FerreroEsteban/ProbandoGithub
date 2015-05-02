@@ -14,8 +14,17 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
     public static class UserWalletFacade
     {
-        public static bool ValidateFundsAvailable(BusinessEntities.User user, decimal amount)
+        public static bool ValidateFundsAvailable(BusinessEntities.User user, decimal amount)//, decimal[] linePrice, bool isCombined = false)
         {
+            //decimal totalPrice = 1M;
+            //if (isCombined)
+            //{
+            //    totalPrice = linePrice[0];
+            //    if()
+            //}
+            //linePrice.ToList().ForEach(p => totalPrice *= p);
+
+            
             return user.Balance >= amount;
         }
 
