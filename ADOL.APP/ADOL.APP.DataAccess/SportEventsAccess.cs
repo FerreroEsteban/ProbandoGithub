@@ -170,6 +170,14 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
             //return returnValue;
         }
 
+        public List<BE.SportEvent> GetEventsByIDs(int[] ids)
+        {
+            using (var db = new BE.ADOLDBEntities())
+            {
+                return db.SportEvents.Include(p => p.SportBets).Include(p => p.Sport).Where(p => ids.Contains(p.ID)).Distinct().ToList();
+            }
+        }
+
         public List<BE.SportBet> GetEventOdd(string matchID)
         {
             using (var db = new BE.ADOLDBEntities())
@@ -182,7 +190,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.DBAccess
         {
             using (var db = new BE.ADOLDBEntities())
             {
-                return db.SportBets.Include(s => s.SportEvent).Where(p => p.ID.Equals(sportBetID)).First();
+                return db.SportBets.Include(s => s.SportEvent).Include(p => p.SportEvent.Sport).Where(p => p.ID.Equals(sportBetID)).First();
             }
         }
 
