@@ -16,9 +16,9 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.composedBetAmount = 0;
     $scope.matchDetailIdx = null;
     $scope.breadcrumbPath;
-    
+
     getPendingBets();
-    
+
 
 
     $scope.getItems = function (leagueId, path) {
@@ -77,17 +77,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     $scope.removeComposedBet = function (betId) {
         removeComposedBet(betId);
     }
-
-    $scope.getBetKind = function (oddType) {
-        switch (oddType) {
-            case "three way": return "Ganador del partido";
-            case "three way - ht": return "Ganador del primer tiempo";
-            case "three way - 2nd hf": return "Ganador del segundo tiempo";
-            case "odd/even": return "Cantidad de goles";
-        }
-        return "Unknown bet type";
-    }
-
+    
     $scope.betsAvailable = function () {
         if ($scope.pendingBets != null) {
             if ($scope.pendingBets.length > 0) {
@@ -256,7 +246,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                     if (responseData != null && responseData.lastError == "") {
                         $scope.walletFounds = responseData.balance;
                         $scope.userName = responseData.userName;
-                        if (responseData.data.length > 0) {                            
+                        if (responseData.data.length > 0) {
                             $scope.pendingBets = responseData.data;
                             $.each(composedBetsToRemove, function (index, betID) {
                                 removeComposedBet(betID);
@@ -276,7 +266,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     }
 
     $scope.OptionText = function (match, oddType, oddCode) {
-        switch (oddType) {            
+        switch (oddType) {
             case "three way":
             case "three way - ht":
             case "three way - 2nd hf":
@@ -293,16 +283,66 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             case "odd/even":
                 {
                     switch (oddCode) {
-                        case "tw_home":
+                        case "Odd":
                             return "Par";
-                        case "tw_draw":
-                            return "";
-                        case "tw_away":
+                        case "Even":
                             return "Impar";
+                    }
+                }
+            case "draw no bet":
+                {
+                    switch (oddCode) {
+                        case "Home":
+                            return match.local;
+                        case "Away":
+                            return match.visitante;
+                    }
+                }
+            case "double chance (1x/x2/12)":
+                {
+                    switch (oddCode) {
+                        case "1x":
+                            return match.local + "-Empate";
+                        case "x2":
+                            return "Empate-" + match.visitante;
+                        case "12":
+                            return match.local + "-" + match.visitante;
                     }
                 }
             default:
                 return 'Default case';
+                break;
+        }
+    }
+
+    $scope.getBetKind = function (oddType) {
+        switch (oddType) {
+            case "three way": return "Ganador del partido";
+            case "three way - ht": return "Ganador del primer tiempo";
+            case "three way - 2nd hf": return "Ganador del segundo tiempo";
+            case "odd/even": return "Cantidad de goles";
+            case "double chance (1x/x2/12)": return "Doble chance";
+            case "draw no bet": return "Victoria sin empate";
+        }
+        return "Unknown bet type";
+    }
+
+    $scope.OddClass = function (oddType) {
+        switch (oddType) {
+            case "three way":
+            case "three way - ht":
+            case "three way - 2nd hf":
+            case "double chance (1x/x2/12)":
+                {
+                    return "tres";
+                }
+            case "odd/even":
+            case "draw no bet":
+                {
+                    return "dos";
+                }
+            default:
+                return '';
                 break;
         }
     }
@@ -353,7 +393,7 @@ app.controller('matchsController', function ($scope, $http, $sce) {
                 alert(data.lastError);
             });
     }
-        
+
     function RemoveOtherSelectedOptions(matchIndex, betIndex) {
         $.each($scope.matchs[matchIndex].apuestasDisponibles[betIndex].oddCollection, function (index, option) {
             if (option.selected == "selected") {
@@ -451,14 +491,21 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             composed: true,
             amount: 0
         };
+        
         $scope.bets.push(bet);
+        if ($scope.bets.length == 1) {
+            showBets();
+        }
     }
 
     function removeBet(betID) {
         var betIndex = GetBetIndexFromBets(betID);
         $scope.bets.splice(betIndex, 1);
-        if ($scope.bets.length > 0) {
+        if ($scope.bets.length == 0) {
             showPendingBets();
+        }
+        else {
+            showBets();
         }
     }
 
@@ -470,23 +517,30 @@ app.controller('matchsController', function ($scope, $http, $sce) {
             }
             else {
                 $scope.bets.splice(betIndex, 1);
-                if($scope.bets.length == 0){
+                if ($scope.bets.length == 0) {
                     showPendingBets();
+                }
+                else {
+                    showBets();
                 }
             }
         }
     }
-    
+
     function removeComposedBet(betId) {
         var betIndex = GetBetIndexFromBets(betId);
         if (betIndex > -1) {
             if ($scope.bets[betIndex].simple == true) {
                 $scope.bets[betIndex].composed = false;
+                showBets();
             }
             else {
                 $scope.bets.splice(betIndex, 1);
                 if ($scope.bets.length == 0) {
                     showPendingBets();
+                }
+                else {
+                    showBets();
                 }
             }
         }
@@ -495,6 +549,37 @@ app.controller('matchsController', function ($scope, $http, $sce) {
     function showPendingBets() {
         $("#WaitingResultBets")[0].click()
         $scope.showBets = "pending";
+    }
+
+    function showBets() {
+
+        if ($scope.bets != null) {
+            if ($scope.bets.length > 0) {
+                var simpleBets = false;
+                var composedBets = false;
+
+                for (var i = 0; i < $scope.bets.length; i++) {
+                    if ($scope.bets[i].simple) {
+                        simpleBets = true;
+                    }
+                    if ($scope.bets[i].composed) {
+                        composedBets = true;
+                    }
+                }
+                
+                if ($scope.showBets == "simple" && !simpleBets && composedBets) {                    
+                    $("#ComposedBets")[0].click()
+                    $scope.showBets = "composed";
+                    return;
+                }
+
+                if ($scope.showBets == "composed" && simpleBets && !composedBets) {
+                    $("#SimpleBets")[0].click()
+                    $scope.showBets = "simple";
+                    return;
+                }
+            }
+        }
     }
 
 });

@@ -13,10 +13,17 @@ namespace ADOL.APP.CurrentAccountService.BusinessEntities
             switch (oddType)
             {
                 case "three way":
-                case "three way - ht":
-                case "three way - 2nd hf":
-                case "odd/even":
                     return new ThreeWayOddProvider();
+                case "three way - ht":
+                    return new ThreeWayHalfTimeOddProvider();
+                case "three way - 2nd hf":
+                    return new ThreeWaySecondHalfOddProvider();
+                case "odd/even":
+                    return new OddEvenOddProvider();
+                case "draw no bet":
+                    return new DrawNoBetOddProvider();
+                case "double chance (1x/x2/12)":
+                    return new DobleChanceOddProvider();
                 default:
                     throw new ArgumentOutOfRangeException("oddType", "You must provide a valid odd type");
             }

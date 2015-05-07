@@ -53,7 +53,7 @@
                     <!-- apuesta -->
                     <div class="typeofbet" ng-repeat="bet in detailMatch.apuestasDisponibles track by bet.ID">
                         <h4>{{getBetKind(bet.oddType)}}</h4>
-                        <div class="select-bet tres" >
+                        <div ng-class="'select-bet ' +OddClass(bet.oddType) " > 
                             <div ng-class="isOddSelected(detailMatch, bet, odd)?'selected':''" ng-click="betMatchResult(detailMatch.ID, bet.ID, odd.code)" ng-repeat="odd in bet.oddCollection track by odd.ID">
                                 <span>{{ OptionText(detailMatch, bet.oddType, odd.code) }}</span><span class="value">{{ odd.price }}</span>
                             </div>

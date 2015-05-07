@@ -11,6 +11,8 @@ using System.Dynamic;
 using ADOL.APP.CurrentAccountService.DataAccess;
 using BE = ADOL.APP.CurrentAccountService.BusinessEntities;
 using System.Data.Entity.Validation;
+using ADOL.APP.CurrentAccountService.BusinessEntities;
+using System.Configuration;
 
 namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
@@ -23,18 +25,24 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             String Xml;
             XmlDocument doc = null;
             List<BE.SportEvent> sports = new List<BE.SportEvent>();
-            //var oddTypes = new int[] { 0, 65536, 327680, 2097153 };
-            var oddTypes = new int[] { 0, 65536, 327680 };
+
+            var oddTypes = new int[] { OddTypes.ThreeWay.Code, OddTypes.ThreeWayHalfTime.Code, OddTypes.ThreeWaySecondHalf.Code, 
+                OddTypes.OddEven.Code, OddTypes.DrawNoBet.Code, OddTypes.DobleChance.Code };
 
             foreach (var sportCode in activeSports.Select(p => p.Code).Distinct())
             {
                 foreach (var league in activeSports.Where(s => s.Code == sportCode).Select(p => p.League).Distinct())
                 {
 
-                    string uriTemplate = @"http://xml2.txodds.com/feed/odds/xml.php?ident=discoverytx&passwd=57t6y67&bid=126&mgid={0}&spid={1}&days=14&ot={2}";
+                    string urlFormat = ConfigurationManager.AppSettings.Get("DataApiBaseURL");
+                    string userName =  ConfigurationManager.AppSettings.Get("DataApiUser");
+                    string pass =  ConfigurationManager.AppSettings.Get("DataApiPass");
+
+                    string baseOddUrl = string.Format(urlFormat, userName, pass);
+                    string uriTemplate = @"&bid=126,42&mgid={0}&spid={1}&days=14&ot={2}";
 
                     var sportlea = activeSports.Select(p => p.Code).Distinct().ToList();
-                    string requestUri = string.Format(uriTemplate,
+                    string requestUri = string.Format(baseOddUrl + uriTemplate,
                                                 string.Join(",", league),//allowedLeags),
                                                 string.Join(",", sportCode),
                                                 string.Join(",", oddTypes));
@@ -84,7 +92,12 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 
                             foreach (var oddId in oddTypes)
                             {
-                                XmlNode xmlOdd = match.SelectSingleNode("bookmaker/offer[@ot=" + oddId + "]");
+                                XmlNode xmlOdd = match.SelectSingleNode("bookmaker[@bid=126]/offer[@ot=" + oddId + "]");
+                             
+                                if (xmlOdd == null)
+                                {
+                                    xmlOdd = match.SelectSingleNode("bookmaker[@bid=42]/offer[@ot=" + oddId + "]");
+                                }
 
                                 if (xmlOdd != null)
                                 {

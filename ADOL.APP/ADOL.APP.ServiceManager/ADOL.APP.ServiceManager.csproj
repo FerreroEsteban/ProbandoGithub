@@ -43,6 +43,7 @@
     <Compile Include="BaseManager.cs" />
     <Compile Include="BetManager.cs" />
     <Compile Include="EventsManager.cs" />
+    <Compile Include="Extensions\BetValidatorExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
