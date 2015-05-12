@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="GOLModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="GOLModelStoreContainer">
+          <EntitySet Name="ApuestasDeportivas" EntityType="GOLModel.Store.ApuestasDeportivas" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ApuestasDeUsuarios" EntityType="GOLModel.Store.ApuestasDeUsuarios" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Deportes" EntityType="GOLModel.Store.Deportes" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="EventosDeportivos" EntityType="GOLModel.Store.EventosDeportivos" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="ApuestasDeportivas_FK1" Association="GOLModel.Store.ApuestasDeportivas_FK1">
+            <End Role="Deportes" EntitySet="Deportes" />
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
+          </AssociationSet>
+          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="GOLModel.Store.ApuestasDeUsuarios_FK1">
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
+            <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="ApuestasDeUsuarios_FK2" Association="GOLModel.Store.ApuestasDeUsuarios_FK2">
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
+            <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="EventosDeportivos_FK1" Association="GOLModel.Store.EventosDeportivos_FK1">
+            <End Role="Deportes" EntitySet="Deportes" />
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ApuestasDeportivas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Nombre" Type="nchar" Nullable="false" MaxLength="10" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="ValorProveedor1" Type="int" Nullable="false" />
+          <Property Name="ValorProveedor2" Type="int" Nullable="false" />
+          <Property Name="ValorProveedor3" Type="int" Nullable="false" />
+          <Property Name="ValorProveedor4" Type="int" Nullable="false" />
+          <Property Name="Acualizado" Type="datetime" Nullable="false" />
+          <Property Name="DeporteID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ApuestasDeUsuarios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Token" Type="varchar" Nullable="false" MaxLength="32" />
+          <Property Name="Amount" Type="decimal" Nullable="false" />
+          <Property Name="ApuestaDeportivaID" Type="int" Nullable="false" />
+          <Property Name="EventoDeportivoID" Type="int" Nullable="false" />
+          <Property Name="Acierto" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Deportes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+          <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventosDeportivos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="Inicio" Type="datetime" Nullable="false" />
+          <Property Name="Fin" Type="datetime" Nullable="false" />
+          <Property Name="DeporteID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="ApuestasDeportivas_FK1">
+          <End Role="Deportes" Type="GOLModel.Store.Deportes" Multiplicity="1" />
+          <End Role="ApuestasDeportivas" Type="GOLModel.Store.ApuestasDeportivas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deportes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeportivas">
+              <PropertyRef Name="DeporteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApuestasDeUsuarios_FK1">
+          <End Role="ApuestasDeportivas" Type="GOLModel.Store.ApuestasDeportivas" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="GOLModel.Store.ApuestasDeUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApuestasDeportivas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeUsuarios">
+              <PropertyRef Name="ApuestaDeportivaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApuestasDeUsuarios_FK2">
+          <End Role="EventosDeportivos" Type="GOLModel.Store.EventosDeportivos" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="GOLModel.Store.ApuestasDeUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EventosDeportivos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeUsuarios">
+              <PropertyRef Name="EventoDeportivoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventosDeportivos_FK1">
+          <End Role="Deportes" Type="GOLModel.Store.Deportes" Multiplicity="1" />
+          <End Role="EventosDeportivos" Type="GOLModel.Store.EventosDeportivos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deportes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EventosDeportivos">
+              <PropertyRef Name="DeporteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GOLModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="GOLEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="ApuestasDeportivas" EntityType="GOLModel.ApuestasDeportiva" />
+          <EntitySet Name="ApuestasDeUsuarios" EntityType="GOLModel.ApuestasDeUsuario" />
+          <EntitySet Name="Deportes" EntityType="GOLModel.Deporte" />
+          <EntitySet Name="EventosDeportivos" EntityType="GOLModel.EventosDeportivo" />
+          <AssociationSet Name="ApuestasDeportivas_FK1" Association="GOLModel.ApuestasDeportivas_FK1">
+            <End Role="Deportes" EntitySet="Deportes" />
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
+          </AssociationSet>
+          <AssociationSet Name="ApuestasDeUsuarios_FK1" Association="GOLModel.ApuestasDeUsuarios_FK1">
+            <End Role="ApuestasDeportivas" EntitySet="ApuestasDeportivas" />
+            <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="ApuestasDeUsuarios_FK2" Association="GOLModel.ApuestasDeUsuarios_FK2">
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
+            <End Role="ApuestasDeUsuarios" EntitySet="ApuestasDeUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="EventosDeportivos_FK1" Association="GOLModel.EventosDeportivos_FK1">
+            <End Role="Deportes" EntitySet="Deportes" />
+            <End Role="EventosDeportivos" EntitySet="EventosDeportivos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ApuestasDeportiva">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="true" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="ValorProveedor1" Type="Int32" Nullable="false" />
+          <Property Name="ValorProveedor2" Type="Int32" Nullable="false" />
+          <Property Name="ValorProveedor3" Type="Int32" Nullable="false" />
+          <Property Name="ValorProveedor4" Type="Int32" Nullable="false" />
+          <Property Name="Acualizado" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeporteID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Deporte" Relationship="GOLModel.ApuestasDeportivas_FK1" FromRole="ApuestasDeportivas" ToRole="Deportes" />
+          <NavigationProperty Name="ApuestasDeUsuarios" Relationship="GOLModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeportivas" ToRole="ApuestasDeUsuarios" />
+        </EntityType>
+        <EntityType Name="ApuestasDeUsuario">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="32" Unicode="false" FixedLength="false" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="ApuestaDeportivaID" Type="Int32" Nullable="false" />
+          <Property Name="EventoDeportivoID" Type="Int32" Nullable="false" />
+          <Property Name="Acierto" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ApuestasDeportiva" Relationship="GOLModel.ApuestasDeUsuarios_FK1" FromRole="ApuestasDeUsuarios" ToRole="ApuestasDeportivas" />
+          <NavigationProperty Name="EventosDeportivo" Relationship="GOLModel.ApuestasDeUsuarios_FK2" FromRole="ApuestasDeUsuarios" ToRole="EventosDeportivos" />
+        </EntityType>
+        <EntityType Name="Deporte">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ApuestasDeportivas" Relationship="GOLModel.ApuestasDeportivas_FK1" FromRole="Deportes" ToRole="ApuestasDeportivas" />
+          <NavigationProperty Name="EventosDeportivos" Relationship="GOLModel.EventosDeportivos_FK1" FromRole="Deportes" ToRole="EventosDeportivos" />
+        </EntityType>
+        <EntityType Name="EventosDeportivo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="Inicio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Fin" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeporteID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApuestasDeUsuarios" Relationship="GOLModel.ApuestasDeUsuarios_FK2" FromRole="EventosDeportivos" ToRole="ApuestasDeUsuarios" />
+          <NavigationProperty Name="Deporte" Relationship="GOLModel.EventosDeportivos_FK1" FromRole="EventosDeportivos" ToRole="Deportes" />
+        </EntityType>
+        <Association Name="ApuestasDeportivas_FK1">
+          <End Role="Deportes" Type="GOLModel.Deporte" Multiplicity="1" />
+          <End Role="ApuestasDeportivas" Type="GOLModel.ApuestasDeportiva" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deportes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeportivas">
+              <PropertyRef Name="DeporteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApuestasDeUsuarios_FK1">
+          <End Role="ApuestasDeportivas" Type="GOLModel.ApuestasDeportiva" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="GOLModel.ApuestasDeUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApuestasDeportivas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeUsuarios">
+              <PropertyRef Name="ApuestaDeportivaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApuestasDeUsuarios_FK2">
+          <End Role="EventosDeportivos" Type="GOLModel.EventosDeportivo" Multiplicity="1" />
+          <End Role="ApuestasDeUsuarios" Type="GOLModel.ApuestasDeUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EventosDeportivos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ApuestasDeUsuarios">
+              <PropertyRef Name="EventoDeportivoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventosDeportivos_FK1">
+          <End Role="Deportes" Type="GOLModel.Deporte" Multiplicity="1" />
+          <End Role="EventosDeportivos" Type="GOLModel.EventosDeportivo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deportes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EventosDeportivos">
+              <PropertyRef Name="DeporteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GOLModelStoreContainer" CdmEntityContainer="GOLEntities">
+          <EntitySetMapping Name="ApuestasDeportivas">
+            <EntityTypeMapping TypeName="GOLModel.ApuestasDeportiva">
+              <MappingFragment StoreEntitySet="ApuestasDeportivas">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="ValorProveedor1" ColumnName="ValorProveedor1" />
+                <ScalarProperty Name="ValorProveedor2" ColumnName="ValorProveedor2" />
+                <ScalarProperty Name="ValorProveedor3" ColumnName="ValorProveedor3" />
+                <ScalarProperty Name="ValorProveedor4" ColumnName="ValorProveedor4" />
+                <ScalarProperty Name="Acualizado" ColumnName="Acualizado" />
+                <ScalarProperty Name="DeporteID" ColumnName="DeporteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApuestasDeUsuarios">
+            <EntityTypeMapping TypeName="GOLModel.ApuestasDeUsuario">
+              <MappingFragment StoreEntitySet="ApuestasDeUsuarios">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ApuestaDeportivaID" ColumnName="ApuestaDeportivaID" />
+                <ScalarProperty Name="EventoDeportivoID" ColumnName="EventoDeportivoID" />
+                <ScalarProperty Name="Acierto" ColumnName="Acierto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Deportes">
+            <EntityTypeMapping TypeName="GOLModel.Deporte">
+              <MappingFragment StoreEntitySet="Deportes">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventosDeportivos">
+            <EntityTypeMapping TypeName="GOLModel.EventosDeportivo">
+              <MappingFragment StoreEntitySet="EventosDeportivos">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Inicio" ColumnName="Inicio" />
+                <ScalarProperty Name="Fin" ColumnName="Fin" />
+                <ScalarProperty Name="DeporteID" ColumnName="DeporteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

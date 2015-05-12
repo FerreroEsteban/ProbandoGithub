@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ADOLDBModelStoreContainer" CdmEntityContainer="ADOLDBEntities">
+    <EntitySetMapping Name="SportBets">
+      <EntityTypeMapping TypeName="ADOLDBModel.SportBet">
+        <MappingFragment StoreEntitySet="SportBets">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="Odd1" ColumnName="Odd1" />
+          <ScalarProperty Name="Odd2" ColumnName="Odd2" />
+          <ScalarProperty Name="Odd3" ColumnName="Odd3" />
+          <ScalarProperty Name="Odd4" ColumnName="Odd4" />
+          <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
+          <ScalarProperty Name="SportEventID" ColumnName="SportEventID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SportEvents">
+      <EntityTypeMapping TypeName="ADOLDBModel.SportEvent">
+        <MappingFragment StoreEntitySet="SportEvents">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="Init" ColumnName="Init" />
+          <ScalarProperty Name="End" ColumnName="End" />
+          <ScalarProperty Name="Home" ColumnName="Home" />
+          <ScalarProperty Name="Away" ColumnName="Away" />
+          <ScalarProperty Name="SportID" ColumnName="SportID" />
+          <ScalarProperty Name="LeagueCode" ColumnName="LeagueCode" />
+          <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sports">
+      <EntityTypeMapping TypeName="ADOLDBModel.Sport">
+        <MappingFragment StoreEntitySet="Sports">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="League" ColumnName="League" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="MenuFlagKey" ColumnName="MenuFlagKey" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ProviderID" ColumnName="ProviderID" />
+          <ScalarProperty Name="InternalName" ColumnName="InternalName" />
+          <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+          <ScalarProperty Name="RegionID" ColumnName="RegionID" />
+          <ScalarProperty Name="RegionName" ColumnName="RegionName" />
+          <ScalarProperty Name="TournamentID" ColumnName="TournamentID" />
+          <ScalarProperty Name="TournamentName" ColumnName="TournamentName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserBets">
+      <EntityTypeMapping TypeName="ADOLDBModel.UserBet">
+        <MappingFragment StoreEntitySet="UserBets">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="SportBetID" ColumnName="SportBetID" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="MatchCode" ColumnName="MatchCode" />
+          <ScalarProperty Name="MatchName" ColumnName="MatchName" />
+          <ScalarProperty Name="Hit" ColumnName="Hit" />
+          <ScalarProperty Name="BetType" ColumnName="BetType" />
+          <ScalarProperty Name="BetPrice" ColumnName="BetPrice" />
+          <ScalarProperty Name="LinkedCode" ColumnName="LinkedCode" />
+          <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="ADOLDBModel.User">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="NickName" ColumnName="NickName" />
+          <ScalarProperty Name="SessionToken" ColumnName="SessionToken" />
+          <ScalarProperty Name="LaunchToken" ColumnName="LaunchToken" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
