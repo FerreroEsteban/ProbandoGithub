@@ -64,9 +64,15 @@ namespace ADOL.APP.CurrentAccountService.Helpers
             WriteToFile(EventType.Activity, sb.ToString());
         }
 
-        public static void CustomLog(string logBody, string path, bool isFullPath = false)
+        public static void CustomLog(string logBody, string path, bool isFullPath = false, object instance = null)
         {
-
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(logBody);
+            if (instance != null)
+            {
+                FlattenObject(sb, instance);
+            }
+            WriteToFile(EventType.Activity, sb.ToString(), path, isFullPath);
         }
 
         private static void WriteToFile(EventType logType, string messageToLog, string fileName = "", bool isfullpath = false)

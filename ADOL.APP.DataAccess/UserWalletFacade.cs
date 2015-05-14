@@ -14,17 +14,8 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
 {
     public static class UserWalletFacade
     {
-        public static bool ValidateFundsAvailable(BusinessEntities.User user, decimal amount)//, decimal[] linePrice, bool isCombined = false)
-        {
-            //decimal totalPrice = 1M;
-            //if (isCombined)
-            //{
-            //    totalPrice = linePrice[0];
-            //    if()
-            //}
-            //linePrice.ToList().ForEach(p => totalPrice *= p);
-
-            
+        public static bool ValidateFundsAvailable(BusinessEntities.User user, decimal amount)
+        {            
             return user.Balance >= amount;
         }
 
@@ -32,8 +23,6 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
         {
             return new JavaScriptSerializer();
         }
-    
-    //JavaScriptSerializer jsSerializer = new JavaScriptSerializer();
 
         public static BaseResponse<BaseWalletResponseData> ProcessLogin(BaseRequest request)
         {
@@ -54,8 +43,6 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            //data.Date = serializer.Deserialize(serviceData.Date.ToString(), typeof(System.DateTime));
-            //data.Date = serviceData.Date;
             DateTime outputDate = DateTime.Now;
             if(DateTime.TryParse(serviceData.Date.ToString(), out outputDate))
             {
@@ -150,14 +137,12 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             CallService(ConfigurationHelper.GetConfigurationItem("CreditServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            //JavaScriptSerializer serializer = new JavaScriptSerializer();
             data.UserUID = serviceData.IUD;
             data.TransactionID = serviceData.TransactionID;
             data.Balance = (decimal)serviceData.Balance;
             data.errorCode = (WalletErrorCode)Enum.ToObject(typeof(WalletErrorCode), serviceData.ErrorCode);
             data.ErrorMessage = serviceData.ErrorDescription;
             data.SessionToken = serviceData.Token;
-            //data.Date = serviceData.Date;
             DateTime outputDate = DateTime.Now;
             if(DateTime.TryParse(serviceData.Date.ToString(), out outputDate))
             {
@@ -200,7 +185,6 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
             CallService(ConfigurationHelper.GetConfigurationItem("RollbackServiceEndpoint"), requestData, out serviceData);
 
             BaseWalletResponseData data = new BaseWalletResponseData();
-            //JavaScriptSerializer serializer = new JavaScriptSerializer();
             data.UserUID = serviceData.IUD;
             data.TransactionID = serviceData.TransactionID;
             data.Balance = (decimal)serviceData.Balance;
@@ -223,7 +207,7 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
         {
             HttpWebRequest httpRequest = null;
             HttpWebResponse httpResponse = null;
-
+            
             try
             {
                 // Create the web request  
@@ -237,6 +221,8 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                 requestWriter.Write(requestBody);
                 requestWriter.Close();
 
+                LogHelper.CustomLog("log wallet activity request", "wallet", false, httpRequest);
+
                 // Get response  
                 using (httpResponse = httpRequest.GetResponse() as HttpWebResponse)
                 {
@@ -244,16 +230,17 @@ namespace ADOL.APP.CurrentAccountService.DataAccess.ServiceAccess
                     StreamReader reader = new StreamReader(httpResponse.GetResponseStream());
                     responseData = System.Web.Helpers.Json.Decode(reader.ReadToEnd());
                 }
+                LogHelper.CustomLog("log wallet activity response", "wallet", false, responseData);
             }
             catch (Exception ex)
             {
                 responseData = new ExpandoObject();
-                //JavaScriptSerializer serializer = new JavaScriptSerializer();
                 responseData.Token = requestData.Token ?? string.Empty;
-                //responseData.UID = requestData.UID ?? string.Empty;
                 responseData.ErrorCode = -1;
                 responseData.ErrorMessage = ex.Message + " - " + (ex.InnerException != null ? ex.InnerException.Message : string.Empty);
                 responseData.Date = GetSerializer().Serialize(DateTime.UtcNow);
+                LogHelper.LogError("Error processing a wallet call", ex, httpRequest);
+                LogHelper.CustomLog("log wallet activity error", "wallet", false, ex);
             }
         }
 
