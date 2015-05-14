@@ -90,9 +90,6 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 var response = UserWalletFacade.ProcessLogin(req);
                 if (response.Status.Equals(BE.ResponseStatus.OK))
                 {
-                    //RequestContextHelper.SessionToken = response.GetData().SessionToken;
-                    //RequestContextHelper.UserBalance = response.GetData().Balance;
-                    //RequestContextHelper.UserName = response.GetData().NickName;
 
                     UserAccess ua = new UserAccess();
                     BE.User user = new BE.User();
@@ -213,14 +210,20 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                                 
                             }
                             catch (Exception ex)
-                            { 
-                                //do something
-
+                            {
+                                LogHelper.LogError("Error in user bet result proccesing", ex);
                             }
                         }
                     }
-                    PaySingleBets(uba);
-                    PayCombinedBets(uba);
+                    try
+                    {
+                        PaySingleBets(uba);
+                        PayCombinedBets(uba);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.LogError("Error proccesing payments", ex);
+                    }
                 }
             }
         }
@@ -232,9 +235,12 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             pendings.ToList().ForEach(p =>
             {
                 BE.CreditRequest req = CreateCreditRequest(p, p.PaymentStatus.Value.Equals(3));
+                LogHelper.LogActivity("Credit request created for single bet", req);
                 BE.BaseResponse<BE.BaseWalletResponseData> resp = UserWalletFacade.ProcessBetCredit(req);
+                LogHelper.LogActivity(string.Format("Response status {0}", resp.Status.ToString()));
                 if (resp.Status.Equals(BE.ResponseStatus.OK))
                 {
+                    LogHelper.LogActivity("Updating bet", resp.GetData());
                     uba.UpdateUserBetStatus(p.ID, p.Hit.Value, ((BE.PaymentStatus)(p.PaymentStatus.Value + 2)));
                     p.User.SessionToken = resp.GetData().SessionToken;
                     p.User.Balance = resp.GetData().Balance;
@@ -254,9 +260,12 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 if (combined.All(p => p.Hit.HasValue && p.Hit.Value))
                 {
                     BE.CreditRequest req = CreateCreditRequest(combined);
+                    LogHelper.LogActivity("Credit request created for combined bet", req);
                     BE.BaseResponse<BE.BaseWalletResponseData> resp = UserWalletFacade.ProcessBetCredit(req);
+                    LogHelper.LogActivity(string.Format("Response status {0}", resp.Status.ToString()));
                     if (resp.Status.Equals(BE.ResponseStatus.OK))
                     {
+                        LogHelper.LogActivity("Updating bet", resp.GetData());
                         foreach (var bet in combined)
                         {
                             uba.UpdateUserBetStatus(bet.ID, bet.Hit.Value, BE.PaymentStatus.PayedBack);
@@ -268,31 +277,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                         user = ua.UpdateUser(user);
                     }
                 }
-                //else
-                //{
-                //    var returnBets = combined.Where(p => p.Hit.HasValue && !p.Hit.Value && p.PaymentStatus.Equals((int)BE.PaymentStatus.Return));
-                //    if (returnBets != null && returnBets.Count() > 0)
-                //    {
-                //        returnBets.ToList().ForEach(p =>
-                //        {
-                //            BE.CreditRequest req = CreateCreditRequest(p, true);
-                //            BE.BaseResponse<BE.BaseWalletResponseData> resp = UserWalletFacade.ProcessBetCredit(req);
-                //            if (resp.Status.Equals(BE.ResponseStatus.OK))
-                //            {
-                //                uba.UpdateUserBetStatus(p.ID, p.Hit.Value, BE.PaymentStatus.Returned);
-                //                p.User.SessionToken = resp.GetData().SessionToken;
-                //                p.User.Balance = resp.GetData().Balance;
-
-                //                var user = ua.UpdateUser(p.User);
-                //            }
-                //        });
-                //    }
-                //}
-            });
-            
-
-                
-                
+            });       
         }
 
         private BE.CreditRequest CreateCreditRequest(BE.UserBet userbet, bool isReturn = false)

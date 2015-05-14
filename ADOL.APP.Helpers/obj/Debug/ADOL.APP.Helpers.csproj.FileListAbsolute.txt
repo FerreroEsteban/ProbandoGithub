@@ -9,6 +9,6 @@ D:\Projects\Gol\refactor\ProbandoGithub\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL
 D:\Projects\Gol\refactor\ProbandoGithub\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL.APP.CurrentAccountService.Helpers.pdb
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\bin\Debug\ADOL.APP.CurrentAccountService.Helpers.dll
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\bin\Debug\ADOL.APP.CurrentAccountService.Helpers.pdb
-D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL.APP.Helpers.csprojResolveAssemblyReference.cache
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL.APP.CurrentAccountService.Helpers.dll
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL.APP.CurrentAccountService.Helpers.pdb
+D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.Helpers\obj\Debug\ADOL.APP.Helpers.csprojResolveAssemblyReference.cache

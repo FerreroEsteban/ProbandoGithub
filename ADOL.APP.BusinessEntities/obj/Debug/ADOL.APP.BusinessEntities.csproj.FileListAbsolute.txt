@@ -22,6 +22,6 @@ D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\bin\Debug\ADOL.APP.C
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\bin\Debug\EntityFramework.dll
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\bin\Debug\EntityFramework.xml
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\bin\Debug\es\EntityFramework.resources.dll
-D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\obj\Debug\ADOL.APP.BusinessEntities.csprojResolveAssemblyReference.cache
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\obj\Debug\ADOL.APP.CurrentAccountService.BusinessEntities.dll
 D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\obj\Debug\ADOL.APP.CurrentAccountService.BusinessEntities.pdb
+D:\Projects\Gol\Release2\ADOL.APP\ADOL.APP.BusinessEntities\obj\Debug\ADOL.APP.BusinessEntities.csprojResolveAssemblyReference.cache

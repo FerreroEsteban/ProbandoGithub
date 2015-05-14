@@ -31,29 +31,21 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             decimal amountToValidte = BetType > 0 ? bets[0].Item2 : bets.Sum(p => p.Item2);
             BE.BaseResponse<bool> returnData;
 
-            //var selectedEvents = sea.GetEventsByIDs(bets.Select(p => p.Item1).Distinct().ToArray()).ToList();
-
             try
             {
-                //if (UserWalletFacade.ValidateFundsAvailable(user, amountToValidte))
-                //{
-                    if (BetType > 0)
-                    {
-                        //BetValidatorExtension.ValidateBet(selectedEvents.Select(p => p.Sport.Code).Distinct().ToArray(),bets.Select(p => p.Item2
-                        returnData = ProcessCombinedBets(amountToValidte, bets, user);
-                    }
-                    else
-                    {
-                        returnData = ProcessSingleBets(bets, user);
-                    }
-                //}
-                //else
-                //{
-                    returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No hay fondos suficientes para la operacion");
-                //}
+                if (BetType > 0)
+                {
+                    returnData = ProcessCombinedBets(amountToValidte, bets, user);
+                }
+                else
+                {
+                    returnData = ProcessSingleBets(bets, user);
+                }
+                returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No hay fondos suficientes para la operacion");
             }
             catch (Exception ex)
             {
+                LogHelper.LogError(string.Format("error adding user bet. Type: {0}", BetType > 0 ? "Combined" : "Single"), ex);
                 RequestContextHelper.LastError = ex.Message;
                 returnData = new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, ex.Message);
             }
@@ -95,10 +87,14 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 req.UserUID = user.UID;
                 req.TransactionID = userbet.TransactionID;
 
+                LogHelper.LogActivity("single bet request created", req);
+                
                 var betValidated = BetValidatorExtension.ValidateBet(sportbet.SportEvent.Sport.Code, userbet.Amount, userbet.BetPrice, user.Balance);
+                LogHelper.LogActivity("Is validated: {0}", (betValidated.Status.Equals(ResponseStatus.OK) && betValidated.GetData()).ToString());
                 if (betValidated.Status.Equals(ResponseStatus.OK) && betValidated.GetData())
                 {
                     BE.BaseResponse<BE.BaseWalletResponseData> response = UserWalletFacade.ProcessBetDebit(req);
+                    LogHelper.LogActivity(string.Format("Debit response status: {0}", response.Status.ToString()), response.GetData());
                     userBets.Add(userbet, response.GetData());
                     if (response.Status.Equals(BE.ResponseStatus.Fail))
                     {
@@ -122,6 +118,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
 
             if (withErrors)
             {
+                LogHelper.LogActivity("Rollback withErrors", userBets);
                 new Thread(delegate()
                 {
                     DoRollBack(userBets);
@@ -131,6 +128,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             {
                 if (!uba.StoreUserBet(userBets.Keys.ToList()))
                 {
+                    LogHelper.LogActivity("Rollback StoreUserBet", userBets);
                     new Thread(delegate()
                     {
                         DoRollBack(userBets);
@@ -219,14 +217,16 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
             req.SessionToken = user.SessionToken;
             req.UserUID = user.UID;
             req.TransactionID = userBets[0].TransactionID;
-
+            LogHelper.LogActivity("Request created", req);
             Dictionary<BE.UserBet, BE.BaseWalletResponseData> combinedBet = new Dictionary<BE.UserBet, BE.BaseWalletResponseData>();
 
             var validatedBet = BetValidatorExtension.ValidateBet(sportCodes.ToArray(), totalBetPrice, betAmount, user.Balance);
+            LogHelper.LogActivity(string.Format("Is bet validated: {0}", (validatedBet.Status.Equals(ResponseStatus.OK) && validatedBet.GetData()).ToString()));
             if (validatedBet.Status.Equals(ResponseStatus.OK) && validatedBet.GetData())
             {
 
                 BE.BaseResponse<BE.BaseWalletResponseData> response = UserWalletFacade.ProcessBetDebit(req);
+                LogHelper.LogActivity(string.Format("debit response status: {0}", response.Status.ToString()), response.GetData());
                 if (response.Status.Equals(BE.ResponseStatus.Fail))
                 {
                     RequestContextHelper.LastError = response.Message;
@@ -234,6 +234,7 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                     userBets.ForEach(ub => combinedBet.Add(ub, response.GetData()));
                     new Thread(delegate()
                     {
+                        LogHelper.LogActivity("Rollback wallet");
                         DoRollBack(combinedBet);
                     }).Start();
                     return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, response.Message);
@@ -241,12 +242,15 @@ namespace ADOL.APP.CurrentAccountService.ServiceManager
                 UserBetAccess uba = new UserBetAccess();
                 if (!uba.StoreUserBet(userBets))
                 {
+                    LogHelper.LogActivity("rollback storing bets", userBets);
                     new Thread(delegate()
                     {
                         DoRollBack(combinedBet);
                     }).Start();
                     return new BE.BaseResponse<bool>(false, BE.ResponseStatus.Fail, "No se pudo guardar la puesta por un error interno");
                 }
+
+                LogHelper.LogActivity("bets processed", response.GetData());
 
                 RequestContextHelper.SessionToken = response.GetData().SessionToken;
                 RequestContextHelper.UserBalance = response.GetData().Balance;
